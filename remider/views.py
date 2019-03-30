@@ -87,7 +87,7 @@ def notify(request, idays, ihours, sdays, shours, imicroseconds, smicroseconds):
             api_rq.post("https://maker.ifttt.com/trigger/reminder/with/key/{0}".format(IFTTT_MAKER),
                         data={"value1": sdays, "value2": shours, "value3": "CGM sensor"})
 
-        return render(request, "remider\debug.html",
+        return render(request, "remider/debug.html",
                       {
                           "value3": "infusion set",
                           "value32": "CGM sensor",
