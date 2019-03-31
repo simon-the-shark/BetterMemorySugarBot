@@ -8,8 +8,11 @@ from datetime import datetime, timedelta, timezone
 from .models import InfusionChanged, SensorChanged, Empty
 from infusionset_reminder.settings import SENSOR_ALERT_FREQUENCY, INFUSION_SET_ALERT_FREQUENCY, IFTTT_MAKER, SECRET_KEY
 
+
 def home(request):
-    return render(request,"remider/debug.html")
+    return render(request, "remider/home.html")
+
+
 def get_from_api(request):
     their_key = request.GET.get("key", "")
     if their_key == SECRET_KEY:
@@ -63,21 +66,30 @@ def calculate(request):
 
         try:
             sensor = timedelta(hours=SENSOR_ALERT_FREQUENCY)
-            sensor_alert_date = InfusionChanged.objects.get(id=1).date + sensor
+            sensor_alert_date = SensorChanged.objects.get(id=1).date + sensor
             sensor_time_remains = sensor_alert_date - datetime.now(timezone.utc)
         except:
             sensor_time_remains = Empty()
 
-        return redirect('/notify/{}/{}/{}/{}/{}/{}/?key={}'.format(infusion_time_remains.days, round(
-            infusion_time_remains.seconds / 3600), sensor_time_remains.days, round(sensor_time_remains.seconds / 3600),
-                                                                   infusion_time_remains.microseconds,
-                                                                   sensor_time_remains.microseconds,
-                                                                   SECRET_KEY))
+        return redirect(
+            '/notify?key={6}&idays={0}&ihours={1}&sdays={2}&shours={3}&imicroseconds={4}&smicroseconds={5}'.format(
+                infusion_time_remains.days, round(
+                    infusion_time_remains.seconds / 3600), sensor_time_remains.days,
+                round(sensor_time_remains.seconds / 3600),
+                infusion_time_remains.microseconds,
+                sensor_time_remains.microseconds,
+                SECRET_KEY))
     else:
         return HttpResponseForbidden()
 
 
-def notify(request, idays, ihours, sdays, shours, imicroseconds, smicroseconds):
+def notify(request):
+    idays = request.GET.get("idays", "")
+    ihours = request.GET.get("ihours", "")
+    sdays = request.GET.get("sdays", "")
+    shours = request.GET.get("shours", "")
+    imicroseconds = request.GET.get("imicroseconds", "")
+    smicroseconds = request.GET.get("smicroseconds", "")
     their_key = request.GET.get("key", "")
     if their_key == SECRET_KEY:
         if idays != 0 or ihours != 0 or imicroseconds != 0:

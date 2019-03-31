@@ -1,13 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>:)</title>
-</head>
-<body>
-<h1>
-Your {{ value3 }} should changed in {{ value1 }} days and {{ value2 }} hours <br/>
-Your {{ value32 }} should changed in {{ value12 }} days and {{ value22 }} hours
-    </h1>
-</body>
-</html>
+{% extends "core/base.html" %}
+{% block content %}
+    Your {{ value3 }} should be changed in {{ value1 }} days and {{ value2 }} hours <br/>
+    Your {{ value32 }} should be changed in {{ value12 }} days and {{ value22 }} hours
+{% endblock %}

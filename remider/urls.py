@@ -8,7 +8,6 @@ urlpatterns = [
     path("", home),
     path("get/", get_from_api, name="get"),
     path("calculate/", calculate, name="calculate"),
-    path("notify/<int:idays>/<int:ihours>/<int:sdays>/<int:shours>/<int:imicroseconds>/<int:smicroseconds>/", notify,
-         name="notify"),
+    path("notify/", notify, name="notify"),
     # url(r'^favicon\.ico$', RedirectView.as_view(url='/static/images/favicon.ico')),
 ]
