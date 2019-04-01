@@ -13,9 +13,9 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 from decouple import config
 import django_heroku
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -23,12 +23,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config("SECRET_KEY")
 
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -73,7 +71,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'infusionset_reminder.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
@@ -83,7 +80,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -103,7 +99,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
@@ -117,7 +112,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
@@ -126,5 +120,20 @@ STATIC_URL = '/static/'
 INFUSION_SET_ALERT_FREQUENCY = int(config("INFUSION_SET_ALERT_FREQUENCY"))
 SENSOR_ALERT_FREQUENCY = int(config("SENSOR_ALERT_FREQUENCY"))
 IFTTT_MAKER = config("IFTTT_MAKER")
+
+TWILIO_ACCOUNT_SID = config("TWILIO_ACCOUNT_SID")
+TWILIO_AUTH_TOKEN = config("TWILIO_AUTH_TOKEN")
+
+from_whatsapp_number = "whatsapp:" + config("from_whatsapp_number")
+to_whatsapp_numbers = []
+
+i = 0
+while True:
+    i += 1
+    try:
+        number = config("to_whatsapp_number_" + str(i))
+        to_whatsapp_numbers.append("whatsapp:" + number)
+    except:
+        break
 
 django_heroku.settings(locals())
