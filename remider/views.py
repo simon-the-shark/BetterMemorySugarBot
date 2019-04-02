@@ -93,12 +93,13 @@ def notify(request):
     smicroseconds = request.GET.get("smicroseconds", "")
     their_key = request.GET.get("key", "")
     if their_key == SECRET_KEY:
+        send_message("---------------------------------------------------------------")
         if idays != 0 or ihours != 0 or imicroseconds != 0:
-            send_message("Your infusion set should be changed in {} days and {} hours.".format(idays,ihours))
+            send_message("Zmień zestaw infuzyjny w {} dni i {} godzin.".format(idays,ihours))
             # api_rq.post("https://maker.ifttt.com/trigger/reminder/with/key/{0}".format(IFTTT_MAKER),
             #             data={"value1": idays, "value2": ihours, "value3": "infusion set"})
         if sdays != 0 or shours != 0 or smicroseconds != 0:
-            send_message("Your CGM sensor should be changed in {} days and {} hours.".format(sdays, shours))
+            send_message("Zmień sensor CGM w {} dni i {} godzin".format(sdays, shours))
             # api_rq.post("https://maker.ifttt.com/trigger/reminder/with/key/{0}".format(IFTTT_MAKER),
             #             data={"value1": sdays, "value2": shours, "value3": "CGM sensor"})
 

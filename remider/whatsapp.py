@@ -7,9 +7,6 @@ def send_message(body):
     client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
     for to_whatsapp_number in to_whatsapp_numbers:
-        client.messages.create(body="---------------------------------------------------------------",
-                               from_=from_whatsapp_number,
-                               to=to_whatsapp_number)
         client.messages.create(body=body,
                                from_=from_whatsapp_number,
                                to=to_whatsapp_number)
