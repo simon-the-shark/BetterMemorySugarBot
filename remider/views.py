@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.http import HttpResponseForbidden
 from django.http import FileResponse
 
@@ -7,7 +7,8 @@ from decouple import config
 from datetime import datetime, timedelta
 
 from .whatsapp import send_message
-from infusionset_reminder.settings import SENSOR_ALERT_FREQUENCY, INFUSION_SET_ALERT_FREQUENCY, IFTTT_MAKER, SECRET_KEY
+from infusionset_reminder.settings import SENSOR_ALERT_FREQUENCY, INFUSION_SET_ALERT_FREQUENCY, ATRIGGER_KEY, \
+    ATRIGGER_SECRET, SECRET_KEY
 
 
 def home(request):
@@ -60,6 +61,7 @@ def reminder_view(request):
             send_message("Zmień zestaw infuzyjny w {} dni i {} godzin.".format(idays, ihours))
         if sdays != 0 or shours != 0 or smicroseconds != 0:
             send_message("Zmień sensor CGM w {} dni i {} godzin".format(sdays, shours))
+        create_trigger()
 
         return render(request, "remider/debug.html",
                       {
@@ -74,6 +76,12 @@ def reminder_view(request):
         return HttpResponseForbidden()
 
 
+def create_trigger():
+    urll = "https://api.atrigger.com/v1/tasks/create?key={}&secret={}&timeSlice={}&count={}&tag_id=typical&url={}".format(
+        ATRIGGER_KEY, ATRIGGER_SECRET, '1minute', 1,
+        'https://reminder-rekina.herokuapp.com/reminder/?key={}'.format(SECRET_KEY))
+    print(urll)
+    api_rq.get(urll)
 
 def file(request):
     file = open("remider/ATriggerVerify.txt", "rb")

@@ -124,6 +124,9 @@ IFTTT_MAKER = config("IFTTT_MAKER")
 TWILIO_ACCOUNT_SID = config("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = config("TWILIO_AUTH_TOKEN")
 
+ATRIGGER_KEY = config("ATRIGGER_KEY")
+ATRIGGER_SECRET = config("ATRIGGER_SECRET")
+
 from_whatsapp_number = "whatsapp:" + config("from_whatsapp_number")
 to_whatsapp_numbers = []
 
