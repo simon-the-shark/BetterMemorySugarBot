@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseForbidden
+from django.http import FileResponse
+
 
 import requests as api_rq
 from decouple import config
@@ -114,3 +116,7 @@ def notify(request):
                       })
     else:
         return HttpResponseForbidden()
+
+def file(request):
+    file = open("remider/ATriggerVerify.txt","rb")
+    return FileResponse(file)
