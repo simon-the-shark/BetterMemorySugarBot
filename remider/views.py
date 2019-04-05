@@ -42,7 +42,6 @@ def reminder_view(request):
         """calculate"""
         infusion = timedelta(hours=INFUSION_SET_ALERT_FREQUENCY)
         infusion_alert_date = datetime.strptime(date[:-6], "%Y-%m-%dT%H:%M:%S") + infusion
-        print(sensor_date)
         infusion_time_remains = infusion_alert_date - datetime.now()
 
         sensor = timedelta(hours=SENSOR_ALERT_FREQUENCY)
@@ -82,7 +81,6 @@ def create_trigger():
     urll = "https://api.atrigger.com/v1/tasks/create?key={}&secret={}&timeSlice={}&count={}&tag_id=typical&url={}&first={}".format(
         ATRIGGER_KEY, ATRIGGER_SECRET, '1minute', 1,
         'https://reminder-rekina.herokuapp.com/reminder/?key={}'.format(SECRET_KEY), fdate)
-    print(fdate)
     api_rq.get(urll)
 
 
