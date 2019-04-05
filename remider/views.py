@@ -77,11 +77,14 @@ def reminder_view(request):
 
 
 def create_trigger():
-    urll = "https://api.atrigger.com/v1/tasks/create?key={}&secret={}&timeSlice={}&count={}&tag_id=typical&url={}".format(
+    fdate = (datetime.utcnow() + timedelta(days=1)).replace(hour=16,minute=0,second=0,microsecond=0).isoformat()
+
+    urll = "https://api.atrigger.com/v1/tasks/create?key={}&secret={}&timeSlice={}&count={}&tag_id=typical&url={}&first={}".format(
         ATRIGGER_KEY, ATRIGGER_SECRET, '1minute', 1,
-        'https://reminder-rekina.herokuapp.com/reminder/?key={}'.format(SECRET_KEY))
-    print(urll)
+        'https://reminder-rekina.herokuapp.com/reminder/?key={}'.format(SECRET_KEY), fdate)
+    print(fdate)
     api_rq.get(urll)
+
 
 def file(request):
     file = open("remider/ATriggerVerify.txt", "rb")
