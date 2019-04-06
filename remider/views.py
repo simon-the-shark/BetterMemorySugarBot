@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 
 from .sms import send_message
 from infusionset_reminder.settings import SENSOR_ALERT_FREQUENCY, INFUSION_SET_ALERT_FREQUENCY, ATRIGGER_KEY, \
-    ATRIGGER_SECRET, SECRET_KEY
+    ATRIGGER_SECRET, SECRET_KEY, app_name
 
 
 def home(request):
@@ -82,7 +82,7 @@ def create_trigger():
 
     urll = "https://api.atrigger.com/v1/tasks/create?key={}&secret={}&timeSlice={}&count={}&tag_id=typical&url={}&first={}".format(
         ATRIGGER_KEY, ATRIGGER_SECRET, '1minute', 1,
-        'https://reminder-rekina.herokuapp.com/reminder/?key={}'.format(SECRET_KEY), fdate)
+        'https://{}.herokuapp.com/reminder/?key={}'.format(app_name, SECRET_KEY), fdate)
     api_rq.get(urll)
 
 

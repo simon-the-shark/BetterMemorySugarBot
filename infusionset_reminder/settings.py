@@ -117,6 +117,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+app_name = config("app_name")
+
 INFUSION_SET_ALERT_FREQUENCY = int(config("INFUSION_SET_ALERT_FREQUENCY"))
 SENSOR_ALERT_FREQUENCY = int(config("SENSOR_ALERT_FREQUENCY"))
 
