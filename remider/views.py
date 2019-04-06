@@ -55,6 +55,7 @@ def reminder_view(request):
         shours = round(sensor_time_remains.seconds / 3600)
         imicroseconds = infusion_time_remains.microseconds
         smicroseconds = sensor_time_remains.microseconds
+        text = ''
         if idays != 0 or ihours != 0 or imicroseconds != 0:
             text = ".\n.\n Zmień zestaw infuzyjny w {} dni i {} godzin.".format(idays, ihours)
         if sdays != 0 or shours != 0 or smicroseconds != 0:
