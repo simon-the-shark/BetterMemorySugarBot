@@ -6,7 +6,7 @@ import requests as api_rq
 from decouple import config
 from datetime import datetime, timedelta
 
-from .whatsapp import send_message
+from .sms import send_message
 from infusionset_reminder.settings import SENSOR_ALERT_FREQUENCY, INFUSION_SET_ALERT_FREQUENCY, ATRIGGER_KEY, \
     ATRIGGER_SECRET, SECRET_KEY
 
@@ -55,12 +55,13 @@ def reminder_view(request):
         shours = round(sensor_time_remains.seconds / 3600)
         imicroseconds = infusion_time_remains.microseconds
         smicroseconds = sensor_time_remains.microseconds
-        send_message("---------------------------------------------------------------")
         if idays != 0 or ihours != 0 or imicroseconds != 0:
-            send_message("Zmień zestaw infuzyjny w {} dni i {} godzin.".format(idays, ihours))
+            text = ".\n.\n Zmień zestaw infuzyjny w {} dni i {} godzin.".format(idays, ihours)
         if sdays != 0 or shours != 0 or smicroseconds != 0:
-            send_message("Zmień sensor CGM w {} dni i {} godzin".format(sdays, shours))
-        create_trigger()
+            text += "\n.\n Zmień sensor CGM w {} dni i {} godzin".format(sdays, shours)
+
+        send_message(text)
+        # create_trigger()
 
         return render(request, "remider/debug.html",
                       {

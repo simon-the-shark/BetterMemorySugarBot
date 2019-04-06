@@ -126,15 +126,15 @@ TWILIO_AUTH_TOKEN = config("TWILIO_AUTH_TOKEN")
 ATRIGGER_KEY = config("ATRIGGER_KEY")
 ATRIGGER_SECRET = config("ATRIGGER_SECRET")
 
-from_whatsapp_number = "whatsapp:" + config("from_whatsapp_number")
-to_whatsapp_numbers = []
+from_number = config("from_number")
+to_numbers = []
 
 i = 0
 while True:
     i += 1
     try:
-        number = config("to_whatsapp_number_" + str(i))
-        to_whatsapp_numbers.append("whatsapp:" + number)
+        number = config("to_number_" + str(i))
+        to_numbers.append(number)
     except:
         break
 
