@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponseForbidden
 from django.http import FileResponse
 
@@ -7,6 +7,7 @@ from decouple import config
 from datetime import datetime, timedelta
 
 from .sms import send_message
+from .forms import GetSecretForm
 from infusionset_reminder.settings import SENSOR_ALERT_FREQUENCY, INFUSION_SET_ALERT_FREQUENCY, ATRIGGER_KEY, \
     ATRIGGER_SECRET, SECRET_KEY, app_name
 
@@ -61,13 +62,11 @@ def reminder_view(request):
         if sdays != 0 or shours != 0 or smicroseconds != 0:
             text += "\n.\n Zmień sensor CGM w {} dni i {} godzin".format(sdays, shours)
 
-        send_message(text)
-        create_trigger()
+        # send_message(text)
+        # create_trigger()
 
         return render(request, "remider/debug.html",
                       {
-                          "value3": "infusion set",
-                          "value32": "CGM sensor",
                           "value1": idays,
                           "value12": sdays,
                           "value2": ihours,
@@ -89,3 +88,13 @@ def create_trigger():
 def file(request):
     file = open("remider/ATriggerVerify.txt", "rb")
     return FileResponse(file)
+
+def auth(request):
+    if request.method == "POST":
+        form = GetSecretForm(request.POST)
+        if form.is_valid():
+            return redirect("http://127.0.0.1:8000/reminder/?key={}".format(SECRET_KEY))
+    else:
+        form = GetSecretForm()
+
+    return render(request, "remider/auth.html", context={"form": form})

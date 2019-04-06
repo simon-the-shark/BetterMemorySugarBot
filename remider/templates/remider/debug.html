@@ -1,5 +1,23 @@
 {% extends "core/base.html" %}
 {% block content %}
-    Your {{ value3 }} should be changed in {{ value1 }} days and {{ value2 }} hours <br/>
-    Your {{ value32 }} should be changed in {{ value12 }} days and {{ value22 }} hours
+    <div class="container">
+        <div class="alert alert-primary" role="alert" style="font-size: xx-large"> Your infusion set should be changed
+            in {{ value1 }} days
+            and {{ value2 }} hours.
+        </div>
+        <div class="alert alert-success" role="alert" style="font-size: xx-large"> Your CGM sensor should be changed
+            in {{ value12 }} days
+            and {{ value22 }} hours.
+        </div>
+    </div>
+    <div class="container">
+        <div class="alert alert-primary" role="alert" style="font-size: xx-large"> Zmień zestaw infuzyjny w
+             {{ value1 }} dni
+            i {{ value2 }} godzin.
+        </div>
+        <div class="alert alert-success" role="alert" style="font-size: xx-large"> Zmień sensor CGM w
+             {{ value12 }} dni
+            i {{ value22 }} godzin.
+        </div>
+    </div>
 {% endblock %}

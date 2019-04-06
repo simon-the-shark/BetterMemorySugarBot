@@ -4,6 +4,7 @@ chardet==3.0.4
 dj-database-url==0.5.0
 Django==2.1.7
 django-apscheduler==0.3.0
+django-crispy-forms==1.7.2
 django-heroku==0.3.1
 gunicorn==19.9.0
 idna==2.8
