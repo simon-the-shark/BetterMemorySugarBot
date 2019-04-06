@@ -62,7 +62,7 @@ def reminder_view(request):
             text += "\n.\n Zmień sensor CGM w {} dni i {} godzin".format(sdays, shours)
 
         send_message(text)
-        # create_trigger()
+        create_trigger()
 
         return render(request, "remider/debug.html",
                       {
