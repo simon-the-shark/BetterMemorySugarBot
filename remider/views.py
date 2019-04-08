@@ -124,7 +124,7 @@ def auth(request):
     if request.method == "POST":
         form = GetSecretForm(request.POST)
         if form.is_valid():
-            return redirect("http://127.0.0.1:8000/menu/?key={}".format(SECRET_KEY))
+            return redirect("http://127.0.0.1:8000/menu/?key={}".format(form.cleaned_data['apisecret']))
     else:
         form = GetSecretForm()
 
@@ -132,4 +132,11 @@ def auth(request):
 
 
 def menu(request):
-    return render(request, "remider/menu.html")
+    their_key = request.GET.get("key","")
+    if their_key == SECRET_KEY:
+        return render(request, "remider/menu.html")
+    else:
+        return HttpResponseForbidden()
+
+def upload(request):
+    return HttpResponseForbidden()
