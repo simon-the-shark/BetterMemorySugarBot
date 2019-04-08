@@ -4,12 +4,13 @@ from django.http import FileResponse
 
 import requests as api_rq
 from decouple import config
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from .sms import send_message
 from .forms import GetSecretForm
 from infusionset_reminder.settings import SENSOR_ALERT_FREQUENCY, INFUSION_SET_ALERT_FREQUENCY, ATRIGGER_KEY, \
     ATRIGGER_SECRET, SECRET_KEY, app_name
+from .models import InfusionChanged, SensorChanged
 
 
 def home(request):
@@ -29,6 +30,7 @@ def reminder_view(request):
                 try:
                     if set['notes'] == 'Reservoir changed':
                         date = set['created_at']
+                        InfusionChanged.objects.create(id=1, date=date)
                         break
                 except:
                     pass
@@ -37,47 +39,75 @@ def reminder_view(request):
                 try:
                     if set['notes'] == 'Sensor changed':
                         sensor_date = set['created_at']
+                        SensorChanged.objects.create(id=1, date=sensor_date)
                         break
                 except:
                     pass
-        """calculate"""
-        infusion = timedelta(hours=INFUSION_SET_ALERT_FREQUENCY)
-        infusion_alert_date = datetime.strptime(date[:-6], "%Y-%m-%dT%H:%M:%S") + infusion
-        infusion_time_remains = infusion_alert_date - datetime.now()
+        if date is None:
+            try:
+                date = InfusionChanged.objects.get(id=1).date
+            except:
+                pass
 
-        sensor = timedelta(hours=SENSOR_ALERT_FREQUENCY)
-        sensor_alert_date = datetime.strptime(sensor_date[:-6], "%Y-%m-%dT%H:%M:%S") + sensor
-        sensor_time_remains = sensor_alert_date - datetime.now()
+        if sensor_date is None:
+            try:
+                sensor_date = SensorChanged.objects.get(id=1).date
+            except:
+                pass
 
-        """notify"""
-        idays = infusion_time_remains.days
-        ihours = round(infusion_time_remains.seconds / 3600)
-        sdays = sensor_time_remains.days
-        shours = round(sensor_time_remains.seconds / 3600)
-        imicroseconds = infusion_time_remains.microseconds
-        smicroseconds = sensor_time_remains.microseconds
-        text = ''
-        if idays != 0 or ihours != 0 or imicroseconds != 0:
-            text = ".\n.\n Zmień zestaw infuzyjny w {} dni i {} godzin.".format(idays, ihours)
-        if sdays != 0 or shours != 0 or smicroseconds != 0:
-            text += "\n.\n Zmień sensor CGM w {} dni i {} godzin".format(sdays, shours)
+        idays, ihours, sdays, shours, text = 0, 0, 0, 0, ''
+
+        try:
+            """calculate"""
+            infusion = timedelta(hours=INFUSION_SET_ALERT_FREQUENCY)
+            if type(date) == str:
+                infusion_alert_date = datetime.strptime(date[:-6], "%Y-%m-%dT%H:%M:%S") + infusion
+            else:
+                infusion_alert_date = date + infusion
+            infusion_time_remains = infusion_alert_date - datetime.utcnow()
+            """notify"""
+            idays = infusion_time_remains.days
+            ihours = round(infusion_time_remains.seconds / 3600)
+            imicroseconds = infusion_time_remains.microseconds
+            if idays != 0 or ihours != 0 or imicroseconds != 0:
+                text = ".\n.\n Zmień zestaw infuzyjny w {} dni i {} godzin.".format(idays, ihours)
+
+        except:
+            text += 'zestaw infuzyjny: nie udało się zczytać danych'
+
+        try:
+            """calculate"""
+            sensor = timedelta(hours=SENSOR_ALERT_FREQUENCY)
+            if type(sensor_date) == str:
+                sensor_alert_date = datetime.strptime(sensor_date[:-6], "%Y-%m-%dT%H:%M:%S") + sensor
+            else:
+                sensor_alert_date = sensor_date + sensor
+            sensor_time_remains = sensor_alert_date - datetime.now(timezone.utc)
+            """notify"""
+            sdays = sensor_time_remains.days
+            shours = round(sensor_time_remains.seconds / 3600)
+            smicroseconds = sensor_time_remains.microseconds
+            if sdays != 0 or shours != 0 or smicroseconds != 0:
+                text += "\n.\n Zmień sensor CGM w {} dni i {} godzin".format(sdays, shours)
+        except:
+            text += 'sensor CGM: nie udało się zczytać danych'
 
         # send_message(text)
         # create_trigger()
 
         return render(request, "remider/debug.html",
                       {
-                          "value1": idays,
-                          "value12": sdays,
-                          "value2": ihours,
-                          "value22": shours,
+                          "idays": idays,
+                          "ihours": ihours,
+                          "sdays": sdays,
+                          "shours": shours,
                       })
     else:
         return HttpResponseForbidden()
 
 
 def create_trigger():
-    fdate = (datetime.utcnow() + timedelta(days=1)).replace(hour=16,minute=0,second=0,microsecond=0).isoformat()
+    fdate = (datetime.utcnow() + timedelta(days=1)).replace(hour=16, minute=0, second=0, microsecond=0).isoformat()
 
     urll = "https://api.atrigger.com/v1/tasks/create?key={}&secret={}&timeSlice={}&count={}&tag_id=typical&url={}&first={}".format(
         ATRIGGER_KEY, ATRIGGER_SECRET, '1minute', 1,
@@ -89,6 +119,7 @@ def file(request):
     file = open("remider/ATriggerVerify.txt", "rb")
     return FileResponse(file)
 
+
 def auth(request):
     if request.method == "POST":
         form = GetSecretForm(request.POST)
@@ -99,5 +130,6 @@ def auth(request):
 
     return render(request, "remider/auth.html", context={"form": form})
 
+
 def menu(request):
-    return render(request,"remider/menu.html")
+    return render(request, "remider/menu.html")
