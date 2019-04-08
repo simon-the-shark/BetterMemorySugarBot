@@ -93,8 +93,11 @@ def auth(request):
     if request.method == "POST":
         form = GetSecretForm(request.POST)
         if form.is_valid():
-            return redirect("http://127.0.0.1:8000/reminder/?key={}".format(SECRET_KEY))
+            return redirect("http://127.0.0.1:8000/menu/?key={}".format(SECRET_KEY))
     else:
         form = GetSecretForm()
 
     return render(request, "remider/auth.html", context={"form": form})
+
+def menu(request):
+    return render(request,"remider/menu.html")
