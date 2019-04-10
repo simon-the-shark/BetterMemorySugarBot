@@ -30,6 +30,10 @@ def reminder_view(request):
                 try:
                     if set['notes'] == 'Reservoir changed':
                         date = set['created_at']
+                        try:
+                            InfusionChanged.objects.get(id=1).delete()
+                        except:
+                            pass
                         InfusionChanged.objects.create(id=1, date=date)
                         break
                 except:
@@ -39,6 +43,10 @@ def reminder_view(request):
                 try:
                     if set['notes'] == 'Sensor changed':
                         sensor_date = set['created_at']
+                        try:
+                            SensorChanged.objects.get(id=1).delete()
+                        except:
+                            pass
                         SensorChanged.objects.create(id=1, date=sensor_date)
                         break
                 except:
@@ -82,7 +90,7 @@ def reminder_view(request):
                 sensor_alert_date = datetime.strptime(sensor_date[:-6], "%Y-%m-%dT%H:%M:%S") + sensor
             else:
                 sensor_alert_date = sensor_date + sensor
-            sensor_time_remains = sensor_alert_date - datetime.now(timezone.utc)
+            sensor_time_remains = sensor_alert_date - datetime.utcnow()
             """notify"""
             sdays = sensor_time_remains.days
             shours = round(sensor_time_remains.seconds / 3600)
@@ -91,10 +99,8 @@ def reminder_view(request):
                 text += "\n.\n Zmień sensor CGM w {} dni i {} godzin".format(sdays, shours)
         except:
             text += 'sensor CGM: nie udało się zczytać danych'
-
         # send_message(text)
         # create_trigger()
-
         return render(request, "remider/debug.html",
                       {
                           "idays": idays,
@@ -132,11 +138,12 @@ def auth(request):
 
 
 def menu(request):
-    their_key = request.GET.get("key","")
+    their_key = request.GET.get("key", "")
     if their_key == SECRET_KEY:
         return render(request, "remider/menu.html")
     else:
         return HttpResponseForbidden()
+
 
 def upload(request):
     return HttpResponseForbidden()
