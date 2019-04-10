@@ -124,7 +124,8 @@ def create_trigger():
 
 
 def file(request):
-    file = open("remider/ATriggerVerify.txt", "rb")
+    file = open("staticfiles/uplouded/ATriggerVerify.txt", "rb")
+
     return FileResponse(file)
 
 
