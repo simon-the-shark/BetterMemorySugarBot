@@ -142,9 +142,13 @@ def auth(request):
 
 def menu(request):
     their_key = request.GET.get("key", "")
+    try:
+        info = request.GET.get("info", "")
+    except:
+        info = False
     if their_key == SECRET_KEY:
         return render(request, "remider/menu.html",
-                      {'urllink': 'http://{}/upload/?key={}'.format(app_name, SECRET_KEY)})
+                      {'urllink': 'http://{}/upload/?key={}'.format(app_name, SECRET_KEY),'info':info},)
     else:
         return HttpResponseForbidden()
 
@@ -159,7 +163,7 @@ def upload(request):
                 with open('staticfiles/uplouded/ATriggerVerify.txt', 'wb+') as f:
                     for chunk in file.chunks():
                         f.write(chunk)
-                return redirect("http://{}/menu/?key={}".format(app_name, SECRET_KEY))
+                return redirect("http://{}/menu/?key={}&info={}".format(app_name, SECRET_KEY, True))
         else:
             form = FileUploudForm()
         return render(request, 'remider/upload.html', {'form': form, })
