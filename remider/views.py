@@ -100,8 +100,8 @@ def reminder_view(request):
         except:
             text += 'sensor CGM: nie udało się zczytać danych'
 
-        # send_message(text)
-        # create_trigger()
+        send_message(text)
+        create_trigger()
 
         return render(request, "remider/debug.html",
                       {
@@ -133,7 +133,7 @@ def auth(request):
     if request.method == "POST":
         form = GetSecretForm(request.POST)
         if form.is_valid():
-            return redirect("http://{}/menu/?key={}".format(app_name, form.cleaned_data['apisecret']))
+            return redirect("https://{}/menu/?key={}".format(app_name, form.cleaned_data['apisecret']))
     else:
         form = GetSecretForm()
 
@@ -148,7 +148,7 @@ def menu(request):
         info = False
     if their_key == SECRET_KEY:
         return render(request, "remider/menu.html",
-                      {'urllink': 'http://{}/upload/?key={}'.format(app_name, SECRET_KEY),'info':info},)
+                      {'urllink': 'https://{}/upload/?key={}'.format(app_name, SECRET_KEY),'info':info},)
     else:
         return HttpResponseForbidden()
 
@@ -163,7 +163,7 @@ def upload(request):
                 with open('staticfiles/uplouded/ATriggerVerify.txt', 'wb+') as f:
                     for chunk in file.chunks():
                         f.write(chunk)
-                return redirect("http://{}/menu/?key={}&info={}".format(app_name, SECRET_KEY, True))
+                return redirect("https://{}/menu/?key={}&info={}".format(app_name, SECRET_KEY, True))
         else:
             form = FileUploudForm()
         return render(request, 'remider/upload.html', {'form': form, })
