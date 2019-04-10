@@ -1,4 +1,5 @@
 settings.ini
+infusionset_reminder/settings.ini
 venv/
 db.sqlite3
 *.ini
