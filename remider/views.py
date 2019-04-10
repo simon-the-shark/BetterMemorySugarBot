@@ -99,8 +99,10 @@ def reminder_view(request):
                 text += "\n.\n Zmień sensor CGM w {} dni i {} godzin".format(sdays, shours)
         except:
             text += 'sensor CGM: nie udało się zczytać danych'
-        # send_message(text)
-        # create_trigger()
+
+        send_message(text)
+        create_trigger()
+
         return render(request, "remider/debug.html",
                       {
                           "idays": idays,
