@@ -133,7 +133,7 @@ def auth(request):
     if request.method == "POST":
         form = GetSecretForm(request.POST)
         if form.is_valid():
-            return redirect("https://{}/menu/?key={}".format(app_name, form.cleaned_data['apisecret']))
+            return redirect("https://{}.herokuapp.com/menu/?key={}".format(app_name, form.cleaned_data['apisecret']))
     else:
         form = GetSecretForm()
 
@@ -148,7 +148,7 @@ def menu(request):
         info = False
     if their_key == SECRET_KEY:
         return render(request, "remider/menu.html",
-                      {'urllink': 'https://{}/upload/?key={}'.format(app_name, SECRET_KEY),'info':info},)
+                      {'urllink': 'https://{}.herokuapp.com/upload/?key={}'.format(app_name, SECRET_KEY),'info':info},)
     else:
         return HttpResponseForbidden()
 
@@ -163,7 +163,7 @@ def upload(request):
                 with open('staticfiles/uplouded/ATriggerVerify.txt', 'wb+') as f:
                     for chunk in file.chunks():
                         f.write(chunk)
-                return redirect("https://{}/menu/?key={}&info={}".format(app_name, SECRET_KEY, True))
+                return redirect("https://{}.herokuapp.com/menu/?key={}&info={}".format(app_name, SECRET_KEY, True))
         else:
             form = FileUploudForm()
         return render(request, 'remider/upload.html', {'form': form, })
