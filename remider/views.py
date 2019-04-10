@@ -4,10 +4,10 @@ from django.http import FileResponse
 
 import requests as api_rq
 from decouple import config
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 
 from .sms import send_message
-from .forms import GetSecretForm
+from .forms import GetSecretForm, FileUploudForm
 from infusionset_reminder.settings import SENSOR_ALERT_FREQUENCY, INFUSION_SET_ALERT_FREQUENCY, ATRIGGER_KEY, \
     ATRIGGER_SECRET, SECRET_KEY, app_name
 from .models import InfusionChanged, SensorChanged
@@ -133,7 +133,7 @@ def auth(request):
     if request.method == "POST":
         form = GetSecretForm(request.POST)
         if form.is_valid():
-            return redirect("http://127.0.0.1:8000/menu/?key={}".format(form.cleaned_data['apisecret']))
+            return redirect("http://{}/menu/?key={}".format(app_name, form.cleaned_data['apisecret']))
     else:
         form = GetSecretForm()
 
@@ -143,10 +143,25 @@ def auth(request):
 def menu(request):
     their_key = request.GET.get("key", "")
     if their_key == SECRET_KEY:
-        return render(request, "remider/menu.html")
+        return render(request, "remider/menu.html",
+                      {'urllink': 'http://{}/upload/?key={}'.format(app_name, SECRET_KEY)})
     else:
         return HttpResponseForbidden()
 
 
 def upload(request):
-    return HttpResponseForbidden()
+    their_key = request.GET.get('key', "")
+    if their_key == SECRET_KEY:
+        if request.method == 'POST':
+            form = FileUploudForm(request.POST, request.FILES)
+            if form.is_valid():
+                file = request.FILES['file']
+                with open('staticfiles/uplouded/ATriggerVerify.txt', 'wb+') as f:
+                    for chunk in file.chunks():
+                        f.write(chunk)
+                return redirect("http://{}/menu/?key={}".format(app_name, SECRET_KEY))
+        else:
+            form = FileUploudForm()
+        return render(request, 'remider/upload.html', {'form': form, })
+    else:
+        return HttpResponseForbidden()

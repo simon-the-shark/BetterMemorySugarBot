@@ -6,6 +6,6 @@ urlpatterns = [
     path("ATriggerVerify.txt",file),
     path("auth/", auth, name='get_secret'),
     path("menu/", menu, name='menu'),
-    path("upload", upload, name="upload")
+    path("upload/", upload, name="upload")
 
 ]
