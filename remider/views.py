@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseRedirect
 from django.http import FileResponse
 
 import requests as api_rq
@@ -12,6 +12,7 @@ from infusionset_reminder.settings import SENSOR_ALERT_FREQUENCY, INFUSION_SET_A
     ATRIGGER_SECRET, SECRET_KEY, app_name, nightscout_link
 from .models import InfusionChanged, SensorChanged
 from .decorators import secret_key_required
+from .forms_management import create_changeenvvarform, save_changeenvvarform
 
 
 def home(request):
@@ -144,9 +145,42 @@ def menu(request):
         info = request.GET.get("info", "")
     except:
         info = False
+    info2 = False
+    forms_list = []
+
+    if request.method == "POST":
+        if 'infusion_freq_button' in request.POST:
+            infusion_freq_form, forms_list = create_changeenvvarform('infusion_freq_button',
+                                                                     "INFUSION_SET_ALERT_FREQUENCY", forms_list,
+                                                                     request.POST)
+            if infusion_freq_form.is_valid():
+                infusion_freq_form, forms_list, info2 = save_changeenvvarform(infusion_freq_form,
+                                                                              'infusion_freq_button',
+                                                                              "INFUSION_SET_ALERT_FREQUENCY",
+                                                                              forms_list)
+        if 'sensor_freq_button' in request.POST:
+            sensor_freq_form, forms_list = create_changeenvvarform('sensor_freq_button', "SENSOR_ALERT_FREQUENCY",
+                                                                   forms_list, request.POST)
+            if sensor_freq_form.is_valid():
+                sensor_freq_form, forms_list, info2 = save_changeenvvarform(sensor_freq_form, 'sensor_freq_button',
+                                                                            "SENSOR_ALERT_FREQUENCY", forms_list)
+        if 'ns_link_button' in request.POST:
+            ns_form, forms_list = create_changeenvvarform('ns_link_button', "NIGHTSCOUT_LINK",
+                                                          forms_list, request.POST)
+            if ns_form.is_valid():
+                ns_form, forms_list, info2 = save_changeenvvarform(ns_form, 'ns_link_button',
+                                                                   "NIGHTSCOUT_LINK", forms_list)
+    else:
+        infusion_freq_form, forms_list = create_changeenvvarform('infusion_freq_button', "INFUSION_SET_ALERT_FREQUENCY",
+                                                                 forms_list)
+        sensor_freq_form, forms_list = create_changeenvvarform('sensor_freq_button', "SENSOR_ALERT_FREQUENCY",
+                                                               forms_list)
+        ns_form, forms_list = create_changeenvvarform('ns_link_button', "NIGHTSCOUT_LINK",
+                                                      forms_list)
 
     return render(request, "remider/menu.html",
-                  {'urllink': 'http://{}/upload/?key={}'.format(app_name, SECRET_KEY), 'info': info, }, )
+                  {'urllink': 'http://{}/upload/?key={}'.format(app_name, SECRET_KEY), 'info': info,
+                   'forms_list': forms_list, "info2": info2, }, )
 
 
 @secret_key_required
