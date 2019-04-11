@@ -81,7 +81,7 @@ def reminder_view(request):
                 text = ".\n.\n Zmień zestaw infuzyjny w {} dni i {} godzin.".format(idays, ihours)
 
         except:
-            text += 'zestaw infuzyjny: nie udało się zczytać danych'
+            text += '\n.\nzestaw infuzyjny: nie udało się zczytać danych'
 
         try:
             """calculate"""
@@ -98,7 +98,7 @@ def reminder_view(request):
             if sdays != 0 or shours != 0 or smicroseconds != 0:
                 text += "\n.\n Zmień sensor CGM w {} dni i {} godzin".format(sdays, shours)
         except:
-            text += 'sensor CGM: nie udało się zczytać danych'
+            text += '\n.\nsensor CGM: nie udało się zczytać danych'
 
         send_message(text)
         create_trigger()
