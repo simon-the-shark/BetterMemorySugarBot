@@ -151,48 +151,48 @@ def menu(request):
     if request.method == "POST":
         if 'infusion_freq_button' in request.POST:
             infusion_freq_form, forms_list = create_changeenvvarform('infusion_freq_button',
-                                                                     "INFUSION_SET_ALERT_FREQUENCY", forms_list,
+                                                                     "INFUSION_SET_ALERT_FREQUENCY", forms_list, INFUSION_SET_ALERT_FREQUENCY,
                                                                      request.POST)
             if infusion_freq_form.is_valid():
                 infusion_freq_form, forms_list, info2 = save_changeenvvarform(infusion_freq_form,
                                                                               'infusion_freq_button',
                                                                               "INFUSION_SET_ALERT_FREQUENCY",
-                                                                              forms_list)
+                                                                              forms_list,INFUSION_SET_ALERT_FREQUENCY,)
 
             sensor_freq_form, forms_list = create_changeenvvarform('sensor_freq_button', "SENSOR_ALERT_FREQUENCY",
-                                                                   forms_list)
+                                                                   forms_list,SENSOR_ALERT_FREQUENCY,)
             ns_form, forms_list = create_changeenvvarform('ns_link_button', "NIGHTSCOUT_LINK",
-                                                          forms_list)
+                                                          forms_list,nightscout_link)
         if 'sensor_freq_button' in request.POST:
             sensor_freq_form, forms_list = create_changeenvvarform('sensor_freq_button', "SENSOR_ALERT_FREQUENCY",
-                                                                   forms_list, request.POST)
+                                                                   forms_list, SENSOR_ALERT_FREQUENCY,request.POST)
             if sensor_freq_form.is_valid():
                 sensor_freq_form, forms_list, info2 = save_changeenvvarform(sensor_freq_form, 'sensor_freq_button',
-                                                                            "SENSOR_ALERT_FREQUENCY", forms_list)
+                                                                            "SENSOR_ALERT_FREQUENCY", forms_list,SENSOR_ALERT_FREQUENCY,)
 
             infusion_freq_form, forms_list = create_changeenvvarform('infusion_freq_button',
                                                                      "INFUSION_SET_ALERT_FREQUENCY",
-                                                                     forms_list)
+                                                                     forms_list,INFUSION_SET_ALERT_FREQUENCY,)
             ns_form, forms_list = create_changeenvvarform('ns_link_button', "NIGHTSCOUT_LINK",
-                                                          forms_list)
+                                                          forms_list,nightscout_link,)
         if 'ns_link_button' in request.POST:
             ns_form, forms_list = create_changeenvvarform('ns_link_button', "NIGHTSCOUT_LINK",
-                                                          forms_list, request.POST)
+                                                          forms_list, nightscout_link,request.POST)
             if ns_form.is_valid():
                 ns_form, forms_list, info2 = save_changeenvvarform(ns_form, 'ns_link_button',
-                                                                   "NIGHTSCOUT_LINK", forms_list)
+                                                                   "NIGHTSCOUT_LINK", forms_list,nightscout_link,)
             infusion_freq_form, forms_list = create_changeenvvarform('infusion_freq_button',
                                                                      "INFUSION_SET_ALERT_FREQUENCY",
-                                                                     forms_list)
+                                                                     forms_list,INFUSION_SET_ALERT_FREQUENCY,)
             sensor_freq_form, forms_list = create_changeenvvarform('sensor_freq_button', "SENSOR_ALERT_FREQUENCY",
-                                                                   forms_list)
+                                                                   forms_list,SENSOR_ALERT_FREQUENCY,)
     else:
         infusion_freq_form, forms_list = create_changeenvvarform('infusion_freq_button', "INFUSION_SET_ALERT_FREQUENCY",
-                                                                 forms_list)
+                                                                 forms_list,INFUSION_SET_ALERT_FREQUENCY,)
         sensor_freq_form, forms_list = create_changeenvvarform('sensor_freq_button', "SENSOR_ALERT_FREQUENCY",
-                                                               forms_list)
+                                                               forms_list,SENSOR_ALERT_FREQUENCY,)
         ns_form, forms_list = create_changeenvvarform('ns_link_button', "NIGHTSCOUT_LINK",
-                                                      forms_list)
+                                                      forms_list,nightscout_link)
 
     return render(request, "remider/menu.html",
                   {'urllink': 'http://{}/upload/?key={}'.format(app_name, SECRET_KEY), 'info': info,
