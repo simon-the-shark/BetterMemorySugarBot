@@ -130,6 +130,8 @@ ATRIGGER_KEY = config("ATRIGGER_KEY")
 ATRIGGER_SECRET = config("ATRIGGER_SECRET")
 
 from_number = config("from_number")
+nightscout_link = config("NIGHTSCOUT_LINK")
+
 to_numbers = []
 
 i = 0
