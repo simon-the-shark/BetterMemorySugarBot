@@ -1,1 +1,0 @@
-heroku config:set INFUSION_SET_ALERT_FREQUENCY=73
