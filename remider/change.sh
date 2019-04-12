@@ -1,2 +1,1 @@
-heroku config:set $1=$2
-exit 0
+heroku config:set INFUSION_SET_ALERT_FREQUENCY=73
