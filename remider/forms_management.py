@@ -14,7 +14,7 @@ def create_changeenvvarform(button_name, label, forms_list, default, post_data=N
 
 
 def save_changeenvvarform(form, button_name, label, forms_list, default):
-    subprocess.run(shlex.split('config:set {}={}'.format(label, form.cleaned_data['new_value'])))
+    subprocess.run(shlex.split('export {}={}'.format(label, form.cleaned_data['new_value'])))
     forms_list.remove(form)
     info2 = (True, label)
     form, forms_list = create_changeenvvarform(button_name, label, forms_list, default)
