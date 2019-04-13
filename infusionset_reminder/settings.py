@@ -137,6 +137,7 @@ nightscout_link = config("NIGHTSCOUT_LINK")
 
 to_numbers = []
 
+
 i = 0
 while True:
     i += 1
