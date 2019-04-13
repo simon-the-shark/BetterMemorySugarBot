@@ -1,4 +1,4 @@
-import requests, json
+import requests, json, sys
 from twilio.rest import Client
 
 from infusionset_reminder.settings import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, from_number, \
@@ -15,6 +15,8 @@ def send_message(body):
 
 
 def change_config_var(label, new_value):
+    print(husername+":"+"hpassword")
+    sys.stdout.flush()
     headers = {'Content-Type': 'application/json',
                'Accept': 'application/vnd.heroku+json; version=3',
                "Authorization": "Basic {}:{}".format(husername, hpassword)}
