@@ -118,6 +118,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+husername = config("heroku_username")
+hpassword = config("heroku_password")
+token = config("heroku_token")
 app_name = config("app_name")
 
 INFUSION_SET_ALERT_FREQUENCY = int(config("INFUSION_SET_ALERT_FREQUENCY"))
