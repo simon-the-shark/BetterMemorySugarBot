@@ -18,5 +18,6 @@ def change_config_var(label, new_value):
     headers = {'Content-Type': 'application/json',
                'Accept': 'application/vnd.heroku+json; version=3', }
     data = {label: new_value}
-    requests.patch('https://api.heroku.com/apps/reminder-rekina/config-vars', headers=headers,
+    r = requests.patch('https://api.heroku.com/apps/reminder-rekina/config-vars', headers=headers,
                    data=json.dumps(data))
+    return r.json()
