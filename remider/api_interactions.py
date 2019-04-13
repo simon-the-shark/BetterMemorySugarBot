@@ -2,7 +2,7 @@ import requests, json, sys, base64
 from twilio.rest import Client
 
 from infusionset_reminder.settings import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, from_number, \
-    to_numbers, husername, hpassword,
+    to_numbers, husername, hpassword
 
 
 # token
