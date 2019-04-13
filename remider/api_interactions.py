@@ -24,9 +24,9 @@ def change_config_var(label, new_value):
 
     r = requests.patch('https://api.heroku.com/apps/reminder-rekina/config-vars', headers=headers,
                        data=json.dumps(data))
-    if r.status_code == '401':
-        headers["Authorization"] = "Bearer {}".format(token)
-        r = requests.patch('https://api.heroku.com/apps/reminder-rekina/config-vars', headers=headers,
-                           data=json.dumps(data))
+    # if r.status_code == '401':
+    #     headers["Authorization"] = "Bearer {}".format(token)
+    #     r = requests.patch('https://api.heroku.com/apps/reminder-rekina/config-vars', headers=headers,
+    #                        data=json.dumps(data))
 
-    return r.text
+    return r.text, r.status_code, headers["Authorization"]

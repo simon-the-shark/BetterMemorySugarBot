@@ -120,7 +120,7 @@ STATIC_URL = '/static/'
 
 husername = config("heroku_username", default="")
 hpassword = config("heroku_password", default="")
-token = config("heroku_token", default="")
+# token = config("heroku_token", default="")
 app_name = config("app_name")
 
 INFUSION_SET_ALERT_FREQUENCY = int(config("INFUSION_SET_ALERT_FREQUENCY"))
