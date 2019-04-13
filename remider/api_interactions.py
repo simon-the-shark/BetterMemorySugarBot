@@ -1,4 +1,4 @@
-import requests, json, sys
+import requests, json, sys, base64
 from twilio.rest import Client
 
 from infusionset_reminder.settings import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, from_number, \
@@ -19,7 +19,7 @@ def change_config_var(label, new_value):
     sys.stdout.flush()
     headers = {'Content-Type': 'application/json',
                'Accept': 'application/vnd.heroku+json; version=3',
-               "Authorization": "Basic {}:{}".format(husername, hpassword)}
+               "Authorization": "Basic {}:{}".format(base64.b64encode(husername), hpassword)}
     data = {label: new_value}
 
     r = requests.patch('https://api.heroku.com/apps/reminder-rekina/config-vars', headers=headers,
