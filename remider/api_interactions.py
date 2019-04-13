@@ -22,7 +22,7 @@ def change_config_var(label, new_value):
     sys.stdout.flush()
     headers = {'Content-Type': 'application/json',
                'Accept': 'application/vnd.heroku+json; version=3',
-               "Authorization": "Basic {}:{}".format(base64.b64encode(husername.encode()), hpassword)}
+               "Authorization": "Basic {}:{}".format(str(base64.b64encode(husername.encode())), hpassword)}
     data = {label: new_value}
 
     r = requests.patch('https://api.heroku.com/apps/reminder-rekina/config-vars', headers=headers,
