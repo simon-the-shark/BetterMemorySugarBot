@@ -118,10 +118,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-husername = config("heroku_username", default="")
+husername = config("heroku_login", default="")
 hpassword = config("heroku_password", default="")
-# token = config("heroku_token", default="")
-app_name = config("app_name")
+token = config("heroku_token", default="")
+# app_name = config("app_name")
 
 INFUSION_SET_ALERT_FREQUENCY = int(config("INFUSION_SET_ALERT_FREQUENCY"))
 SENSOR_ALERT_FREQUENCY = int(config("SENSOR_ALERT_FREQUENCY"))
