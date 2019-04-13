@@ -4,7 +4,7 @@ from django.http import FileResponse
 import requests as api_rq
 from datetime import datetime, timedelta
 
-from .sms import send_message
+from .api_interactions import send_message
 from .forms import GetSecretForm, FileUploudForm
 from infusionset_reminder.settings import SENSOR_ALERT_FREQUENCY, INFUSION_SET_ALERT_FREQUENCY, ATRIGGER_KEY, \
     ATRIGGER_SECRET, SECRET_KEY, app_name, nightscout_link
