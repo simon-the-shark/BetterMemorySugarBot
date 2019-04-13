@@ -27,4 +27,4 @@ def change_config_var(label, new_value):
         r = requests.patch('https://api.heroku.com/apps/reminder-rekina/config-vars', headers=headers,
                            data=json.dumps(data))
 
-    return r.json()
+    return r.text
