@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import FileResponse
-
+import sys
 import requests as api_rq
 from datetime import datetime, timedelta, timezone
 
@@ -357,6 +357,9 @@ def manage_ph_numbers(request):
             button_name = label + "_button"
 
             if button_name in request.POST:
+                print(to_numbers[:i])
+                print(to_numbers[i+1:])
+                sys.stdout.flush()
                 from_number_form, forms_list = create_changeenvvarform('from_number_button', "from_number",forms_list, from_number)
 
                 for j, number2 in enumerate(to_numbers[:i]):
