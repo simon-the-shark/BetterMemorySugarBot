@@ -118,8 +118,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-husername = config("heroku_login", default="")
-hpassword = config("heroku_password", default="")
 token = config("heroku_token", default="")
 app_name = config("app_name")
 
