@@ -2,10 +2,7 @@ import requests, json, sys, base64
 from twilio.rest import Client
 
 from infusionset_reminder.settings import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, from_number, \
-    to_numbers, husername, hpassword
-
-
-# token
+    to_numbers, husername, hpassword, token
 
 
 def send_message(body):
@@ -18,18 +15,19 @@ def send_message(body):
 
 
 def change_config_var(label, new_value):
-    print(husername + ":" + "hpassword")
-    sys.stdout.flush()
+    # print(husername + ":" + "hpassword")
+    # sys.stdout.flush()
     headers = {'Content-Type': 'application/json',
-               'Accept': 'application/vnd.heroku+json; version=3',
-               "Authorization": "Basic {}:{}".format(husername, base64.b64encode(hpassword.encode()).decode())}
+               'Accept': 'application/vnd.heroku+json; version=3',}
+               # "Authorization": "Basic {}:{}".format(husername, base64.b64encode(hpassword.encode()).decode())}
     data = {label: new_value}
 
-    r = requests.patch('https://api.heroku.com/apps/reminder-rekina/config-vars', headers=headers,
-                       data=json.dumps(data))
+    # r = requests.patch('https://api.heroku.com/apps/reminder-rekina/config-vars', headers=headers,
+    #                    data=json.dumps(data))
     # if r.status_code == '401':
-    #     headers["Authorization"] = "Bearer {}".format(token)
-    #     r = requests.patch('https://api.heroku.com/apps/reminder-rekina/config-vars', headers=headers,
-    #                        data=json.dumps(data))
+    if True:
+        headers["Authorization"] = "Bearer {}".format(token)
+        r = requests.patch('https://api.heroku.com/apps/reminder-rekina/config-vars', headers=headers,
+                           data=json.dumps(data))
 
     return r.text, r.status_code, headers["Authorization"]
