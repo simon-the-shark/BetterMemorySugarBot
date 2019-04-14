@@ -156,8 +156,7 @@ def menu(request):
                 infusion_freq_form, forms_list, info2 = save_changeenvvarform(infusion_freq_form,
                                                                               'infusion_freq_button',
                                                                               "INFUSION_SET_ALERT_FREQUENCY",
-                                                                              forms_list,
-                                                                              INFUSION_SET_ALERT_FREQUENCY, )
+                                                                              forms_list)
 
             sensor_freq_form, forms_list = create_changeenvvarform('sensor_freq_button', "SENSOR_ALERT_FREQUENCY",
                                                                    forms_list, SENSOR_ALERT_FREQUENCY, )
@@ -168,8 +167,7 @@ def menu(request):
                                                                    forms_list, SENSOR_ALERT_FREQUENCY, request.POST)
             if sensor_freq_form.is_valid():
                 sensor_freq_form, forms_list, info2 = save_changeenvvarform(sensor_freq_form, 'sensor_freq_button',
-                                                                            "SENSOR_ALERT_FREQUENCY", forms_list,
-                                                                            SENSOR_ALERT_FREQUENCY, )
+                                                                            "SENSOR_ALERT_FREQUENCY", forms_list)
 
             infusion_freq_form, forms_list = create_changeenvvarform('infusion_freq_button',
                                                                      "INFUSION_SET_ALERT_FREQUENCY",
@@ -181,7 +179,7 @@ def menu(request):
                                                           forms_list, nightscout_link, request.POST)
             if ns_form.is_valid():
                 ns_form, forms_list, info2 = save_changeenvvarform(ns_form, 'ns_link_button',
-                                                                   "NIGHTSCOUT_LINK", forms_list, nightscout_link, )
+                                                                   "NIGHTSCOUT_LINK", forms_list)
             infusion_freq_form, forms_list = create_changeenvvarform('infusion_freq_button',
                                                                      "INFUSION_SET_ALERT_FREQUENCY",
                                                                      forms_list, INFUSION_SET_ALERT_FREQUENCY, )

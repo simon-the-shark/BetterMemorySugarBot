@@ -10,11 +10,12 @@ def create_changeenvvarform(button_name, label, forms_list, default, post_data=N
     return form, forms_list
 
 
-def save_changeenvvarform(form, button_name, label, forms_list, default):
-    print(change_config_var(label, form.cleaned_data["new_value"]))
+def save_changeenvvarform(form, button_name, label, forms_list):
+    var = form.cleaned_data["new_value"]
+    change_config_var(label, var)
     sys.stdout.flush()
     forms_list.remove(form)
     info2 = (True, label)
-    form, forms_list = create_changeenvvarform(button_name, label, forms_list, default)
+    form, forms_list = create_changeenvvarform(button_name, label, forms_list, var)
 
     return form, forms_list, info2
