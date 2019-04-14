@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import FileResponse
 
 import requests as api_rq
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from .api_interactions import send_message
 from .forms import GetSecretForm, FileUploudForm
@@ -86,11 +86,14 @@ def reminder_view(request):
     try:
         """calculate"""
         sensor = timedelta(hours=SENSOR_ALERT_FREQUENCY)
+        print(sensor_date.tzinfo)
         if type(sensor_date) == str:
             sensor_alert_date = datetime.strptime(sensor_date[:-6], "%Y-%m-%dT%H:%M:%S") + sensor
+            sensor_time_remains = sensor_alert_date - datetime.utcnow()
         else:
             sensor_alert_date = sensor_date + sensor
-        sensor_time_remains = sensor_alert_date - datetime.utcnow()
+            sensor_time_remains = sensor_alert_date - datetime.now(timezone.utc)
+
         """notify"""
         sdays = sensor_time_remains.days
         shours = round(sensor_time_remains.seconds / 3600)
