@@ -1,6 +1,5 @@
 from .forms import ChangeEnvVariableForm
 from .api_interactions import change_config_var
-import sys
 def create_changeenvvarform(button_name, label, forms_list, default, post_data=None):
     form = ChangeEnvVariableForm(post_data)
     form.button_name = button_name
@@ -13,7 +12,6 @@ def create_changeenvvarform(button_name, label, forms_list, default, post_data=N
 def save_changeenvvarform(form, button_name, label, forms_list):
     var = form.cleaned_data["new_value"]
     change_config_var(label, var)
-    sys.stdout.flush()
     forms_list.remove(form)
     info2 = (True, label)
     form, forms_list = create_changeenvvarform(button_name, label, forms_list, var)
