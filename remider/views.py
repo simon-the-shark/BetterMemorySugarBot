@@ -359,6 +359,7 @@ def manage_ph_numbers(request):
             if button_name in request.POST:
                 print(to_numbers[:i])
                 print(to_numbers[i+1:])
+                print(i)
                 sys.stdout.flush()
                 from_number_form, forms_list = create_changeenvvarform('from_number_button', "from_number",forms_list, from_number)
 
