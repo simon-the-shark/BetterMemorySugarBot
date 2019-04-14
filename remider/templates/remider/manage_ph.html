@@ -1,0 +1,55 @@
+{% extends "core/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+    {% if info.0 %}
+        <div class="container" style="margin-top: 0.3%">
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>succesfully changed {{ info.1 }}</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">X</span>
+                </button>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="jumbotron jumbotron-fluid">
+        <div align="center">
+            <h1 class="display-5"> MANAGE PHONE NUMBERS</h1>
+        </div>
+
+        <div class="container">
+            {% for form in forms_list|slice:"1" %}
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-8 align-self-end">
+                            {{ form|crispy }}
+                        </div>
+                        <div class="col-4" style="margin-top: 3.3%">
+                            <button type="submit" class="btn btn-primary" name="{{ form.button_name }}">CHANGE</button>
+                        </div>
+                    </div>
+                </form>
+                <hr class="my-5">
+            {% endfor %}
+
+            {% for form in forms_list|slice:"1:" %}
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-8 align-self-end">
+                            {{ form|crispy }}
+                        </div>
+                        <div class="col-4" style="margin-top: 3.3%">
+                            <button type="submit" class="btn btn-primary" name="{{ form.button_name }}">CHANGE</button>
+                        </div>
+                    </div>
+                </form>
+            {% endfor %}
+
+
+            <div/>
+            <div/>
+{% endblock %}
