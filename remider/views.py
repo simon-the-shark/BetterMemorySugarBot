@@ -7,7 +7,8 @@ from datetime import datetime, timedelta
 from .api_interactions import send_message
 from .forms import GetSecretForm, FileUploudForm
 from infusionset_reminder.settings import SENSOR_ALERT_FREQUENCY, INFUSION_SET_ALERT_FREQUENCY, ATRIGGER_KEY, \
-    ATRIGGER_SECRET, SECRET_KEY, app_name, nightscout_link, TWILIO_AUTH_TOKEN, TWILIO_ACCOUNT_SID
+    ATRIGGER_SECRET, SECRET_KEY, app_name, nightscout_link, TWILIO_AUTH_TOKEN, TWILIO_ACCOUNT_SID, from_number, \
+    to_numbers
 from .models import InfusionChanged, SensorChanged
 from .decorators import secret_key_required
 from .forms_management import create_changeenvvarform, save_changeenvvarform
@@ -166,7 +167,6 @@ def menu(request):
                                                                     forms_list, ATRIGGER_KEY)
             atrigger_secret_form, forms_list = create_changeenvvarform('atrigger_secret_button', "ATRIGGER_SECRET",
                                                                        forms_list, ATRIGGER_SECRET)
-
         if 'infusion_freq_button' in request.POST:
             ns_form, forms_list = create_changeenvvarform('ns_link_button', "NIGHTSCOUT_LINK",
                                                           forms_list, nightscout_link)
@@ -295,7 +295,6 @@ def menu(request):
                 atrigger_secret_form, forms_list, info2 = save_changeenvvarform(atrigger_secret_form,
                                                                                 'atrigger_key_button',
                                                                                 "ATRIGGER_SECRET", forms_list)
-
     else:
         ns_form, forms_list = create_changeenvvarform('ns_link_button', "NIGHTSCOUT_LINK",
                                                       forms_list, nightscout_link)
@@ -314,7 +313,8 @@ def menu(request):
 
     return render(request, "remider/menu.html",
                   {'urllink': 'https://{}.herokuapp.com/upload/?key={}'.format(app_name, SECRET_KEY), 'info': info,
-                   'forms_list': forms_list, "info2": info2, }, )
+                   'forms_list': forms_list, "info2": info2,
+                   "urllink2": "https://{}.herokuapp.com/phonenumbers/?key={}".format(app_name, SECRET_KEY)}, )
 
 
 @secret_key_required
@@ -330,3 +330,52 @@ def upload(request):
     else:
         form = FileUploudForm()
     return render(request, 'remider/upload.html', {'form': form, })
+
+
+@secret_key_required
+def manage_ph_numbers(request):
+    forms_list = []
+    info = False
+    if request.method == "POST":
+        if 'from_number_button' in request.POST:
+            from_number_form, forms_list = create_changeenvvarform('from_number_button', "from_number", forms_list,
+                                                                   from_number,
+                                                                   request.POST)
+            if from_number_form.is_valid():
+                from_number_form, forms_list, info = save_changeenvvarform(from_number_form, 'from_number_button',
+                                                                           "from_number", forms_list)
+            for i, number in enumerate(to_numbers):
+                label = "to_number_" + str(i)
+                button_name = label + "_button"
+                form, forms_list = create_changeenvvarform(button_name, label, forms_list, number)
+
+        for i, number in enumerate(to_numbers):
+            label = "to_number_" + str(i)
+            button_name = label + "_button"
+
+            if button_name in request.POST:
+                from_number_form, forms_list = create_changeenvvarform('from_number_button', "from_number",
+                                                                       forms_list, from_number)
+
+                for j, number2 in enumerate(to_numbers[:i]):
+                    label2 = "to_number_" + str(j)
+                    button_name2 = label2 + "_button"
+                    form, forms_list = create_changeenvvarform(button_name2, label2, forms_list, number2)
+
+                form, forms_list = create_changeenvvarform(button_name, label, forms_list, number, request.POST)
+                if form.is_valid():
+                    form, forms_list, info = save_changeenvvarform(form, button_name, label, forms_list)
+
+                for x, number3 in enumerate(to_numbers[i+1:]):
+                    label3 = "to_number_" + str(x)
+                    button_name3 = label3 + "_button"
+                    form, forms_list = create_changeenvvarform(button_name3, label3, forms_list, number3)
+    else:
+        from_number_form, forms_list = create_changeenvvarform('from_number_button', "from_number",
+                                                               forms_list, from_number)
+        for i, number in enumerate(to_numbers):
+            label = "to_number_" + str(i)
+            button_name = label + "_button"
+            form, forms_list = create_changeenvvarform(button_name, label, forms_list, number)
+
+    return render(request, "remider/manage_ph.html", {'forms_list': forms_list, "info": info, })
