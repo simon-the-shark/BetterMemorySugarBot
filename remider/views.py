@@ -359,15 +359,30 @@ def manage_ph_numbers(request):
             if button_name in request.POST:
                 from_number_form, forms_list = create_changeenvvarform('from_number_button', "from_number",forms_list, from_number)
 
-                for j, number2 in enumerate(to_numbers):
-                    if j == i:
-                        form, forms_list = create_changeenvvarform(button_name, label, forms_list, number, request.POST)
-                        if form.is_valid():
-                            form, forms_list, info = save_changeenvvarform(form, button_name, label, forms_list)
-                    else:
-                        label2 = "to_number_" + str(j)
-                        button_name2 = label2 + "_button"
-                        form2, forms_list = create_changeenvvarform(button_name2, label2, forms_list, number2)
+                for j, number2 in enumerate(to_numbers[:i]):
+                    label2 = "to_number_" + str(j)
+                    button_name2 = label2 + "_button"
+                    form2, forms_list = create_changeenvvarform(button_name2, label2, forms_list, number2)
+
+                form, forms_list = create_changeenvvarform(button_name, label, forms_list, number, request.POST)
+                if form.is_valid():
+                    form, forms_list, info = save_changeenvvarform(form, button_name, label, forms_list)
+
+                for j,number2 in enumerate(to_numbers[i+1:]):
+                    label2 = "to_number_" + str(j)
+                    button_name2 = label2 + "_button"
+                    form2, forms_list = create_changeenvvarform(button_name2, label2, forms_list, number2)
+
+
+                # for j, number2 in enumerate(to_numbers):
+                #     if j == i:
+                #         form, forms_list = create_changeenvvarform(button_name, label, forms_list, number, request.POST)
+                #         if form.is_valid():
+                #             form, forms_list, info = save_changeenvvarform(form, button_name, label, forms_list)
+                #     else:
+                #         label2 = "to_number_" + str(j)
+                #         button_name2 = label2 + "_button"
+                #         form2, forms_list = create_changeenvvarform(button_name2, label2, forms_list, number2)
     else:
         from_number_form, forms_list = create_changeenvvarform('from_number_button', "from_number",
                                                                forms_list, from_number)
