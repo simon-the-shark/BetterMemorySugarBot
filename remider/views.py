@@ -86,7 +86,6 @@ def reminder_view(request):
     try:
         """calculate"""
         sensor = timedelta(hours=SENSOR_ALERT_FREQUENCY)
-        print(sensor_date.tzinfo)
         if type(sensor_date) == str:
             sensor_alert_date = datetime.strptime(sensor_date[:-6], "%Y-%m-%dT%H:%M:%S") + sensor
             sensor_time_remains = sensor_alert_date - datetime.utcnow()
