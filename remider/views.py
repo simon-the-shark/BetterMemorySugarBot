@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
 from django.http import FileResponse
-import sys
 import requests as api_rq
 from datetime import datetime, timedelta, timezone
 
@@ -12,10 +11,6 @@ from infusionset_reminder.settings import SENSOR_ALERT_FREQUENCY, INFUSION_SET_A
 from .models import InfusionChanged, SensorChanged
 from .decorators import secret_key_required
 from .forms_management import create_changeenvvarform, save_changeenvvarform
-
-
-def home(request):
-    return render(request, "remider/home.html")
 
 
 @secret_key_required
@@ -356,10 +351,6 @@ def manage_ph_numbers(request):
             button_name = label + "_button"
 
             if button_name in request.POST:
-                print(to_numbers[:i])
-                print(to_numbers[i+1:])
-                print(i)
-                sys.stdout.flush()
                 from_number_form, forms_list = create_changeenvvarform('from_number_button', "from_number",forms_list, from_number)
 
                 for j, number2 in enumerate(to_numbers[:i]):
