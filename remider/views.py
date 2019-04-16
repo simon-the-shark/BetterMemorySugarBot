@@ -342,7 +342,8 @@ class ManagePhoneNumbersView(TemplateView):
     def post(self, request, *args, **kwargs):
         self.forms_list = []
         post_data = request.POST
-        from_number_form = self.create_changeenvvarform('from_number_button', "NUMBER OF SENDER", from_number, post_data)
+        from_number_form = self.create_changeenvvarform('from_number_button', "NUMBER OF SENDER", from_number,
+                                                        post_data)
 
         for i, number in enumerate(to_numbers):
             label = "to_number_" + str(i + 1)
@@ -350,9 +351,12 @@ class ManagePhoneNumbersView(TemplateView):
             label_tag = "RECEIVING NUMBER " + str(i + 1) + "."
             form = self.create_changeenvvarform(button_name, label_tag, number, post_data)
             self.to_numbers_forms_list[label] = form
+        next_number_id = len(to_numbers) + 1
+        new_number_form = self.create_changeenvvarform('new_number_button',
+                                                       "RECEIVING NUMBER" + str(next_number_id) + ".", "", post_data)
 
         if from_number_form.is_valid() and 'from_number_button' in post_data:
-            from_number_form, self.info = self.save_changeenvvarform(from_number_form, "from_number",)
+            from_number_form, self.info = self.save_changeenvvarform(from_number_form, "from_number", )
 
         for i, number in enumerate(to_numbers):
             label = "to_number_" + str(i + 1)
@@ -362,19 +366,25 @@ class ManagePhoneNumbersView(TemplateView):
                 form, self.info = self.save_changeenvvarform(form, label)
                 break
 
+        if new_number_form.is_valid() and 'new_number_button' in post_data:
+            new_number_form, self.info = self.save_changeenvvarform(new_number_form,"to_number_" + str(next_number_id) )
         contex = self.get_context_data(forms_list=self.forms_list, info=self.info)
 
         return self.render_to_response(contex)
 
     def get(self, request, *args, **kwargs):
+        self.forms_list = []
         self.create_changeenvvarform('from_number_button', "NUMBER OF SENDER", from_number)
 
         for i, number in enumerate(to_numbers):
             label = "to_number_" + str(i + 1)
             button_name = label + "_button"
-            label_tag = "RECEIVING NUMBER "+str(i+1) +"."
+            label_tag = "RECEIVING NUMBER " + str(i + 1) + "."
             form = self.create_changeenvvarform(button_name, label_tag, number)
             self.to_numbers_forms_list[label] = form
+
+        next_number_id = len(to_numbers) + 1
+        self.create_changeenvvarform('new_number_button', "RECEIVING NUMBER" + str(next_number_id) + ".", "")
         contex = self.get_context_data(forms_list=self.forms_list, info=self.info)
 
         return self.render_to_response(contex)
@@ -385,16 +395,24 @@ class ManagePhoneNumbersView(TemplateView):
         else:
             form = ChangeEnvVariableForm()
 
-
         form.button_name = button_name
         form.fields['new_value'].label = label
         form.fields['new_value'].initial = default
+        if form.button_name == 'new_number_button':
+            form.action = "ADD"
+        else:
+            form.action = "CHANGE"
+
         self.forms_list.append(form)
         return form
 
     def save_changeenvvarform(self, form, label):
         var = form.cleaned_data["new_value"]
         change_config_var(label, var)
-        info2 = (True, label)
+        if form.button_name == 'new_number_button':
+            action = "ADDED"
+        else:
+            action = "CHANGED"
+        info2 = (True, form.label , action)
 
         return form, info2

@@ -6,7 +6,7 @@
     {% if info.0 %}
         <div class="container" style="margin-top: 0.3%">
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>succesfully changed {{ info.1 }}</strong>
+                <strong>SUCCESSFULLY {{ info.2 }} {{ info.1 }}</strong>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">X</span>
                 </button>
@@ -28,7 +28,8 @@
                             {{ form|crispy }}
                         </div>
                         <div class="col-4" style="margin-top: 3.3%">
-                            <button type="submit" class="btn btn-primary" name="{{ form.button_name }}">CHANGE</button>
+                            <button type="submit" class="btn btn-primary"
+                                    name="{{ form.button_name }}">{{ form.action }}</button>
                         </div>
                     </div>
                 </form>
@@ -43,7 +44,8 @@
                             {{ form|crispy }}
                         </div>
                         <div class="col-4" style="margin-top: 3.3%">
-                            <button type="submit" class="btn btn-primary" name="{{ form.button_name }}">CHANGE</button>
+                            <button type="submit" class="btn btn-primary"
+                                    name="{{ form.button_name }}">{{ form.action }}</button>
                         </div>
                     </div>
                 </form>
