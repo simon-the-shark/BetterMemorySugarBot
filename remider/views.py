@@ -353,7 +353,7 @@ class ManagePhoneNumbersView(TemplateView):
             self.to_numbers_forms_list[label] = form
         next_number_id = len(to_numbers) + 1
         new_number_form = self.create_changeenvvarform('new_number_button',
-                                                       "RECEIVING NUMBER" + str(next_number_id) + ".", "", request)
+                                                       "RECEIVING NUMBER" + str(next_number_id) + ".", "", post_data)
 
         if from_number_form.is_valid() and 'from_number_button' in post_data:
             from_number_form, self.info = self.save_changeenvvarform(from_number_form, "from_number", )
@@ -368,7 +368,7 @@ class ManagePhoneNumbersView(TemplateView):
 
         if new_number_form.is_valid() and 'new_number_button' in post_data:
             new_number_form, self.info = self.save_changeenvvarform(new_number_form, "to_number_" + str(next_number_id),
-                                                                    post_data)
+                                                                    request)
         contex = self.get_context_data(forms_list=self.forms_list, info=self.info)
 
         return self.render_to_response(contex)
@@ -412,7 +412,7 @@ class ManagePhoneNumbersView(TemplateView):
         change_config_var(label, var)
         if form.button_name == 'new_number_button':
             action = "ADDED"
-            return self.get(self, request)
+            return redirect("https://{}.herokuapp.com/phonenumbers/?key={}")
         else:
             action = "CHANGED"
         info2 = (True, form.fields['new_value'].label, action)
