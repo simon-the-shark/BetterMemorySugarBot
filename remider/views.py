@@ -413,6 +413,6 @@ class ManagePhoneNumbersView(TemplateView):
             action = "ADDED"
         else:
             action = "CHANGED"
-        info2 = (True, form.label , action)
+        info2 = (True, form.fields['new_value'].label , action)
 
         return form, info2
