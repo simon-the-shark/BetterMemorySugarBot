@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import FileResponse
+from django.views.generic import TemplateView
+
 import requests as api_rq
 from datetime import datetime, timedelta, timezone
 
@@ -11,6 +13,8 @@ from infusionset_reminder.settings import SENSOR_ALERT_FREQUENCY, INFUSION_SET_A
 from .models import InfusionChanged, SensorChanged
 from .decorators import secret_key_required
 from .forms_management import create_changeenvvarform, save_changeenvvarform
+from .forms import ChangeEnvVariableForm
+from .api_interactions import change_config_var
 
 
 @secret_key_required
@@ -342,16 +346,17 @@ def manage_ph_numbers(request):
                 from_number_form, forms_list, info = save_changeenvvarform(from_number_form, 'from_number_button',
                                                                            "from_number", forms_list)
             for i, number in enumerate(to_numbers):
-                label = "to_number_" + str(i)
+                label = "to_number_" + str(i + 1)
                 button_name = label + "_button"
                 form, forms_list = create_changeenvvarform(button_name, label, forms_list, number)
 
         for i, number in enumerate(to_numbers):
-            label = "to_number_" + str(i)
+            label = "to_number_" + str(i + 1)
             button_name = label + "_button"
 
             if button_name in request.POST:
-                from_number_form, forms_list = create_changeenvvarform('from_number_button', "from_number",forms_list, from_number)
+                from_number_form, forms_list = create_changeenvvarform('from_number_button', "from_number", forms_list,
+                                                                       from_number)
 
                 for j, number2 in enumerate(to_numbers[:i]):
                     label2 = "to_number_" + str(j)
@@ -362,11 +367,10 @@ def manage_ph_numbers(request):
                 if form.is_valid():
                     form, forms_list, info = save_changeenvvarform(form, button_name, label, forms_list)
 
-                for j,number2 in enumerate(to_numbers[i+1:]):
+                for j, number2 in enumerate(to_numbers[i + 1:]):
                     label2 = "to_number_" + str(j)
                     button_name2 = label2 + "_button"
                     form2, forms_list = create_changeenvvarform(button_name2, label2, forms_list, number2)
-
 
                 # for j, number2 in enumerate(to_numbers):
                 #     if j == i:
@@ -381,8 +385,72 @@ def manage_ph_numbers(request):
         from_number_form, forms_list = create_changeenvvarform('from_number_button', "from_number",
                                                                forms_list, from_number)
         for i, number in enumerate(to_numbers):
-            label = "to_number_" + str(i)
+            label = "to_number_" + str(i + 1)
             button_name = label + "_button"
             form, forms_list = create_changeenvvarform(button_name, label, forms_list, number)
 
     return render(request, "remider/manage_ph.html", {'forms_list': forms_list, "info": info, })
+
+
+class ManagePhoneNumbersView(TemplateView):
+    template_name = "remider/manage_ph.html"
+    forms_list = []
+    to_numbers_forms_list = {}
+    info = (False, "")
+
+    def post(self, request, *args, **kwargs):
+        self.forms_list = []
+        post_data = request.POST
+        from_number_form = self.create_changeenvvarform('from_number_button', "from_number", from_number, post_data)
+
+        for i, number in enumerate(to_numbers):
+            label = "to_number_" + str(i + 1)
+            button_name = label + "_button"
+            form = self.create_changeenvvarform(button_name, label, number, post_data)
+            self.to_numbers_forms_list[label] = form
+
+        if from_number_form.is_valid() and 'from_number_button' in post_data:
+            from_number_form, self.info = self.save_changeenvvarform(from_number_form, "from_number")
+
+        for i, number in enumerate(to_numbers):
+            label = "to_number_" + str(i + 1)
+            button_name = label + "_button"
+            form = self.to_numbers_forms_list[label]
+            if form.is_valid() and button_name in post_data:
+                form, self.info = self.save_changeenvvarform(form, label)
+                break
+
+        contex = self.get_context_data(forms_list=self.forms_list, info=self.info)
+
+        return self.render_to_response(contex)
+
+    def get(self, request, *args, **kwargs):
+        self.create_changeenvvarform('from_number_button', "from_number", from_number)
+
+        for i, number in enumerate(to_numbers):
+            label = "to_number_" + str(i + 1)
+            button_name = label + "_button"
+            form = self.create_changeenvvarform(button_name, label, number)
+            self.to_numbers_forms_list[label] = form
+        contex = self.get_context_data(forms_list=self.forms_list, info=self.info)
+
+        return self.render_to_response(contex)
+
+    def create_changeenvvarform(self, button_name, label, default, post_data=()):
+        if button_name in post_data:
+            form = ChangeEnvVariableForm(post_data)
+        else:
+            form = ChangeEnvVariableForm()
+
+        form.button_name = button_name
+        form.fields['new_value'].label = label
+        form.fields['new_value'].initial = default
+        self.forms_list.append(form)
+        return form
+
+    def save_changeenvvarform(self, form, label):
+        var = form.cleaned_data["new_value"]
+        change_config_var(label, var)
+        info2 = (True, label)
+
+        return form, info2
