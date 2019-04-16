@@ -342,16 +342,17 @@ class ManagePhoneNumbersView(TemplateView):
     def post(self, request, *args, **kwargs):
         self.forms_list = []
         post_data = request.POST
-        from_number_form = self.create_changeenvvarform('from_number_button', "from_number", from_number, post_data)
+        from_number_form = self.create_changeenvvarform('from_number_button', "from_number", from_number, post_data, label_tag="NUMBER OF SENDER")
 
         for i, number in enumerate(to_numbers):
             label = "to_number_" + str(i + 1)
             button_name = label + "_button"
-            form = self.create_changeenvvarform(button_name, label, number, post_data)
+            label_tag = "RECEIVING NUMBER " + str(i + 1) + "."
+            form = self.create_changeenvvarform(button_name, label, number, post_data,label_tag=label_tag)
             self.to_numbers_forms_list[label] = form
 
         if from_number_form.is_valid() and 'from_number_button' in post_data:
-            from_number_form, self.info = self.save_changeenvvarform(from_number_form, "from_number")
+            from_number_form, self.info = self.save_changeenvvarform(from_number_form, "from_number",)
 
         for i, number in enumerate(to_numbers):
             label = "to_number_" + str(i + 1)
@@ -366,25 +367,29 @@ class ManagePhoneNumbersView(TemplateView):
         return self.render_to_response(contex)
 
     def get(self, request, *args, **kwargs):
-        self.create_changeenvvarform('from_number_button', "from_number", from_number)
+        self.create_changeenvvarform('from_number_button', "from_number", from_number, label_tag="NUMBER OF SENDER")
 
         for i, number in enumerate(to_numbers):
             label = "to_number_" + str(i + 1)
             button_name = label + "_button"
-            form = self.create_changeenvvarform(button_name, label, number)
+            label_tag = "RECEIVING NUMBER "+str(i+1) +"."
+            form = self.create_changeenvvarform(button_name, label, number,label_tag=label_tag)
             self.to_numbers_forms_list[label] = form
         contex = self.get_context_data(forms_list=self.forms_list, info=self.info)
 
         return self.render_to_response(contex)
 
-    def create_changeenvvarform(self, button_name, label, default, post_data=()):
+    def create_changeenvvarform(self, button_name, label, default, post_data=(), label_tag=None):
         if button_name in post_data:
             form = ChangeEnvVariableForm(post_data)
         else:
             form = ChangeEnvVariableForm()
 
+        if label_tag is None:
+            label_tag = label
+
         form.button_name = button_name
-        form.fields['new_value'].label = label
+        form.fields['new_value'].label = label_tag
         form.fields['new_value'].initial = default
         self.forms_list.append(form)
         return form
