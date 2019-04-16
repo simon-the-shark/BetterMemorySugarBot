@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import FileResponse
+from django.http import FileResponse, HttpResponseRedirect
 from django.views.generic import TemplateView
 
 import requests as api_rq
@@ -412,7 +412,7 @@ class ManagePhoneNumbersView(TemplateView):
         change_config_var(label, var)
         if form.button_name == 'new_number_button':
             info = (True, form.fields['new_value'].label, "ADDED")
-            return redirect("https://{}.herokuapp.com/phonenumbers/?key={}"), info
+            return HttpResponseRedirect("https://{}.herokuapp.com/phonenumbers/?key={}"), info
         else:
             info = (True, form.fields['new_value'].label, "CHANGED")
             return form, info
