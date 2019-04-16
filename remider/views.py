@@ -367,8 +367,7 @@ class ManagePhoneNumbersView(TemplateView):
                 break
 
         if new_number_form.is_valid() and 'new_number_button' in post_data:
-            new_number_form, self.info = self.save_changeenvvarform(new_number_form, "to_number_" + str(next_number_id),
-                                                                    request)
+            new_number_form, self.info = self.save_changeenvvarform(new_number_form, "to_number_" + str(next_number_id),)
         contex = self.get_context_data(forms_list=self.forms_list, info=self.info)
 
         return self.render_to_response(contex)
@@ -407,7 +406,7 @@ class ManagePhoneNumbersView(TemplateView):
         self.forms_list.append(form)
         return form
 
-    def save_changeenvvarform(self, form, label, request=()):
+    def save_changeenvvarform(self, form, label):
         var = form.cleaned_data["new_value"]
         change_config_var(label, var)
         if form.button_name == 'new_number_button':
