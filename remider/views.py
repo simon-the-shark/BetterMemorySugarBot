@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import FileResponse, HttpResponseRedirect
+from django.http import FileResponse
 from django.views.generic import TemplateView
 
 import requests as api_rq
@@ -340,6 +340,7 @@ class ManagePhoneNumbersView(TemplateView):
     info = (False, "")
 
     def post(self, request, *args, **kwargs):
+        self.to_numbers_forms_list = {}
         self.forms_list = []
         post_data = request.POST
         from_number_form = self.create_changeenvvarform('from_number_button', "NUMBER OF SENDER", from_number,
@@ -367,14 +368,14 @@ class ManagePhoneNumbersView(TemplateView):
                 break
 
         if new_number_form.is_valid() and 'new_number_button' in post_data:
-            new_number_form, self.info = self.save_changeenvvarform(new_number_form,
-                                                                    "to_number_" + str(next_number_id), )
+            new_number_form, self.info = self.save_changeenvvarform(new_number_form, "to_number_" + str(next_number_id))
         contex = self.get_context_data(forms_list=self.forms_list, info=self.info)
 
         return self.render_to_response(contex)
 
     def get(self, request, *args, **kwargs):
         self.forms_list = []
+        self.to_numbers_forms_list = {}
         self.create_changeenvvarform('from_number_button', "NUMBER OF SENDER", from_number)
 
         for i, number in enumerate(to_numbers):
@@ -411,8 +412,16 @@ class ManagePhoneNumbersView(TemplateView):
         var = form.cleaned_data["new_value"]
         change_config_var(label, var)
         if form.button_name == 'new_number_button':
-            info = (True, form.fields['new_value'].label, "ADDED")
-            return HttpResponseRedirect("https://{}.herokuapp.com/phonenumbers/?key={}"), info
+            action = "ADDED"
+            form.action = "CHANGE"
+            form.button_name = label + "_button"
+            self.to_numbers_forms_list[label] = form
+            next_number_id = len(self.to_numbers_forms_list) + 1
+            self.create_changeenvvarform('new_number_button', "RECEIVING NUMBER" + str(next_number_id) + ".", "")
+
+
         else:
-            info = (True, form.fields['new_value'].label, "CHANGED")
-            return form, info
+            action = "CHANGED"
+        info2 = (True, form.fields['new_value'].label, action)
+
+        return form, info2
