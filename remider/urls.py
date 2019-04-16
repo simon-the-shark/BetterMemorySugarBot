@@ -1,6 +1,7 @@
 from django.urls import path
 from django.views.generic import TemplateView
-from .views import reminder_view, file, auth, menu, upload, manage_ph_numbers, ManagePhoneNumbersView
+
+from .views import reminder_view, file, auth, menu, upload, ManagePhoneNumbersView
 from .decorators import secret_key_required
 
 urlpatterns = [

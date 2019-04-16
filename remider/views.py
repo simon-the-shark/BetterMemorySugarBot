@@ -333,65 +333,6 @@ def upload(request):
     return render(request, 'remider/upload.html', {'form': form, })
 
 
-@secret_key_required
-def manage_ph_numbers(request):
-    forms_list = []
-    info = False
-    if request.method == "POST":
-        if 'from_number_button' in request.POST:
-            from_number_form, forms_list = create_changeenvvarform('from_number_button', "from_number", forms_list,
-                                                                   from_number,
-                                                                   request.POST)
-            if from_number_form.is_valid():
-                from_number_form, forms_list, info = save_changeenvvarform(from_number_form, 'from_number_button',
-                                                                           "from_number", forms_list)
-            for i, number in enumerate(to_numbers):
-                label = "to_number_" + str(i + 1)
-                button_name = label + "_button"
-                form, forms_list = create_changeenvvarform(button_name, label, forms_list, number)
-
-        for i, number in enumerate(to_numbers):
-            label = "to_number_" + str(i + 1)
-            button_name = label + "_button"
-
-            if button_name in request.POST:
-                from_number_form, forms_list = create_changeenvvarform('from_number_button', "from_number", forms_list,
-                                                                       from_number)
-
-                for j, number2 in enumerate(to_numbers[:i]):
-                    label2 = "to_number_" + str(j)
-                    button_name2 = label2 + "_button"
-                    form2, forms_list = create_changeenvvarform(button_name2, label2, forms_list, number2)
-
-                form, forms_list = create_changeenvvarform(button_name, label, forms_list, number, request.POST)
-                if form.is_valid():
-                    form, forms_list, info = save_changeenvvarform(form, button_name, label, forms_list)
-
-                for j, number2 in enumerate(to_numbers[i + 1:]):
-                    label2 = "to_number_" + str(j)
-                    button_name2 = label2 + "_button"
-                    form2, forms_list = create_changeenvvarform(button_name2, label2, forms_list, number2)
-
-                # for j, number2 in enumerate(to_numbers):
-                #     if j == i:
-                #         form, forms_list = create_changeenvvarform(button_name, label, forms_list, number, request.POST)
-                #         if form.is_valid():
-                #             form, forms_list, info = save_changeenvvarform(form, button_name, label, forms_list)
-                #     else:
-                #         label2 = "to_number_" + str(j)
-                #         button_name2 = label2 + "_button"
-                #         form2, forms_list = create_changeenvvarform(button_name2, label2, forms_list, number2)
-    else:
-        from_number_form, forms_list = create_changeenvvarform('from_number_button', "from_number",
-                                                               forms_list, from_number)
-        for i, number in enumerate(to_numbers):
-            label = "to_number_" + str(i + 1)
-            button_name = label + "_button"
-            form, forms_list = create_changeenvvarform(button_name, label, forms_list, number)
-
-    return render(request, "remider/manage_ph.html", {'forms_list': forms_list, "info": info, })
-
-
 class ManagePhoneNumbersView(TemplateView):
     template_name = "remider/manage_ph.html"
     forms_list = []
