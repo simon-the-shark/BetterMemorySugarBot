@@ -402,7 +402,7 @@ class ManagePhoneNumbersView(TemplateView):
             form = self.to_numbers_forms_list.pop(label)
             self.forms_list.remove(form)
             self.forms_list[-2].deletable = True
-            self.delurl = "https://{}.herokuapp.com/deletephonenumber/{}/?key={}".format(app_name, str(id - 1), SECRET_KEY)
+            self.delurl = "https://{}.herokuapp.com/deletephonenumber/{}/?key={}".format(app_name, str(int(id) - 1), SECRET_KEY)
 
         contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=delinfo, delurl=self.delurl)
 
