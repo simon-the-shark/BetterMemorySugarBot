@@ -409,7 +409,7 @@ class ManagePhoneNumbersView(TemplateView):
         if form.button_name == 'new_number_button':
             form.action = "ADD"
             self.forms_list[-1].deletable = True
-            id = len(self.forms_list) - 1
+            id = len(self.to_numbers_forms_list)
             self.delurl = "https://{}.herokuapp.com/deletephonenumber/{}/?key={}".format(app_name, id, SECRET_KEY)
         else:
             form.action = "CHANGE"
@@ -422,6 +422,7 @@ class ManagePhoneNumbersView(TemplateView):
         change_config_var(label, var)
         if form.button_name == 'new_number_button':
             action = "ADDED"
+            form.deletable = False
             form.action = "CHANGE"
             form.button_name = label + "_button"
             self.to_numbers_forms_list[label] = form
