@@ -423,7 +423,7 @@ class ManagePhoneNumbersView(TemplateView):
         change_config_var(label, var)
         if form.button_name == 'new_number_button':
             action = "ADDED"
-            self.to_numbers_forms_list[-1].deletable = False
+            self.forms_list[-2].deletable = False
             form.action = "CHANGE"
             form.button_name = label + "_button"
             self.to_numbers_forms_list[label] = form
