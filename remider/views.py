@@ -377,6 +377,12 @@ class ManagePhoneNumbersView(TemplateView):
     def get(self, request, *args, **kwargs):
         try:
             delinfo = (request.GET.get("delinfo", ""), request.GET.get("delid", ""))
+            if delinfo[0]:
+                label = "to_number_" + str(delinfo[1])
+                form = self.to_numbers_forms_list.pop(label)
+                self.forms_list.remove(form)
+                self.forms_list[-2].deletable = True
+
         except:
             delinfo = (False, "")
 
