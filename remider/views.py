@@ -369,7 +369,8 @@ class ManagePhoneNumbersView(TemplateView):
 
         if new_number_form.is_valid() and 'new_number_button' in post_data:
             new_number_form, self.info = self.save_changeenvvarform(new_number_form, "to_number_" + str(next_number_id))
-        contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=(False, ""), delurl=self.delurl)
+        contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=(False, ""),
+                                       delurl=self.delurl)
 
         return self.render_to_response(contex)
 
@@ -422,7 +423,7 @@ class ManagePhoneNumbersView(TemplateView):
         change_config_var(label, var)
         if form.button_name == 'new_number_button':
             action = "ADDED"
-            form.deletable = False
+            self.to_numbers_forms_list[-1].deletable = False
             form.action = "CHANGE"
             form.button_name = label + "_button"
             self.to_numbers_forms_list[label] = form
@@ -443,4 +444,5 @@ def delete_view(request, number_id):
     change_config_var(label, None)
 
     return redirect(
-        "https://{}.herokuapp.com/phonenumbers/?key={}&delinfo={}&delid={}".format(app_name, SECRET_KEY, True, number_id))
+        "https://{}.herokuapp.com/phonenumbers/?key={}&delinfo={}&delid={}".format(app_name, SECRET_KEY, True,
+                                                                                   number_id))
