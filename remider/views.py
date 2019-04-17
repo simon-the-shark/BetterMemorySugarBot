@@ -382,12 +382,6 @@ class ManagePhoneNumbersView(TemplateView):
         except:
             delinfo = (False, "")
 
-        if delinfo[0]:
-            label = "to_number_" + str(delinfo[1])
-            form = self.to_numbers_forms_list.pop(label)
-            self.forms_list.remove(form)
-            self.forms_list[-2].deletable = True
-
         self.forms_list = []
         self.to_numbers_forms_list = {}
         self.create_changeenvvarform('from_number_button', "NUMBER OF SENDER", from_number)
@@ -401,6 +395,13 @@ class ManagePhoneNumbersView(TemplateView):
 
         next_number_id = len(to_numbers) + 1
         self.create_changeenvvarform('new_number_button', "RECEIVING NUMBER" + str(next_number_id) + ".", "")
+
+        if delinfo[0]:
+            label = "to_number_" + str(delinfo[1])
+            form = self.to_numbers_forms_list.pop(label)
+            self.forms_list.remove(form)
+            self.forms_list[-2].deletable = True
+
         contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=delinfo, delurl=self.delurl)
 
         return self.render_to_response(contex)
