@@ -400,6 +400,7 @@ class ManagePhoneNumbersView(TemplateView):
         form.button_name = button_name
         form.fields['new_value'].label = label
         form.fields['new_value'].initial = default
+        form.fields["new_value"].required = False
         if form.button_name == 'new_number_button':
             form.action = "ADD"
         else:
