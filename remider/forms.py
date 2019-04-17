@@ -7,4 +7,5 @@ class FileUploudForm(forms.Form):
 
 class ChangeEnvVariableForm(forms.Form):
     button_name = ""
+    deletable = False
     new_value = forms.CharField(required=True)

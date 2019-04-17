@@ -369,11 +369,16 @@ class ManagePhoneNumbersView(TemplateView):
 
         if new_number_form.is_valid() and 'new_number_button' in post_data:
             new_number_form, self.info = self.save_changeenvvarform(new_number_form, "to_number_" + str(next_number_id))
-        contex = self.get_context_data(forms_list=self.forms_list, info=self.info)
+        contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=(False, ""), delurl=self.delurl)
 
         return self.render_to_response(contex)
 
     def get(self, request, *args, **kwargs):
+        try:
+            delinfo = (request.GET.get("delinfo", ""), request.GET.get("delid", ""))
+        except:
+            delinfo = (False, "")
+
         self.forms_list = []
         self.to_numbers_forms_list = {}
         self.create_changeenvvarform('from_number_button', "NUMBER OF SENDER", from_number)
@@ -387,7 +392,7 @@ class ManagePhoneNumbersView(TemplateView):
 
         next_number_id = len(to_numbers) + 1
         self.create_changeenvvarform('new_number_button', "RECEIVING NUMBER" + str(next_number_id) + ".", "")
-        contex = self.get_context_data(forms_list=self.forms_list, info=self.info)
+        contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=delinfo, delurl=self.delurl)
 
         return self.render_to_response(contex)
 
@@ -403,6 +408,9 @@ class ManagePhoneNumbersView(TemplateView):
         form.fields["new_value"].required = False
         if form.button_name == 'new_number_button':
             form.action = "ADD"
+            self.forms_list[-1].deletable = True
+            id = len(self.forms_list) - 1
+            self.delurl = "http://{}.herokuapp.com/deletephonenumber/{}/?key={}".format(app_name, id, SECRET_KEY)
         else:
             form.action = "CHANGE"
 
@@ -426,3 +434,12 @@ class ManagePhoneNumbersView(TemplateView):
         info2 = (True, form.fields['new_value'].label, action)
 
         return form, info2
+
+
+@secret_key_required
+def delete_view(request, number_id):
+    label = "to_number_" + str(number_id)
+    change_config_var(label, None)
+
+    return redirect(
+        "http:/{}.herokuapp.com/phonenumbers/?key={}&delinfo={}&delid={}".format(app_name, SECRET_KEY, True, number_id))
