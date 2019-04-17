@@ -410,7 +410,7 @@ class ManagePhoneNumbersView(TemplateView):
             form.action = "ADD"
             self.forms_list[-1].deletable = True
             id = len(self.forms_list) - 1
-            self.delurl = "http://{}.herokuapp.com/deletephonenumber/{}/?key={}".format(app_name, id, SECRET_KEY)
+            self.delurl = "https://{}.herokuapp.com/deletephonenumber/{}/?key={}".format(app_name, id, SECRET_KEY)
         else:
             form.action = "CHANGE"
 
@@ -442,4 +442,4 @@ def delete_view(request, number_id):
     change_config_var(label, None)
 
     return redirect(
-        "http:/{}.herokuapp.com/phonenumbers/?key={}&delinfo={}&delid={}".format(app_name, SECRET_KEY, True, number_id))
+        "https://{}.herokuapp.com/phonenumbers/?key={}&delinfo={}&delid={}".format(app_name, SECRET_KEY, True, number_id))
