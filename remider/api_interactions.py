@@ -9,9 +9,10 @@ def send_message(body):
     client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
     for to_number in to_numbers:
-        client.messages.create(body=body,
-                               from_=from_number,
-                               to=to_number)
+        try:
+            client.messages.create(body=body, from_=from_number, to=to_number)
+        except:
+            pass
 
 
 def change_config_var(label, new_value):
