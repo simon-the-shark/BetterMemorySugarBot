@@ -394,7 +394,7 @@ class ManagePhoneNumbersView(TemplateView):
             self.to_numbers_forms_list[label] = form
 
         next_number_id = len(to_numbers) + 1
-        self.create_changeenvvarform('new_number_button', "RECEIVING NUMBER" + str(next_number_id) + ".", "")
+        self.create_changeenvvarform('new_number_button', "RECEIVING NUMBER " + str(next_number_id) + ".", "")
 
         if delinfo[0]:
             id = delinfo[1]
@@ -441,7 +441,7 @@ class ManagePhoneNumbersView(TemplateView):
             form.button_name = label + "_button"
             self.to_numbers_forms_list[label] = form
             next_number_id = len(self.to_numbers_forms_list) + 1
-            self.create_changeenvvarform('new_number_button', "RECEIVING NUMBER" + str(next_number_id) + ".", "")
+            self.create_changeenvvarform('new_number_button', "RECEIVING NUMBER " + str(next_number_id) + ".", "")
 
 
         else:
