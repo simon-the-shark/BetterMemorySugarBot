@@ -320,6 +320,7 @@ def menu(request):
 
 @secret_key_required
 def upload(request):
+    menu_url = "https://{}.herokuapp.com/menu/?key={}".format(app_name, SECRET_KEY)
     if request.method == 'POST':
         form = FileUploudForm(request.POST, request.FILES)
         if form.is_valid():
@@ -330,7 +331,7 @@ def upload(request):
             return redirect("https://{}.herokuapp.com/menu/?key={}&info={}".format(app_name, SECRET_KEY, True))
     else:
         form = FileUploudForm()
-    return render(request, 'remider/upload.html', {'form': form, })
+    return render(request, 'remider/upload.html', {'form': form, "menu_url": menu_url, })
 
 
 class ManagePhoneNumbersView(TemplateView):
@@ -338,6 +339,7 @@ class ManagePhoneNumbersView(TemplateView):
     forms_list = []
     to_numbers_forms_list = {}
     info = (False, "")
+    menu_url = "https://{}.herokuapp.com/menu/?key={}".format(app_name, SECRET_KEY)
 
     def post(self, request, *args, **kwargs):
         self.to_numbers_forms_list = {}
@@ -370,7 +372,7 @@ class ManagePhoneNumbersView(TemplateView):
         if new_number_form.is_valid() and 'new_number_button' in post_data:
             new_number_form, self.info = self.save_changeenvvarform(new_number_form, "to_number_" + str(next_number_id))
         contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=(False, ""),
-                                       delurl=self.delurl)
+                                       delurl=self.delurl, menu_url=self.menu_url, )
 
         return self.render_to_response(contex)
 
@@ -406,7 +408,8 @@ class ManagePhoneNumbersView(TemplateView):
                                                                                          SECRET_KEY)
             self.forms_list[-1].fields["new_value"].label = "RECEIVING NUMBER" + str(
                 len(self.to_numbers_forms_list) + 1) + "."
-        contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=delinfo, delurl=self.delurl)
+        contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=delinfo, delurl=self.delurl,
+                                       menu_url=self.menu_url, )
 
         return self.render_to_response(contex)
 
