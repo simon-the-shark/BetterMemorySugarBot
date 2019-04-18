@@ -1,6 +1,9 @@
-settings.ini
+staticfiles/uplouded/ATriggerVerify.txt
+infusionset_reminder/settings.ini
 infusionset_reminder/settings.ini
 venv/
 db.sqlite3
 *.ini
 *.xml
+*sqlite3
+*.txt
