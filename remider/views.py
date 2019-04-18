@@ -5,16 +5,14 @@ from django.views.generic import TemplateView
 import requests as api_rq
 from datetime import datetime, timedelta, timezone
 
-from .api_interactions import send_message
 from .forms import GetSecretForm, FileUploudForm
 from infusionset_reminder.settings import SENSOR_ALERT_FREQUENCY, INFUSION_SET_ALERT_FREQUENCY, ATRIGGER_KEY, \
     ATRIGGER_SECRET, SECRET_KEY, app_name, nightscout_link, TWILIO_AUTH_TOKEN, TWILIO_ACCOUNT_SID, from_number, \
     to_numbers
 from .models import InfusionChanged, SensorChanged
-from .decorators import secret_key_required
-from .forms_management import create_changeenvvarform, save_changeenvvarform
 from .forms import ChangeEnvVariableForm
-from .api_interactions import change_config_var
+from .decorators import secret_key_required
+from .api_interactions import send_message, change_config_var
 
 
 @secret_key_required
@@ -139,183 +137,73 @@ def auth(request):
     return render(request, "remider/auth.html", context={"form": form})
 
 
-@secret_key_required
-def menu(request):
-    try:
-        info = request.GET.get("info", "")
-    except:
-        info = False
-    info2 = False
+class MenuView(TemplateView):
+    template_name = "remider/menu.html"
+    urllink = 'https://{}.herokuapp.com/upload/?key={}'.format(app_name, SECRET_KEY)
+    urllink2 = "https://{}.herokuapp.com/phonenumbers/?key={}".format(app_name, SECRET_KEY)
     forms_list = []
+    forms = [
+        ("NIGHTSCOUT_LINK", "ns_link_button", nightscout_link),
+        ("INFUSION_SET_ALERT_FREQUENCY", "infusion_freq_button", INFUSION_SET_ALERT_FREQUENCY),
+        ("SENSOR_ALERT_FREQUENCY", "sensor_freq_button", SENSOR_ALERT_FREQUENCY),
+        ("TWILIO_ACCOUNT_SID", "twilio_sid_button", TWILIO_ACCOUNT_SID),
+        ("TWILIO_AUTH_TOKEN", "twilio_token_button", TWILIO_AUTH_TOKEN),
+        ("ATRIGGER_KEY", "atrigger_key_button", ATRIGGER_KEY),
+        ("ATRIGGER_SECRET", "atrigger_secret_button", ATRIGGER_SECRET),
+    ]
 
-    if request.method == "POST":
-        if 'ns_link_button' in request.POST:
-            ns_form, forms_list = create_changeenvvarform('ns_link_button', "NIGHTSCOUT_LINK",
-                                                          forms_list, nightscout_link, request.POST)
-            if ns_form.is_valid():
-                ns_form, forms_list, info2 = save_changeenvvarform(ns_form, 'ns_link_button',
-                                                                   "NIGHTSCOUT_LINK", forms_list)
-            infusion_freq_form, forms_list = create_changeenvvarform('infusion_freq_button',
-                                                                     "INFUSION_SET_ALERT_FREQUENCY",
-                                                                     forms_list, INFUSION_SET_ALERT_FREQUENCY, )
-            sensor_freq_form, forms_list = create_changeenvvarform('sensor_freq_button', "SENSOR_ALERT_FREQUENCY",
-                                                                   forms_list, SENSOR_ALERT_FREQUENCY, )
-            twilio_sid_form, forms_list = create_changeenvvarform('twilio_sid_button', "TWILIO_ACCOUNT_SID",
-                                                                  forms_list, TWILIO_ACCOUNT_SID)
-            twilio_token_form, forms_list = create_changeenvvarform('twilio_token_button', "TWILIO_AUTH_TOKEN",
-                                                                    forms_list, TWILIO_AUTH_TOKEN)
-            atrigger_key_form, forms_list = create_changeenvvarform('atrigger_key_button', "ATRIGGER_KEY",
-                                                                    forms_list, ATRIGGER_KEY)
-            atrigger_secret_form, forms_list = create_changeenvvarform('atrigger_secret_button', "ATRIGGER_SECRET",
-                                                                       forms_list, ATRIGGER_SECRET)
-        if 'infusion_freq_button' in request.POST:
-            ns_form, forms_list = create_changeenvvarform('ns_link_button', "NIGHTSCOUT_LINK",
-                                                          forms_list, nightscout_link)
-            infusion_freq_form, forms_list = create_changeenvvarform('infusion_freq_button',
-                                                                     "INFUSION_SET_ALERT_FREQUENCY", forms_list,
-                                                                     INFUSION_SET_ALERT_FREQUENCY,
-                                                                     request.POST)
-            if infusion_freq_form.is_valid():
-                infusion_freq_form, forms_list, info2 = save_changeenvvarform(infusion_freq_form,
-                                                                              'infusion_freq_button',
-                                                                              "INFUSION_SET_ALERT_FREQUENCY",
-                                                                              forms_list)
+    def post(self, request, *args, **kwargs):
+        self.info = False
+        self.info2 = False
+        self.forms_list = []
+        self.forms_link_dict = {}
+        post_data = request.POST or None
 
-            sensor_freq_form, forms_list = create_changeenvvarform('sensor_freq_button', "SENSOR_ALERT_FREQUENCY",
-                                                                   forms_list, SENSOR_ALERT_FREQUENCY, )
-            twilio_sid_form, forms_list = create_changeenvvarform('twilio_sid_button', "TWILIO_ACCOUNT_SID",
-                                                                  forms_list, TWILIO_ACCOUNT_SID)
-            twilio_token_form, forms_list = create_changeenvvarform('twilio_token_button', "TWILIO_AUTH_TOKEN",
-                                                                    forms_list, TWILIO_AUTH_TOKEN)
-            atrigger_key_form, forms_list = create_changeenvvarform('atrigger_key_button', "ATRIGGER_KEY",
-                                                                    forms_list, ATRIGGER_KEY)
-            atrigger_secret_form, forms_list = create_changeenvvarform('atrigger_secret_button', "ATRIGGER_SECRET",
-                                                                       forms_list, ATRIGGER_SECRET)
-        if 'sensor_freq_button' in request.POST:
-            ns_form, forms_list = create_changeenvvarform('ns_link_button', "NIGHTSCOUT_LINK",
-                                                          forms_list, nightscout_link, )
-            infusion_freq_form, forms_list = create_changeenvvarform('infusion_freq_button',
-                                                                     "INFUSION_SET_ALERT_FREQUENCY",
-                                                                     forms_list, INFUSION_SET_ALERT_FREQUENCY, )
+        for form_tuple in self.forms:
+            form = self.create_changeenvvarform(form_tuple[1], form_tuple[0], form_tuple[2], post_data)
+            self.forms_link_dict[form_tuple[0]] = form
 
-            sensor_freq_form, forms_list = create_changeenvvarform('sensor_freq_button', "SENSOR_ALERT_FREQUENCY",
-                                                                   forms_list, SENSOR_ALERT_FREQUENCY, request.POST)
-            if sensor_freq_form.is_valid():
-                sensor_freq_form, forms_list, info2 = save_changeenvvarform(sensor_freq_form, 'sensor_freq_button',
-                                                                            "SENSOR_ALERT_FREQUENCY", forms_list)
+        for form_tuple in self.forms:
+            form = self.forms_link_dict[form_tuple[0]]
+            if form.is_valid() and form_tuple[1] in post_data:
+                form, self.info2 = self.save_changeenvvarform(form, form_tuple[0])
 
-            twilio_sid_form, forms_list = create_changeenvvarform('twilio_sid_button', "TWILIO_ACCOUNT_SID",
-                                                                  forms_list, TWILIO_ACCOUNT_SID)
-            twilio_token_form, forms_list = create_changeenvvarform('twilio_token_button', "TWILIO_AUTH_TOKEN",
-                                                                    forms_list, TWILIO_AUTH_TOKEN)
-            atrigger_key_form, forms_list = create_changeenvvarform('atrigger_key_button', "ATRIGGER_KEY",
-                                                                    forms_list, ATRIGGER_KEY)
-            atrigger_secret_form, forms_list = create_changeenvvarform('atrigger_secret_button', "ATRIGGER_SECRET",
-                                                                       forms_list, ATRIGGER_SECRET)
-        if 'twilio_sid_button' in request.POST:
-            ns_form, forms_list = create_changeenvvarform('ns_link_button', "NIGHTSCOUT_LINK",
-                                                          forms_list, nightscout_link)
-            infusion_freq_form, forms_list = create_changeenvvarform('infusion_freq_button',
-                                                                     "INFUSION_SET_ALERT_FREQUENCY",
-                                                                     forms_list, INFUSION_SET_ALERT_FREQUENCY, )
-            sensor_freq_form, forms_list = create_changeenvvarform('sensor_freq_button', "SENSOR_ALERT_FREQUENCY",
-                                                                   forms_list, SENSOR_ALERT_FREQUENCY, )
+        contex = self.get_context_data(forms_list=self.forms_list, urllink=self.urllink, urllink2=self.urllink2,
+                                       info=self.info, info2=self.info2)
+        return self.render_to_response(contex)
 
-            twilio_sid_form, forms_list = create_changeenvvarform('twilio_sid_button', "TWILIO_ACCOUNT_SID",
-                                                                  forms_list, TWILIO_ACCOUNT_SID, request.POST)
-            if twilio_sid_form.is_valid():
-                twilio_sid_form, forms_list, info2 = save_changeenvvarform(twilio_sid_form, 'twilio_sid_button',
-                                                                           "TWILIO_ACCOUNT_SID", forms_list)
+    def get(self, request, *args, **kwargs):
+        self.forms_list = []
+        try:
+            self.info = request.GET.get("info", "")
+        except:
+            self.info = False
+        self.info2 = False
 
-            twilio_token_form, forms_list = create_changeenvvarform('twilio_token_button', "TWILIO_AUTH_TOKEN",
-                                                                    forms_list, TWILIO_AUTH_TOKEN)
-            atrigger_key_form, forms_list = create_changeenvvarform('atrigger_key_button', "ATRIGGER_KEY",
-                                                                    forms_list, ATRIGGER_KEY)
-            atrigger_secret_form, forms_list = create_changeenvvarform('atrigger_secret_button', "ATRIGGER_SECRET",
-                                                                       forms_list, ATRIGGER_SECRET)
-        if 'twilio_token_button' in request.POST:
-            ns_form, forms_list = create_changeenvvarform('ns_link_button', "NIGHTSCOUT_LINK",
-                                                          forms_list, nightscout_link)
-            infusion_freq_form, forms_list = create_changeenvvarform('infusion_freq_button',
-                                                                     "INFUSION_SET_ALERT_FREQUENCY",
-                                                                     forms_list, INFUSION_SET_ALERT_FREQUENCY, )
-            sensor_freq_form, forms_list = create_changeenvvarform('sensor_freq_button', "SENSOR_ALERT_FREQUENCY",
-                                                                   forms_list, SENSOR_ALERT_FREQUENCY, )
+        for form_tuple in self.forms:
+            self.create_changeenvvarform(form_tuple[1], form_tuple[0], form_tuple[2])
 
-            twilio_sid_form, forms_list = create_changeenvvarform('twilio_sid_button', "TWILIO_ACCOUNT_SID",
-                                                                  forms_list, TWILIO_ACCOUNT_SID)
-            twilio_token_form, forms_list = create_changeenvvarform('twilio_token_button', "TWILIO_AUTH_TOKEN",
-                                                                    forms_list, TWILIO_AUTH_TOKEN, request.POST)
-            if twilio_token_form.is_valid():
-                twilio_token_form, forms_list, info2 = save_changeenvvarform(twilio_token_form, 'twilio_token_button',
-                                                                             "TWILIO_AUTH_TOKEN", forms_list)
+        contex = self.get_context_data(forms_list=self.forms_list, urllink=self.urllink, urllink2=self.urllink2,
+                                       info=self.info, info2=self.info2)
+        return self.render_to_response(contex)
 
-            atrigger_key_form, forms_list = create_changeenvvarform('atrigger_key_button', "ATRIGGER_KEY",
-                                                                    forms_list, ATRIGGER_KEY)
-            atrigger_secret_form, forms_list = create_changeenvvarform('atrigger_secret_button', "ATRIGGER_SECRET",
-                                                                       forms_list, ATRIGGER_SECRET)
-        if 'atrigger_key_button' in request.POST:
-            ns_form, forms_list = create_changeenvvarform('ns_link_button', "NIGHTSCOUT_LINK",
-                                                          forms_list, nightscout_link)
-            infusion_freq_form, forms_list = create_changeenvvarform('infusion_freq_button',
-                                                                     "INFUSION_SET_ALERT_FREQUENCY",
-                                                                     forms_list, INFUSION_SET_ALERT_FREQUENCY, )
-            sensor_freq_form, forms_list = create_changeenvvarform('sensor_freq_button', "SENSOR_ALERT_FREQUENCY",
-                                                                   forms_list, SENSOR_ALERT_FREQUENCY, )
+    def create_changeenvvarform(self, button_name, label, default, post_data=()):
+        if button_name in post_data:
+            form = ChangeEnvVariableForm(post_data)
+        else:
+            form = ChangeEnvVariableForm()
+        form.button_name = button_name
+        form.fields['new_value'].label = label
+        form.fields['new_value'].initial = default
+        self.forms_list.append(form)
+        return form
 
-            twilio_sid_form, forms_list = create_changeenvvarform('twilio_sid_button', "TWILIO_ACCOUNT_SID",
-                                                                  forms_list, TWILIO_ACCOUNT_SID)
-            twilio_token_form, forms_list = create_changeenvvarform('twilio_token_button', "TWILIO_AUTH_TOKEN",
-                                                                    forms_list, TWILIO_AUTH_TOKEN)
-            atrigger_key_form, forms_list = create_changeenvvarform('atrigger_key_button', "ATRIGGER_KEY",
-                                                                    forms_list, ATRIGGER_KEY, request.POST)
-            if atrigger_key_form.is_valid():
-                atrigger_key_form, forms_list, info2 = save_changeenvvarform(atrigger_key_form, 'atrigger_key_button',
-                                                                             "ATRIGGER_KEY", forms_list)
+    def save_changeenvvarform(self, form, label):
+        var = form.cleaned_data["new_value"]
+        change_config_var(label, var)
+        info2 = (True, label)
 
-            atrigger_secret_form, forms_list = create_changeenvvarform('atrigger_secret_button', "ATRIGGER_SECRET",
-                                                                       forms_list, ATRIGGER_SECRET)
-        if 'atrigger_secret_button' in request.POST:
-            ns_form, forms_list = create_changeenvvarform('ns_link_button', "NIGHTSCOUT_LINK",
-                                                          forms_list, nightscout_link)
-            infusion_freq_form, forms_list = create_changeenvvarform('infusion_freq_button',
-                                                                     "INFUSION_SET_ALERT_FREQUENCY",
-                                                                     forms_list, INFUSION_SET_ALERT_FREQUENCY, )
-            sensor_freq_form, forms_list = create_changeenvvarform('sensor_freq_button', "SENSOR_ALERT_FREQUENCY",
-                                                                   forms_list, SENSOR_ALERT_FREQUENCY, )
-
-            twilio_sid_form, forms_list = create_changeenvvarform('twilio_sid_button', "TWILIO_ACCOUNT_SID",
-                                                                  forms_list, TWILIO_ACCOUNT_SID)
-            twilio_token_form, forms_list = create_changeenvvarform('twilio_token_button', "TWILIO_AUTH_TOKEN",
-                                                                    forms_list, TWILIO_AUTH_TOKEN)
-            atrigger_key_form, forms_list = create_changeenvvarform('atrigger_key_button', "ATRIGGER_KEY",
-                                                                    forms_list, ATRIGGER_KEY)
-            atrigger_secret_form, forms_list = create_changeenvvarform('atrigger_key_button', "ATRIGGER_SECRET",
-                                                                       forms_list, ATRIGGER_SECRET, request.POST)
-            if atrigger_secret_form.is_valid():
-                atrigger_secret_form, forms_list, info2 = save_changeenvvarform(atrigger_secret_form,
-                                                                                'atrigger_key_button',
-                                                                                "ATRIGGER_SECRET", forms_list)
-    else:
-        ns_form, forms_list = create_changeenvvarform('ns_link_button', "NIGHTSCOUT_LINK",
-                                                      forms_list, nightscout_link)
-        infusion_freq_form, forms_list = create_changeenvvarform('infusion_freq_button', "INFUSION_SET_ALERT_FREQUENCY",
-                                                                 forms_list, INFUSION_SET_ALERT_FREQUENCY, )
-        sensor_freq_form, forms_list = create_changeenvvarform('sensor_freq_button', "SENSOR_ALERT_FREQUENCY",
-                                                               forms_list, SENSOR_ALERT_FREQUENCY, )
-        twilio_sid_form, forms_list = create_changeenvvarform('twilio_sid_button', "TWILIO_ACCOUNT_SID",
-                                                              forms_list, TWILIO_ACCOUNT_SID)
-        twilio_token_form, forms_list = create_changeenvvarform('twilio_token_button', "TWILIO_AUTH_TOKEN",
-                                                                forms_list, TWILIO_AUTH_TOKEN)
-        atrigger_key_form, forms_list = create_changeenvvarform('atrigger_key_button', "ATRIGGER_KEY",
-                                                                forms_list, ATRIGGER_KEY)
-        atrigger_secret_form, forms_list = create_changeenvvarform('atrigger_secret_button', "ATRIGGER_SECRET",
-                                                                   forms_list, ATRIGGER_SECRET)
-
-    return render(request, "remider/menu.html",
-                  {'urllink': 'https://{}.herokuapp.com/upload/?key={}'.format(app_name, SECRET_KEY), 'info': info,
-                   'forms_list': forms_list, "info2": info2,
-                   "urllink2": "https://{}.herokuapp.com/phonenumbers/?key={}".format(app_name, SECRET_KEY)}, )
+        return form, info2
 
 
 @secret_key_required
