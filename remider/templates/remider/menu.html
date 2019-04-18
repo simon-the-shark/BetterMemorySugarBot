@@ -2,6 +2,11 @@
 {% load crispy_forms_tags %}
 {% block content %}
     <div class="jumbotron jumbotron-fluid">
+
+        <a href={{ urllink2 }} role="button" class="btn btn-primary btn-lg btn-block" style="margin: 0.2%">MANAGE
+            PHONE NUMBERS</a>
+        <a href={{ urllink }} role="button" class="btn btn-secondary btn-lg btn-block" style="margin: 0.2%">Upload
+            verification file (ATriggerVerify.txt)</a>
         {% if info %}
             <div class="container" style="margin-top: 0.3%">
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -22,10 +27,6 @@
                 </div>
             </div>
         {% endif %}
-        <a href={{ urllink2 }} role="button" class="btn btn-primary btn-lg btn-block" style="margin: 0.2%">MANAGE
-            PHONE NUMBERS</a>
-        <a href={{ urllink }} role="button" class="btn btn-secondary btn-lg btn-block" style="margin: 0.2%">Upload
-            verification file (ATriggerVerify.txt)</a>
         <div class="container">
             <h1 class="display-4">SETTINGS:</h1><br/>
             {% for form in forms_list %}
