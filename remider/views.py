@@ -67,9 +67,12 @@ def reminder_view(request):
         infusion = timedelta(hours=INFUSION_SET_ALERT_FREQUENCY)
         if type(date) == str:
             infusion_alert_date = datetime.strptime(date[:-6], "%Y-%m-%dT%H:%M:%S") + infusion
+            infusion_time_remains = infusion_alert_date - datetime.utcnow()
+
         else:
             infusion_alert_date = date + infusion
-        infusion_time_remains = infusion_alert_date - datetime.utcnow()
+            infusion_time_remains = infusion_alert_date - datetime.now(timezone.utc)
+
         """notify"""
         idays = infusion_time_remains.days
         ihours = round(infusion_time_remains.seconds / 3600)
