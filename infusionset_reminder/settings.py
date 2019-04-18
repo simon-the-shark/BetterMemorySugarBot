@@ -121,17 +121,17 @@ STATIC_URL = '/static/'
 token = config("heroku_token", default="")
 app_name = config("app_name")
 
-INFUSION_SET_ALERT_FREQUENCY = int(config("INFUSION_SET_ALERT_FREQUENCY"))
-SENSOR_ALERT_FREQUENCY = int(config("SENSOR_ALERT_FREQUENCY"))
+INFUSION_SET_ALERT_FREQUENCY = int(config("INFUSION_SET_ALERT_FREQUENCY", default=72))
+SENSOR_ALERT_FREQUENCY = int(config("SENSOR_ALERT_FREQUENCY", default=144))
 
-TWILIO_ACCOUNT_SID = config("TWILIO_ACCOUNT_SID")
-TWILIO_AUTH_TOKEN = config("TWILIO_AUTH_TOKEN")
+TWILIO_ACCOUNT_SID = config("TWILIO_ACCOUNT_SID", default="")
+TWILIO_AUTH_TOKEN = config("TWILIO_AUTH_TOKEN",default="")
 
-ATRIGGER_KEY = config("ATRIGGER_KEY")
-ATRIGGER_SECRET = config("ATRIGGER_SECRET")
+ATRIGGER_KEY = config("ATRIGGER_KEY",default="")
+ATRIGGER_SECRET = config("ATRIGGER_SECRET",default="")
 
-from_number = config("from_number")
-nightscout_link = config("NIGHTSCOUT_LINK")
+from_number = config("from_number",default="")
+nightscout_link = config("NIGHTSCOUT_LINK",default="")
 
 to_numbers = []
 
