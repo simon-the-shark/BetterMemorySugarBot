@@ -1,28 +1,38 @@
-from django.shortcuts import render, redirect
-from django.http import FileResponse
-from django.views.generic import TemplateView
-
-import requests
 from datetime import datetime, timedelta, timezone
 
-from .forms import GetSecretForm, FileUploudForm
+import requests
+from django.http import FileResponse
+from django.shortcuts import render, redirect
+from django.views.generic import TemplateView
+
 from infusionset_reminder.settings import SENSOR_ALERT_FREQUENCY, INFUSION_SET_ALERT_FREQUENCY, ATRIGGER_KEY, \
     ATRIGGER_SECRET, SECRET_KEY, app_name, nightscout_link, TWILIO_AUTH_TOKEN, TWILIO_ACCOUNT_SID, from_number, \
     to_numbers
-from .models import InfusionChanged, SensorChanged
-from .forms import ChangeEnvVariableForm
-from .decorators import secret_key_required
 from .api_interactions import send_message, change_config_var, create_trigger
+from .decorators import secret_key_required
+from .forms import ChangeEnvVariableForm
+from .forms import GetSecretForm, FileUploudForm
+from .models import InfusionChanged, SensorChanged
 
 
 @secret_key_required
 def quiet_checkup_view(request):
+    """
+    shows remaining time to next change (infusion set or CGM sensor)
+    without sending notification
+    """
     return reminder_and_notifier_view(request, False)
 
 
 @secret_key_required
 def reminder_and_notifier_view(request, send_notif=True):
-    """get_from_api"""
+    """
+    get latest infusion set or CGM sensor change date from Nightscout`s API
+    saves it in database
+    calculates next change date
+    sends notification via sms
+    """
+
     date = None
     sensor_date = None
     r = requests.get(nightscout_link + "/api/v1/treatments")
@@ -68,7 +78,7 @@ def reminder_and_notifier_view(request, send_notif=True):
     idays, ihours, sdays, shours, text = 0, 0, 0, 0, ''
 
     try:
-        """calculate"""
+        """ calculate next change of infusion set"""
         infusion = timedelta(hours=INFUSION_SET_ALERT_FREQUENCY)
         if type(date) == str:
             infusion_alert_date = datetime.strptime(date[:-6], "%Y-%m-%dT%H:%M:%S") + infusion
@@ -78,7 +88,7 @@ def reminder_and_notifier_view(request, send_notif=True):
             infusion_alert_date = date + infusion
             infusion_time_remains = infusion_alert_date - datetime.now(timezone.utc)
 
-        """notify"""
+        """ notify about next change of infusion set"""
         idays = infusion_time_remains.days
         ihours = round(infusion_time_remains.seconds / 3600)
         imicroseconds = infusion_time_remains.microseconds
@@ -89,7 +99,7 @@ def reminder_and_notifier_view(request, send_notif=True):
         text += '\n.\nzestaw infuzyjny: nie udało się zczytać danych'
 
     try:
-        """calculate"""
+        """ calculate next change of CGM sensor """
         sensor = timedelta(hours=SENSOR_ALERT_FREQUENCY)
         if type(sensor_date) == str:
             sensor_alert_date = datetime.strptime(sensor_date[:-6], "%Y-%m-%dT%H:%M:%S") + sensor
@@ -98,7 +108,7 @@ def reminder_and_notifier_view(request, send_notif=True):
             sensor_alert_date = sensor_date + sensor
             sensor_time_remains = sensor_alert_date - datetime.now(timezone.utc)
 
-        """notify"""
+        """ notify about next change of CGM sensor"""
         sdays = sensor_time_remains.days
         shours = round(sensor_time_remains.seconds / 3600)
         smicroseconds = sensor_time_remains.microseconds
@@ -121,12 +131,16 @@ def reminder_and_notifier_view(request, send_notif=True):
 
 
 def file_view(request):
+    """
+    view returns verification file for atrigger.com
+    """
     file = open("staticfiles/uplouded/ATriggerVerify.txt", "rb")
 
     return FileResponse(file)
 
 
 def auth_view(request):
+    """ authorization view via SECRET_KEY """
     if request.method == "POST":
         form = GetSecretForm(request.POST)
         if form.is_valid():
@@ -138,6 +152,10 @@ def auth_view(request):
 
 
 class MenuView(TemplateView):
+    """
+    menu view
+    redirecting buttons and config variables control
+    """
     template_name = "remider/menu.html"
 
     urllink = 'https://{}.herokuapp.com/upload/?key={}'.format(app_name, SECRET_KEY)
@@ -157,6 +175,13 @@ class MenuView(TemplateView):
     )
 
     def post(self, request, *args, **kwargs):
+        """
+        POST method
+        handles http`s POST request
+        loads forms
+        checks if they are submitted
+        changes config variables
+        """
         self.info = False
         self.info2 = False
         self.forms_list = []
@@ -177,6 +202,12 @@ class MenuView(TemplateView):
         return self.render_to_response(contex)
 
     def get(self, request, *args, **kwargs):
+        """
+        GET method
+        handles http`s GET request
+        loads forms
+        shows info about successful change
+        """
         self.forms_list = []
         try:
             self.info = request.GET.get("info", "")
@@ -192,6 +223,14 @@ class MenuView(TemplateView):
         return self.render_to_response(contex)
 
     def create_changeenvvarform(self, button_name, label, default, post_data=()):
+        """
+         creates form and adds it to forms_list
+        :param button_name: string, unique button name
+        :param label: string, field`s display name
+        :param default: string, default value of form`s field
+        :param post_data: request.POST or empty tuple
+        :return: ready to use form
+        """
         if button_name in post_data:
             form = ChangeEnvVariableForm(post_data)
         else:
@@ -203,6 +242,12 @@ class MenuView(TemplateView):
         return form
 
     def save_changeenvvarform(self, form, label):
+        """
+        reads data from submitted form and changes config variables
+        :param form: submitted form
+        :param label: name of config variable
+        :return: already used form and info about successful change
+        """
         var = form.cleaned_data["new_value"]
         change_config_var(label, var)
         info2 = (True, label)
@@ -212,6 +257,7 @@ class MenuView(TemplateView):
 
 @secret_key_required
 def upload_view(request):
+    """ allows user to upload verification file for atrigger.com """
     menu_url = "https://{}.herokuapp.com/menu/?key={}".format(app_name, SECRET_KEY)
     if request.method == 'POST':
         form = FileUploudForm(request.POST, request.FILES)
@@ -227,6 +273,9 @@ def upload_view(request):
 
 
 class ManagePhoneNumbersView(TemplateView):
+    """
+    allows user to change, add or delete his phone numbers
+    """
     template_name = "remider/manage_ph.html"
     forms_list = []
     to_numbers_forms_list = {}
@@ -234,6 +283,12 @@ class ManagePhoneNumbersView(TemplateView):
     menu_url = "https://{}.herokuapp.com/menu/?key={}".format(app_name, SECRET_KEY)
 
     def post(self, request, *args, **kwargs):
+        """
+        GET method
+        handles http`s GET request
+        loads forms
+        shows info about successful change
+        """
         self.to_numbers_forms_list = {}
         self.forms_list = []
         post_data = request.POST
@@ -269,6 +324,12 @@ class ManagePhoneNumbersView(TemplateView):
         return self.render_to_response(contex)
 
     def get(self, request, *args, **kwargs):
+        """
+        GET method
+        handles http`s GET request
+        loads forms
+        shows info about successful change
+        """
         try:
             delinfo = (request.GET.get("delinfo", ""), request.GET.get("delid", ""))
 
@@ -306,6 +367,14 @@ class ManagePhoneNumbersView(TemplateView):
         return self.render_to_response(contex)
 
     def create_changeenvvarform(self, button_name, label, default, post_data=()):
+        """
+        creates form and adds it to forms_list
+        :param button_name: string, unique button name
+        :param label: string, field`s display name
+        :param default: string, default value of form`s field
+        :param post_data: request.POST or empty tuple
+        :return: ready to use form
+        """
         if button_name in post_data:
             form = ChangeEnvVariableForm(post_data)
         else:
@@ -315,7 +384,7 @@ class ManagePhoneNumbersView(TemplateView):
         form.fields['new_value'].label = label
         form.fields['new_value'].initial = default
         form.fields["new_value"].required = False
-        if form.button_name == 'new_number_button':
+        if form.button_name == 'new_number_button':  # special treatment for adding new number form
             form.action = "ADD"
             self.forms_list[-1].deletable = True
             id = len(self.to_numbers_forms_list)
@@ -327,9 +396,15 @@ class ManagePhoneNumbersView(TemplateView):
         return form
 
     def save_changeenvvarform(self, form, label):
+        """
+        reads data from submitted form and changes config variables
+        :param form: submitted form
+        :param label: name of config variable
+        :return: already used form and info about successful change
+        """
         var = form.cleaned_data["new_value"]
         change_config_var(label, var)
-        if form.button_name == 'new_number_button':
+        if form.button_name == 'new_number_button':  # special treatment for adding new number form
             action = "ADDED"
             self.forms_list[-2].deletable = False
             form.action = "CHANGE"
@@ -348,6 +423,12 @@ class ManagePhoneNumbersView(TemplateView):
 
 @secret_key_required
 def delete_view(request, number_id):
+    """
+     view handles requests for phone number deleting
+    :param request: http request
+    :param number_id: assigned number of phone number (requested to deleting)
+    :return: redirects to phone numbers management view
+    """
     label = "to_number_" + str(number_id)
     change_config_var(label, None)
 

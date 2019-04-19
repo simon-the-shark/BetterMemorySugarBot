@@ -1,9 +1,13 @@
-from django.core.management.base import BaseCommand
 import requests
+from django.core.management.base import BaseCommand
+
 from infusionset_reminder.settings import SECRET_KEY, app_name
 
 
 class Command(BaseCommand):
+    """
+    command for triggering our site
+    """
     def handle(self, *args, **options):
         self.stdout.write(self.style.HTTP_INFO("waking up ..."))
         requests.get("https://{1}.herokuapp.com/reminder/?key={0}".format(SECRET_KEY,app_name))

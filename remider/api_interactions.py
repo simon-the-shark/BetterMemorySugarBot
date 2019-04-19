@@ -1,6 +1,7 @@
-import requests, json
+import json
 from datetime import datetime, timedelta
 
+import requests
 from twilio.rest import Client
 
 from infusionset_reminder.settings import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, from_number, \
@@ -8,6 +9,7 @@ from infusionset_reminder.settings import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN,
 
 
 def send_message(body):
+    """ sends sms via Twilio gateway """
     client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
     for to_number in to_numbers:
@@ -18,6 +20,7 @@ def send_message(body):
 
 
 def change_config_var(label, new_value):
+    """ changes config variables on heroku.com"""
     headers = {'Content-Type': 'application/json',
                'Accept': 'application/vnd.heroku+json; version=3',
                "Authorization": "Bearer {}".format(token)}
@@ -28,6 +31,7 @@ def change_config_var(label, new_value):
 
 
 def create_trigger():
+    """ creates trigger on atrigger.com"""
     notif_date = (datetime.utcnow() + timedelta(days=1)).replace(hour=16, minute=0, second=0, microsecond=0).isoformat()
 
     url = "https://api.atrigger.com/v1/tasks/create?key={}&secret={}&timeSlice={}&count={}&tag_id=typical&url={}&first={}".format(
