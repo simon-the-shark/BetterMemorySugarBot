@@ -1,7 +1,8 @@
 import json
+import sys
 from datetime import datetime, timedelta
 
-import requests
+import requests.exceptions
 from twilio.rest import Client
 
 from infusionset_reminder.settings import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, from_number, \
@@ -16,7 +17,8 @@ def send_message(body):
         try:
             client.messages.create(body=body, from_=from_number, to=to_number)
         except:
-            pass
+            print("error: unsuccessful notification to {}".format(str(to_number)))
+            sys.stdout.flush()
 
 
 def change_config_var(label, new_value):
