@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import FileResponse
 from django.views.generic import TemplateView
 
-import requests as api_rq
+import requests
 from datetime import datetime, timedelta, timezone
 
 from .forms import GetSecretForm, FileUploudForm
@@ -12,7 +12,7 @@ from infusionset_reminder.settings import SENSOR_ALERT_FREQUENCY, INFUSION_SET_A
 from .models import InfusionChanged, SensorChanged
 from .forms import ChangeEnvVariableForm
 from .decorators import secret_key_required
-from .api_interactions import send_message, change_config_var
+from .api_interactions import send_message, change_config_var, create_trigger
 
 
 @secret_key_required
@@ -25,7 +25,7 @@ def reminder_and_notifier_view(request, send_notif=True):
     """get_from_api"""
     date = None
     sensor_date = None
-    r = api_rq.get(nightscout_link + "/api/v1/treatments")
+    r = requests.get(nightscout_link + "/api/v1/treatments")
     rjson = r.json()
     if r.status_code == 200:
         for set in rjson:
@@ -119,16 +119,6 @@ def reminder_and_notifier_view(request, send_notif=True):
                       "menu_url": "https://{}.herokuapp.com/menu/?key={}".format(app_name, SECRET_KEY),
                   })
 
-
-def create_trigger():
-    fdate = (datetime.utcnow() + timedelta(days=1)).replace(hour=16, minute=0, second=0, microsecond=0).isoformat()
-
-    urll = "https://api.atrigger.com/v1/tasks/create?key={}&secret={}&timeSlice={}&count={}&tag_id=typical&url={}&first={}".format(
-        ATRIGGER_KEY, ATRIGGER_SECRET, '1minute', 1,
-        'https://{}.herokuapp.com/reminder/?key={}'.format(app_name, SECRET_KEY), fdate)
-    api_rq.get(urll)
-
-
 def file_view(request):
     file = open("staticfiles/uplouded/ATriggerVerify.txt", "rb")
 
@@ -143,11 +133,12 @@ def auth_view(request):
     else:
         form = GetSecretForm()
 
-    return render(request, "remider/auth.html", context={"form": form})
+    return render(request, "remider/auth.html", {"form": form})
 
 
 class MenuView(TemplateView):
     template_name = "remider/menu.html"
+
     urllink = 'https://{}.herokuapp.com/upload/?key={}'.format(app_name, SECRET_KEY)
     urllink2 = "https://{}.herokuapp.com/phonenumbers/?key={}".format(app_name, SECRET_KEY)
     forms_list = []
