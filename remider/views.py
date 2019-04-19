@@ -16,7 +16,12 @@ from .api_interactions import send_message, change_config_var
 
 
 @secret_key_required
-def reminder_view(request):
+def quiet_checkup_view(request):
+    return reminder_and_notifier_view(request, False)
+
+
+@secret_key_required
+def reminder_and_notifier_view(request, send_notif=True):
     """get_from_api"""
     date = None
     sensor_date = None
@@ -101,9 +106,9 @@ def reminder_view(request):
             text += "\n.\n Zmień sensor CGM w {} dni i {} godzin".format(sdays, shours)
     except:
         text += '\n.\nsensor CGM: nie udało się zczytać danych'
-
-    send_message(text)
-    create_trigger()
+    if send_notif:
+        send_message(text)
+        create_trigger()
 
     return render(request, "remider/debug.html",
                   {
