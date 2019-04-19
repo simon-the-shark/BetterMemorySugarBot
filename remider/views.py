@@ -146,7 +146,7 @@ class MenuView(TemplateView):
     urllink4 = "https://{}.herokuapp.com/reminder/quiet/?key={}".format(app_name, SECRET_KEY)
 
     forms_list = []
-    forms = [
+    forms = (
         ("NIGHTSCOUT_LINK", "ns_link_button", nightscout_link),
         ("INFUSION_SET_ALERT_FREQUENCY", "infusion_freq_button", INFUSION_SET_ALERT_FREQUENCY),
         ("SENSOR_ALERT_FREQUENCY", "sensor_freq_button", SENSOR_ALERT_FREQUENCY),
@@ -154,7 +154,7 @@ class MenuView(TemplateView):
         ("TWILIO_AUTH_TOKEN", "twilio_token_button", TWILIO_AUTH_TOKEN),
         ("ATRIGGER_KEY", "atrigger_key_button", ATRIGGER_KEY),
         ("ATRIGGER_SECRET", "atrigger_secret_button", ATRIGGER_SECRET),
-    ]
+    )
 
     def post(self, request, *args, **kwargs):
         self.info = False
@@ -172,8 +172,8 @@ class MenuView(TemplateView):
             if form.is_valid() and form_tuple[1] in post_data:
                 form, self.info2 = self.save_changeenvvarform(form, form_tuple[0])
 
-        contex = self.get_context_data(forms_list=self.forms_list, urllink=self.urllink, urllink2=self.urllink2, urllink3=self.urllink3, urllink4=self.urllink4,
-                                       info=self.info, info2=self.info2)
+        contex = self.get_context_data(forms_list=self.forms_list, urllink=self.urllink, urllink2=self.urllink2,
+                                       urllink3=self.urllink3, urllink4=self.urllink4, info=self.info, info2=self.info2)
         return self.render_to_response(contex)
 
     def get(self, request, *args, **kwargs):
@@ -188,7 +188,7 @@ class MenuView(TemplateView):
             self.create_changeenvvarform(form_tuple[1], form_tuple[0], form_tuple[2])
 
         contex = self.get_context_data(forms_list=self.forms_list, urllink=self.urllink, urllink2=self.urllink2,
-                                       info=self.info, info2=self.info2)
+                                       urllink3=self.urllink3, urllink4=self.urllink4, info=self.info, info2=self.info2)
         return self.render_to_response(contex)
 
     def create_changeenvvarform(self, button_name, label, default, post_data=()):
