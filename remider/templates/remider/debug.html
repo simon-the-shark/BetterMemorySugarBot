@@ -1,5 +1,11 @@
 {% extends "core/base.html" %}
 {% block content %}
+    <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ menu_url }}">MENU</a></li>
+                <li class="breadcrumb-item active" aria-current="page">NOTIFY</li>
+            </ol>
+        </nav>
     <div class="container">
         <div class="alert alert-primary" role="alert" style="font-size: xx-large"> Your infusion set should be changed
             in {{ idays }} days

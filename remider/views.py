@@ -111,6 +111,7 @@ def reminder_view(request):
                       "ihours": ihours,
                       "sdays": sdays,
                       "shours": shours,
+                      "menu_url": "https://{}.herokuapp.com/menu/?key={}".format(app_name, SECRET_KEY),
                   })
 
 
