@@ -129,13 +129,13 @@ def create_trigger():
     api_rq.get(urll)
 
 
-def file(request):
+def file_view(request):
     file = open("staticfiles/uplouded/ATriggerVerify.txt", "rb")
 
     return FileResponse(file)
 
 
-def auth(request):
+def auth_view(request):
     if request.method == "POST":
         form = GetSecretForm(request.POST)
         if form.is_valid():
@@ -216,7 +216,7 @@ class MenuView(TemplateView):
 
 
 @secret_key_required
-def upload(request):
+def upload_view(request):
     menu_url = "https://{}.herokuapp.com/menu/?key={}".format(app_name, SECRET_KEY)
     if request.method == 'POST':
         form = FileUploudForm(request.POST, request.FILES)
