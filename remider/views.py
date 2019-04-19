@@ -119,6 +119,7 @@ def reminder_and_notifier_view(request, send_notif=True):
                       "menu_url": "https://{}.herokuapp.com/menu/?key={}".format(app_name, SECRET_KEY),
                   })
 
+
 def file_view(request):
     file = open("staticfiles/uplouded/ATriggerVerify.txt", "rb")
 
@@ -141,6 +142,9 @@ class MenuView(TemplateView):
 
     urllink = 'https://{}.herokuapp.com/upload/?key={}'.format(app_name, SECRET_KEY)
     urllink2 = "https://{}.herokuapp.com/phonenumbers/?key={}".format(app_name, SECRET_KEY)
+    urllink3 = "https://{}.herokuapp.com/reminder/?key={}".format(app_name, SECRET_KEY)
+    urllink4 = "https://{}.herokuapp.com/reminder/quiet/?key={}".format(app_name, SECRET_KEY)
+
     forms_list = []
     forms = [
         ("NIGHTSCOUT_LINK", "ns_link_button", nightscout_link),
