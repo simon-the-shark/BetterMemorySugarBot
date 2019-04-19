@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+import sys
 
 import requests
 from django.http import FileResponse
@@ -9,10 +9,11 @@ from infusionset_reminder.settings import SENSOR_ALERT_FREQUENCY, INFUSION_SET_A
     ATRIGGER_SECRET, SECRET_KEY, app_name, nightscout_link, TWILIO_AUTH_TOKEN, TWILIO_ACCOUNT_SID, from_number, \
     to_numbers
 from .api_interactions import send_message, change_config_var, create_trigger
+from .data_processing import process_nightscouts_api_response, calculate_infusion, calculate_sensor, \
+    get_sms_txt_infusion_set, get_sms_txt_sensor
 from .decorators import secret_key_required
 from .forms import ChangeEnvVariableForm
 from .forms import GetSecretForm, FileUploudForm
-from .models import InfusionChanged, SensorChanged
 
 
 @secret_key_required
@@ -33,99 +34,48 @@ def reminder_and_notifier_view(request, send_notif=True):
     sends notification via sms
     """
 
-    date = None
-    sensor_date = None
-    r = requests.get(nightscout_link + "/api/v1/treatments")
-    rjson = r.json()
-    if r.status_code == 200:
-        for set in rjson:
-            try:
-                if set['notes'] == 'Reservoir changed':
-                    date = set['created_at']
-                    try:
-                        InfusionChanged.objects.get(id=1).delete()
-                    except:
-                        pass
-                    InfusionChanged.objects.create(id=1, date=date)
-                    break
-            except:
-                pass
+    response = requests.get(nightscout_link + "/api/v1/treatments")
+    date, sensor_date = process_nightscouts_api_response(response)
 
-        for set in rjson:
-            try:
-                if set['notes'] == 'Sensor changed':
-                    sensor_date = set['created_at']
-                    try:
-                        SensorChanged.objects.get(id=1).delete()
-                    except:
-                        pass
-                    SensorChanged.objects.create(id=1, date=sensor_date)
-                    break
-            except:
-                pass
-    if date is None:
-        try:
-            date = InfusionChanged.objects.get(id=1).date
-        except:
-            pass
-
-    if sensor_date is None:
-        try:
-            sensor_date = SensorChanged.objects.get(id=1).date
-        except:
-            pass
-
-    idays, ihours, sdays, shours, text = 0, 0, 0, 0, ''
+    sms_text = ""
 
     try:
-        """ calculate next change of infusion set"""
-        infusion = timedelta(hours=INFUSION_SET_ALERT_FREQUENCY)
-        if type(date) == str:
-            infusion_alert_date = datetime.strptime(date[:-6], "%Y-%m-%dT%H:%M:%S") + infusion
-            infusion_time_remains = infusion_alert_date - datetime.utcnow()
+        infusion_time_remains = calculate_infusion(date)
+        inf_text = get_sms_txt_infusion_set(infusion_time_remains)
+        sms_text += inf_text
 
-        else:
-            infusion_alert_date = date + infusion
-            infusion_time_remains = infusion_alert_date - datetime.now(timezone.utc)
+    except TypeError:  # date is None
+        inf_text = '.\n\nZestaw infuzyjny: nie udało się zczytać danych'
+        sms_text += inf_text
 
-        """ notify about next change of infusion set"""
-        idays = infusion_time_remains.days
-        ihours = round(infusion_time_remains.seconds / 3600)
-        imicroseconds = infusion_time_remains.microseconds
-        if idays != 0 or ihours != 0 or imicroseconds != 0:
-            text = ".\n.\n Zmień zestaw infuzyjny w {} dni i {} godzin.".format(idays, ihours)
-
-    except:
-        text += '\n.\nzestaw infuzyjny: nie udało się zczytać danych'
-
+    except Exception as error:
+        print(error)
+        sys.stdout.flush()
+        inf_text = '.\n\n Zestaw infuzyjny: nie udało się przetworzyć danych'
+        sms_text += inf_text
     try:
-        """ calculate next change of CGM sensor """
-        sensor = timedelta(hours=SENSOR_ALERT_FREQUENCY)
-        if type(sensor_date) == str:
-            sensor_alert_date = datetime.strptime(sensor_date[:-6], "%Y-%m-%dT%H:%M:%S") + sensor
-            sensor_time_remains = sensor_alert_date - datetime.utcnow()
-        else:
-            sensor_alert_date = sensor_date + sensor
-            sensor_time_remains = sensor_alert_date - datetime.now(timezone.utc)
+        sensor_time_remains = calculate_sensor(sensor_date)
+        sensor_text = get_sms_txt_sensor(sensor_time_remains)
+        sms_text += sensor_text
 
-        """ notify about next change of CGM sensor"""
-        sdays = sensor_time_remains.days
-        shours = round(sensor_time_remains.seconds / 3600)
-        smicroseconds = sensor_time_remains.microseconds
-        if sdays != 0 or shours != 0 or smicroseconds != 0:
-            text += "\n.\n Zmień sensor CGM w {} dni i {} godzin".format(sdays, shours)
-    except:
-        text += '\n.\nsensor CGM: nie udało się zczytać danych'
+    except TypeError:  # sensor_date is None
+        sensor_text = '\n\nSensor CGM: nie udało się zczytać danych'
+        sms_text += sensor_text
+
+    except Exception as error:
+        print(error)
+        sys.stdout.flush()
+        sensor_text = '\n\nSensor CGM: nie udało się przetworzyć danych'
+        sms_text += sensor_text
+
     if send_notif:
-        send_message(text)
+        send_message(sms_text)
         create_trigger()
 
     return render(request, "remider/debug.html",
                   {
-                      "idays": idays,
-                      "ihours": ihours,
-                      "sdays": sdays,
-                      "shours": shours,
+                      "inf_text": inf_text[1:],
+                      "sensor_text": sensor_text,
                       "menu_url": "https://{}.herokuapp.com/menu/?key={}".format(app_name, SECRET_KEY),
                   })
 
