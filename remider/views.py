@@ -172,7 +172,7 @@ class MenuView(TemplateView):
             if form.is_valid() and form_tuple[1] in post_data:
                 form, self.info2 = self.save_changeenvvarform(form, form_tuple[0])
 
-        contex = self.get_context_data(forms_list=self.forms_list, urllink=self.urllink, urllink2=self.urllink2,
+        contex = self.get_context_data(forms_list=self.forms_list, urllink=self.urllink, urllink2=self.urllink2, urllink3=self.urllink3, urllink4=self.urllink4,
                                        info=self.info, info2=self.info2)
         return self.render_to_response(contex)
 
