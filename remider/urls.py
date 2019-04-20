@@ -3,8 +3,7 @@ from django.views.generic import TemplateView
 
 from .decorators import secret_key_required
 from .views import reminder_and_notifier_view, file_view, auth_view, upload_view, ManagePhoneNumbersView, \
-    number_delete_view, \
-    MenuView, quiet_checkup_view, NotificationsCenterView, ManageIFTTTMakersView
+    number_delete_view, MenuView, quiet_checkup_view, NotificationsCenterView, ManageIFTTTMakersView
 
 urlpatterns = [
     re_path(r"^$", TemplateView.as_view(template_name="remider/home.html"), name="home"),
@@ -17,6 +16,6 @@ urlpatterns = [
     re_path(r"^deletephonenumber/(?P<number_id>[0-9]+)/$", number_delete_view, name="del-ph"),
     re_path(r"^reminder/quiet/$", quiet_checkup_view, name="quiet"),
     re_path(r"^notifications-center/$", secret_key_required(NotificationsCenterView.as_view()), name="notif-center"),
-    re_path(r"^iftttmakers/$", secret_key_required(ManageIFTTTMakersView.as_view()), name='manage_ifttt_makers')
+    re_path(r"^iftttmakers/$", secret_key_required(ManageIFTTTMakersView.as_view()), name='manage_ifttt_makers'),
 
 ]
