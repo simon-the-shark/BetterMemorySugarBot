@@ -336,7 +336,7 @@ class ManagePhoneNumbersView(TemplateView):
         form.fields["new_value"].required = False
         if form.button_name == 'new_number_button':  # special treatment for adding new number form
             form.action = "ADD"
-            if len(self.forms_list) > 1:
+            if len(self.forms_list) > 0:
                 self.forms_list[-1].deletable = True
             id = len(self.to_numbers_forms_list)
             self.delurl = "https://{}.herokuapp.com/deletephonenumber/{}/?key={}".format(app_name, id, SECRET_KEY)
@@ -357,7 +357,8 @@ class ManagePhoneNumbersView(TemplateView):
         change_config_var(label, var)
         if form.button_name == 'new_number_button':  # special treatment for adding new number form
             action = "ADDED"
-            self.forms_list[-2].deletable = False
+            if len(self.forms_list) > 1:
+                self.forms_list[-2].deletable = False
             form.action = "CHANGE"
             form.button_name = label + "_button"
             self.to_numbers_forms_list[label] = form
@@ -529,7 +530,7 @@ class ManageIFTTTMakersView(TemplateView):
         form.fields["new_value"].required = False
         if form.button_name == 'new_maker_button':  # special treatment for adding new maker form
             form.action = "ADD"
-            if len(self.forms_list) > 1:
+            if len(self.forms_list) > 0:
                 self.forms_list[-1].deletable = True
             id = len(self.makers_dict)
             self.delurl = "https://{}.herokuapp.com/deletemaker/{}/?key={}".format(app_name, id, SECRET_KEY)
