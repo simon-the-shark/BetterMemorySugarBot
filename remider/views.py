@@ -109,7 +109,7 @@ class MenuView(TemplateView):
     template_name = "remider/menu.html"
 
     urllink = 'https://{}.herokuapp.com/upload/?key={}'.format(app_name, SECRET_KEY)
-    urllink2 = "http://127.0.0.1:8000/notifications-center/?key={}".format(SECRET_KEY)
+    urllink2 = "https://{}.herokuapp.com/notifications-center/?key={}".format(app_name, SECRET_KEY)
     urllink3 = "https://{}.herokuapp.com/reminder/?key={}".format(app_name, SECRET_KEY)
     urllink4 = "https://{}.herokuapp.com/reminder/quiet/?key={}".format(app_name, SECRET_KEY)
 
@@ -388,9 +388,18 @@ def delete_view(request, number_id):
 
 
 class NotificationsCenterView(FormView):
+    """
+    view for notifications management
+    """
     form_class = ChooseNotificationsWayForm
     template_name = "remider/notifications.html"
-    success_url = "http://127.0.0.1:8000/notifications-center/?key={}".format(SECRET_KEY)
+    success_url = "https://{}.herokuapp.com/notifications-center/?key={}".format(app_name, SECRET_KEY)
+
+    urllink = "https://{}.herokuapp.com/iftttmanagement/?key={}".format(app_name, SECRET_KEY)
+    urllink2 = "https://{}.herokuapp.com/phonenumbers/?key={}".format(app_name, SECRET_KEY)
+
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(**kwargs, urllink=self.urllink, urllink2=self.urllink2, )
 
     def form_valid(self, form):
         iftt = form.cleaned_data["ifttt_notifications"]
