@@ -403,6 +403,7 @@ def ifttt_delete_view(request, maker_id):
         "https://{}.herokuapp.com/iftttmakers/?key={}&delinfo={}&delid={}".format(app_name, SECRET_KEY, True,
                                                                                   maker_id))
 
+
 class NotificationsCenterView(FormView):
     """
     view for notifications management
@@ -549,7 +550,8 @@ class ManageIFTTTMakersView(TemplateView):
         change_config_var(label, var)
         if form.button_name == 'new_maker_button':  # special treatment for adding new maker form
             action = "ADDED"
-            self.forms_list[-2].deletable = False
+            if len(self.forms_list) > 1:
+                self.forms_list[-2].deletable = False
             form.action = "CHANGE"
             form.button_name = label + "_button"
             self.makers_dict[label] = form
