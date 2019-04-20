@@ -410,7 +410,7 @@ class NotificationsCenterView(FormView):
     template_name = "remider/notifications.html"
     success_url = "https://{}.herokuapp.com/notifications-center/?key={}".format(app_name, SECRET_KEY)
 
-    urllink = "https://{}.herokuapp.com/iftttmanagement/?key={}".format(app_name, SECRET_KEY)
+    urllink = "https://{}.herokuapp.com/iftttmakers/?key={}".format(app_name, SECRET_KEY)
     urllink2 = "https://{}.herokuapp.com/phonenumbers/?key={}".format(app_name, SECRET_KEY)
 
     def get_context_data(self, **kwargs):
