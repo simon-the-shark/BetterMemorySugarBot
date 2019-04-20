@@ -372,7 +372,7 @@ class ManagePhoneNumbersView(TemplateView):
 
 
 @secret_key_required
-def delete_view(request, number_id):
+def number_delete_view(request, number_id):
     """
      view handles requests for phone number deleting
     :param request: http request
@@ -386,6 +386,21 @@ def delete_view(request, number_id):
         "https://{}.herokuapp.com/phonenumbers/?key={}&delinfo={}&delid={}".format(app_name, SECRET_KEY, True,
                                                                                    number_id))
 
+
+@secret_key_required
+def ifttt_delete_view(request, maker_id):
+    """
+     view handles requests for phone number deleting
+    :param request: http request
+    :param number_id: assigned number of phone number (requested to deleting)
+    :return: redirects to phone numbers management view
+    """
+    label = "IFTTT_MAKER_" + str(maker_id)
+    change_config_var(label, None)
+
+    return redirect(
+        "https://{}.herokuapp.com/iftttmakers/?key={}&delinfo={}&delid={}".format(app_name, SECRET_KEY, True,
+                                                                                  maker_id))
 
 class NotificationsCenterView(FormView):
     """
