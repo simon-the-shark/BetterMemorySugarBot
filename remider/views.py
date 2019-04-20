@@ -7,7 +7,7 @@ from django.views.generic import TemplateView, FormView
 
 from infusionset_reminder.settings import SENSOR_ALERT_FREQUENCY, INFUSION_SET_ALERT_FREQUENCY, ATRIGGER_KEY, \
     ATRIGGER_SECRET, SECRET_KEY, app_name, nightscout_link, TWILIO_AUTH_TOKEN, TWILIO_ACCOUNT_SID, from_number, \
-    to_numbers
+    to_numbers, ifttt_makers
 from .api_interactions import change_config_var, create_trigger, notify
 from .data_processing import process_nightscouts_api_response, calculate_infusion, calculate_sensor, \
     get_sms_txt_infusion_set, get_sms_txt_sensor
@@ -407,3 +407,141 @@ class NotificationsCenterView(FormView):
         change_config_var("trigger_ifttt", iftt)
         change_config_var("send_sms", sms)
         return super().form_valid(form)
+
+
+class ManageIFTTTMakersView(TemplateView):
+    template_name = "remider/manage_ifttt.html"
+    forms_list = []
+    makers_dict = {}
+    info = (False, "")
+    menu_url = "https://{}.herokuapp.com/menu/?key={}".format(app_name, SECRET_KEY)
+
+    def post(self, request, *args, **kwargs):
+        """
+        GET method
+        handles http`s GET request
+        loads forms
+        shows info about successful change
+        """
+        self.makers_dict = {}
+        self.forms_list = []
+        post_data = request.POST
+
+        for i, maker in enumerate(ifttt_makers):
+            label = "IFTTT_MAKER_" + str(i + 1)
+            button_name = label + "_button"
+            label_tag = "IFTTT MAKER " + str(i + 1) + "."
+            form = self.create_changeenvvarform(button_name, label_tag, maker, post_data)
+            self.makers_dict[label] = form
+        next_maker_id = len(ifttt_makers) + 1
+        new_maker_form = self.create_changeenvvarform('new_maker_button',
+                                                      "IFTTT MAKER " + str(next_maker_id) + ".", "", post_data)
+
+        for i, maker in enumerate(ifttt_makers):
+            label = "IFTTT_MAKER_" + str(i + 1)
+            button_name = label + "_button"
+            form = self.makers_dict[label]
+            if form.is_valid() and button_name in post_data:
+                form, self.info = self.save_changeenvvarform(form, label)
+                break
+
+        if new_maker_form.is_valid() and 'new_maker_button' in post_data:
+            new_maker_form, self.info = self.save_changeenvvarform(new_maker_form, "IFTTT_MAKER_" + str(next_maker_id))
+        contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=(False, ""),
+                                       delurl=self.delurl, menu_url=self.menu_url, )
+
+        return self.render_to_response(contex)
+
+    def get(self, request, *args, **kwargs):
+        """
+        GET method
+        handles http`s GET request
+        loads forms
+        shows info about successful change
+        """
+        try:
+            delinfo = (request.GET.get("delinfo", ""), request.GET.get("delid", ""))
+        except:
+            delinfo = (False, "")
+
+        self.forms_list = []
+        self.makers_dict = {}
+
+        for i, maker in enumerate(ifttt_makers):
+            label = "IFTTT_MAKER_" + str(i + 1)
+            button_name = label + "_button"
+            label_tag = "IFTTT MAKER " + str(i + 1) + "."
+            form = self.create_changeenvvarform(button_name, label_tag, maker)
+            self.makers_dict[label] = form
+
+        next_maker_id = len(ifttt_makers) + 1
+        self.create_changeenvvarform('new_maker_button', "IFTTT MAKER " + str(next_maker_id) + ".", "")
+
+        if delinfo[0]:
+            id = delinfo[1]
+            label = "IFTTT_MAKER_" + str(id)
+            form = self.makers_dict.pop(label)
+            self.forms_list.remove(form)
+            self.forms_list[-2].deletable = True
+            self.delurl = "https://{}.herokuapp.com/deletemaker/{}/?key={}".format(app_name, str(int(id) - 1),
+                                                                                   SECRET_KEY)
+            self.forms_list[-1].fields["new_value"].label = "IFTTT MAKER " + str(
+                len(self.makers_dict) + 1) + "."
+        contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=delinfo, delurl=self.delurl,
+                                       menu_url=self.menu_url, )
+
+        return self.render_to_response(contex)
+
+    def create_changeenvvarform(self, button_name, label, default, post_data=()):
+        """
+        creates form and adds it to forms_list
+        :param button_name: string, unique button name
+        :param label: string, field`s display name
+        :param default: string, default value of form`s field
+        :param post_data: request.POST or empty tuple
+        :return: ready to use form
+        """
+        if button_name in post_data:
+            form = ChangeEnvVariableForm(post_data)
+        else:
+            form = ChangeEnvVariableForm()
+
+        form.button_name = button_name
+        form.fields['new_value'].label = label
+        form.fields['new_value'].initial = default
+        form.fields["new_value"].required = False
+        if form.button_name == 'new_maker_button':  # special treatment for adding new maker form
+            form.action = "ADD"
+            self.forms_list[-1].deletable = True
+            id = len(self.makers_dict)
+            self.delurl = "https://{}.herokuapp.com/deletemaker/{}/?key={}".format(app_name, id, SECRET_KEY)
+        else:
+            form.action = "CHANGE"
+
+        self.forms_list.append(form)
+        return form
+
+    def save_changeenvvarform(self, form, label):
+        """
+        reads data from submitted form and changes config variables
+        :param form: submitted form
+        :param label: name of config variable
+        :return: already used form and info about successful change
+        """
+        var = form.cleaned_data["new_value"]
+        change_config_var(label, var)
+        if form.button_name == 'new_maker_button':  # special treatment for adding new maker form
+            action = "ADDED"
+            self.forms_list[-2].deletable = False
+            form.action = "CHANGE"
+            form.button_name = label + "_button"
+            self.makers_dict[label] = form
+            next_maker_id = len(self.makers_dict) + 1
+            self.create_changeenvvarform('new_maker_button', "IFTTT MAKER " + str(next_maker_id) + ".", "")
+
+
+        else:
+            action = "CHANGED"
+        info2 = (True, form.fields['new_value'].label, action)
+
+        return form, info2
