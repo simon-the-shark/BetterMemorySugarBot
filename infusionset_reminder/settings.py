@@ -11,8 +11,9 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
-from decouple import config
+
 import django_heroku
+from decouple import config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -125,17 +126,15 @@ INFUSION_SET_ALERT_FREQUENCY = int(config("INFUSION_SET_ALERT_FREQUENCY", defaul
 SENSOR_ALERT_FREQUENCY = int(config("SENSOR_ALERT_FREQUENCY", default=144))
 
 TWILIO_ACCOUNT_SID = config("TWILIO_ACCOUNT_SID", default="")
-TWILIO_AUTH_TOKEN = config("TWILIO_AUTH_TOKEN",default="")
+TWILIO_AUTH_TOKEN = config("TWILIO_AUTH_TOKEN", default="")
 
-ATRIGGER_KEY = config("ATRIGGER_KEY",default="")
-ATRIGGER_SECRET = config("ATRIGGER_SECRET",default="")
+ATRIGGER_KEY = config("ATRIGGER_KEY", default="")
+ATRIGGER_SECRET = config("ATRIGGER_SECRET", default="")
 
-from_number = config("from_number",default="")
-nightscout_link = config("NIGHTSCOUT_LINK",default="")
+from_number = config("from_number", default="")
+nightscout_link = config("NIGHTSCOUT_LINK", default="")
 
 to_numbers = []
-
-
 i = 0
 while True:
     i += 1
@@ -145,4 +144,17 @@ while True:
     except:
         break
 
+ifttt_makers = []
+i = 0
+
+while True:
+    i += 1
+    try:
+        marker = config("IFTTT_MAKER_" + str(i))
+        ifttt_makers.append(marker)
+    except:
+        break
+
+trigger_ifttt = config("trigger_ifttt", default=False)
+send_sms = config("send_sms", default=False)
 django_heroku.settings(locals())

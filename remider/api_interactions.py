@@ -6,7 +6,25 @@ import requests.exceptions
 from twilio.rest import Client
 
 from infusionset_reminder.settings import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, from_number, \
-    to_numbers, token, ATRIGGER_KEY, ATRIGGER_SECRET, app_name, SECRET_KEY
+    to_numbers, token, ATRIGGER_KEY, ATRIGGER_SECRET, app_name, SECRET_KEY, ifttt_makers, trigger_ifttt, send_sms
+
+
+def notify(sms_text):
+    """
+    sends notifications via chosen ways
+    :param sms_text: text of notification
+    """
+    if send_sms:
+        send_message(sms_text)
+    if trigger_ifttt:
+        send_webhook_IFTTT(val1=sms_text[1:])
+
+
+def send_webhook_IFTTT(val1="", val2="", val3=""):
+    """ sends IFTTT webhook to all of ifttt makers from ifttt_makers list """
+    for IFTTT_MAKER in ifttt_makers:
+        requests.post("https://maker.ifttt.com/trigger/sugarbot-notification/with/key/{0}".format(IFTTT_MAKER),
+                      data={"value1": val1, "value2": val2, "value3": val3})
 
 
 def send_message(body):

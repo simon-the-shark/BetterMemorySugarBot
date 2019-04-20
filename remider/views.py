@@ -3,16 +3,16 @@ import sys
 import requests
 from django.http import FileResponse
 from django.shortcuts import render, redirect
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, FormView
 
 from infusionset_reminder.settings import SENSOR_ALERT_FREQUENCY, INFUSION_SET_ALERT_FREQUENCY, ATRIGGER_KEY, \
     ATRIGGER_SECRET, SECRET_KEY, app_name, nightscout_link, TWILIO_AUTH_TOKEN, TWILIO_ACCOUNT_SID, from_number, \
     to_numbers
-from .api_interactions import send_message, change_config_var, create_trigger
+from .api_interactions import change_config_var, create_trigger, notify
 from .data_processing import process_nightscouts_api_response, calculate_infusion, calculate_sensor, \
     get_sms_txt_infusion_set, get_sms_txt_sensor
 from .decorators import secret_key_required
-from .forms import ChangeEnvVariableForm
+from .forms import ChangeEnvVariableForm, ChooseNotificationsWayForm
 from .forms import GetSecretForm, FileUploudForm
 
 
@@ -69,7 +69,7 @@ def reminder_and_notifier_view(request, send_notif=True):
         sms_text += sensor_text
 
     if send_notif:
-        send_message(sms_text)
+        notify(sms_text)
         create_trigger()
 
     return render(request, "remider/debug.html",
@@ -109,7 +109,7 @@ class MenuView(TemplateView):
     template_name = "remider/menu.html"
 
     urllink = 'https://{}.herokuapp.com/upload/?key={}'.format(app_name, SECRET_KEY)
-    urllink2 = "https://{}.herokuapp.com/phonenumbers/?key={}".format(app_name, SECRET_KEY)
+    urllink2 = "http://127.0.0.1:8000/notifications-center/?key={}".format(SECRET_KEY)
     urllink3 = "https://{}.herokuapp.com/reminder/?key={}".format(app_name, SECRET_KEY)
     urllink4 = "https://{}.herokuapp.com/reminder/quiet/?key={}".format(app_name, SECRET_KEY)
 
@@ -385,3 +385,16 @@ def delete_view(request, number_id):
     return redirect(
         "https://{}.herokuapp.com/phonenumbers/?key={}&delinfo={}&delid={}".format(app_name, SECRET_KEY, True,
                                                                                    number_id))
+
+
+class NotificationsCenterView(FormView):
+    form_class = ChooseNotificationsWayForm
+    template_name = "remider/notifications.html"
+    success_url = "http://127.0.0.1:8000/notifications-center/?key={}".format(SECRET_KEY)
+
+    def form_valid(self, form):
+        iftt = form.cleaned_data["ifttt_notifications"]
+        sms = form.cleaned_data["sms_notifications"]
+        change_config_var("trigger_ifttt", iftt)
+        change_config_var("send_sms", sms)
+        return super().form_valid(form)
