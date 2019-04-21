@@ -411,7 +411,6 @@ class NotificationsCenterView(FormView):
     """
     form_class = ChooseNotificationsWayForm
     template_name = "remider/notifications.html"
-    success_url = "https://{0}.herokuapp.com/notifications-center/?key={1}".format(app_name, SECRET_KEY)
 
     urllink = "https://{}.herokuapp.com/iftttmakers/?key={}".format(app_name, SECRET_KEY)
     urllink2 = "https://{}.herokuapp.com/phonenumbers/?key={}".format(app_name, SECRET_KEY)
@@ -442,8 +441,8 @@ class NotificationsCenterView(FormView):
         change_config_var("send_sms", sms)
         form.fields["ifttt_notifications"].initial = ifttt
         form.fields["sms_notifications"].initial = sms
-        
-        return super().form_valid(form)
+
+        return self.render_to_response(self.get_context_data())
 
 
 class ManageIFTTTMakersView(TemplateView):
