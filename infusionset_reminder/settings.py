@@ -122,8 +122,8 @@ STATIC_URL = '/static/'
 token = config("heroku_token", default="")
 app_name = config("app_name")
 
-INFUSION_SET_ALERT_FREQUENCY = int(config("INFUSION_SET_ALERT_FREQUENCY", default=72))
-SENSOR_ALERT_FREQUENCY = int(config("SENSOR_ALERT_FREQUENCY", default=144))
+INFUSION_SET_ALERT_FREQUENCY = config("INFUSION_SET_ALERT_FREQUENCY", default=72, cast=int)
+SENSOR_ALERT_FREQUENCY = config("SENSOR_ALERT_FREQUENCY", default=144, cast=int)
 
 TWILIO_ACCOUNT_SID = config("TWILIO_ACCOUNT_SID", default="")
 TWILIO_AUTH_TOKEN = config("TWILIO_AUTH_TOKEN", default="")
@@ -155,6 +155,6 @@ while True:
     except:
         break
 
-trigger_ifttt = config("trigger_ifttt", default=False)
-send_sms = config("send_sms", default=False)
+trigger_ifttt = config("trigger_ifttt", default=False, cast=bool)
+send_sms = config("send_sms", default=False, cast=bool)
 django_heroku.settings(locals())

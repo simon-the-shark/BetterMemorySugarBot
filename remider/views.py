@@ -7,7 +7,7 @@ from django.views.generic import TemplateView, FormView
 
 from infusionset_reminder.settings import SENSOR_ALERT_FREQUENCY, INFUSION_SET_ALERT_FREQUENCY, ATRIGGER_KEY, \
     ATRIGGER_SECRET, SECRET_KEY, app_name, nightscout_link, TWILIO_AUTH_TOKEN, TWILIO_ACCOUNT_SID, from_number, \
-    to_numbers, ifttt_makers
+    to_numbers, ifttt_makers, trigger_ifttt, send_sms
 from .api_interactions import change_config_var, create_trigger, notify
 from .data_processing import process_nightscouts_api_response, calculate_infusion, calculate_sensor, \
     get_sms_txt_infusion_set, get_sms_txt_sensor
@@ -392,10 +392,10 @@ def number_delete_view(request, number_id):
 @secret_key_required
 def ifttt_delete_view(request, maker_id):
     """
-     view handles requests for phone number deleting
+     view handles requests for IFTTT makers deleting
     :param request: http request
-    :param number_id: assigned number of phone number (requested to deleting)
-    :return: redirects to phone numbers management view
+    :param number_id: assigned number of IFTTT maker (requested to deleting)
+    :return: redirects to IFTTT makers management view
     """
     label = "IFTTT_MAKER_" + str(maker_id)
     change_config_var(label, None)
@@ -411,15 +411,31 @@ class NotificationsCenterView(FormView):
     """
     form_class = ChooseNotificationsWayForm
     template_name = "remider/notifications.html"
-    success_url = "https://{}.herokuapp.com/notifications-center/?key={}".format(app_name, SECRET_KEY)
+    success_url = "http://127.0.0.1:8000/notifications-center/?key={1}".format(app_name, SECRET_KEY)
 
     urllink = "https://{}.herokuapp.com/iftttmakers/?key={}".format(app_name, SECRET_KEY)
     urllink2 = "https://{}.herokuapp.com/phonenumbers/?key={}".format(app_name, SECRET_KEY)
 
+    def get_initial(self):
+        """
+        :return: initial values for form
+        """
+        initial = super(NotificationsCenterView, self).get_initial()
+        initial["ifttt_notifications"] = trigger_ifttt
+        initial["sms_notifications"] = send_sms
+
+        return initial
+
     def get_context_data(self, **kwargs):
+        """
+        :return: contex data
+        """
         return super().get_context_data(**kwargs, urllink=self.urllink, urllink2=self.urllink2, )
 
     def form_valid(self, form):
+        """
+        method for handling validly submitted forms
+        """
         iftt = form.cleaned_data["ifttt_notifications"]
         sms = form.cleaned_data["sms_notifications"]
         change_config_var("trigger_ifttt", iftt)
@@ -428,6 +444,9 @@ class NotificationsCenterView(FormView):
 
 
 class ManageIFTTTMakersView(TemplateView):
+    """
+    view for adding, changing and deleting IFTTT makers
+    """
     template_name = "remider/manage_ifttt.html"
     forms_list = []
     makers_dict = {}
