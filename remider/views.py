@@ -411,7 +411,7 @@ class NotificationsCenterView(FormView):
     """
     form_class = ChooseNotificationsWayForm
     template_name = "remider/notifications.html"
-    success_url = "http://127.0.0.1:8000/notifications-center/?key={1}".format(app_name, SECRET_KEY)
+    success_url = "https://{0}.herokuapp.com/notifications-center/?key={1}".format(app_name, SECRET_KEY)
 
     urllink = "https://{}.herokuapp.com/iftttmakers/?key={}".format(app_name, SECRET_KEY)
     urllink2 = "https://{}.herokuapp.com/phonenumbers/?key={}".format(app_name, SECRET_KEY)
