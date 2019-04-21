@@ -17,6 +17,6 @@ urlpatterns = [
     re_path(r"^reminder/quiet/$", quiet_checkup_view, name="quiet"),
     re_path(r"^notifications-center/$", secret_key_required(NotificationsCenterView.as_view()), name="notif-center"),
     re_path(r"^iftttmakers/$", secret_key_required(ManageIFTTTMakersView.as_view()), name='manage_ifttt_makers'),
-    re_path(r"^deletemaker/(?P<number_id>[0-9]+)/$", ifttt_delete_view, name="del-ifttt"),
+    re_path(r"^deletemaker/(?P<maker_id>[0-9]+)/$", ifttt_delete_view, name="del-ifttt"),
 
 ]

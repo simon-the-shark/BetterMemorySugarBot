@@ -394,7 +394,7 @@ def ifttt_delete_view(request, maker_id):
     """
      view handles requests for IFTTT makers deleting
     :param request: http request
-    :param number_id: assigned number of IFTTT maker (requested to deleting)
+    :param maker_id: assigned number of IFTTT maker (requested to deleting)
     :return: redirects to IFTTT makers management view
     """
     label = "IFTTT_MAKER_" + str(maker_id)
