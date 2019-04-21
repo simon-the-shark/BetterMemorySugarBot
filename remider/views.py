@@ -436,10 +436,13 @@ class NotificationsCenterView(FormView):
         """
         method for handling validly submitted forms
         """
-        iftt = form.cleaned_data["ifttt_notifications"]
+        ifttt = form.cleaned_data["ifttt_notifications"]
         sms = form.cleaned_data["sms_notifications"]
-        change_config_var("trigger_ifttt", iftt)
+        change_config_var("trigger_ifttt", ifttt)
         change_config_var("send_sms", sms)
+        form.fields["ifttt_notifications"].initial = ifttt
+        form.fields["sms_notifications"].initial = sms
+        
         return super().form_valid(form)
 
 
