@@ -231,6 +231,7 @@ class ManagePhoneNumbersView(TemplateView):
     to_numbers_forms_list = {}
     info = (False, "")
     menu_url = "https://{}.herokuapp.com/menu/?key={}".format(app_name, SECRET_KEY)
+    notifications_center_url = "https://{}.herokuapp.com/notifications-center/?key={}".format(app_name, SECRET_KEY)
 
     def post(self, request, *args, **kwargs):
         """
@@ -269,7 +270,8 @@ class ManagePhoneNumbersView(TemplateView):
         if new_number_form.is_valid() and 'new_number_button' in post_data:
             new_number_form, self.info = self.save_changeenvvarform(new_number_form, "to_number_" + str(next_number_id))
         contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=(False, ""),
-                                       delurl=self.delurl, menu_url=self.menu_url, )
+                                       delurl=self.delurl, menu_url=self.menu_url,
+                                       notifications_center_url=self.notifications_center_url)
 
         return self.render_to_response(contex)
 
@@ -312,7 +314,7 @@ class ManagePhoneNumbersView(TemplateView):
             self.forms_list[-1].fields["new_value"].label = "RECEIVING NUMBER" + str(
                 len(self.to_numbers_forms_list) + 1) + "."
         contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=delinfo, delurl=self.delurl,
-                                       menu_url=self.menu_url, )
+                                       menu_url=self.menu_url, notifications_center_url=self.notifications_center_url)
 
         return self.render_to_response(contex)
 
@@ -414,6 +416,7 @@ class NotificationsCenterView(FormView):
 
     urllink = "https://{}.herokuapp.com/iftttmakers/?key={}".format(app_name, SECRET_KEY)
     urllink2 = "https://{}.herokuapp.com/phonenumbers/?key={}".format(app_name, SECRET_KEY)
+    menu_url = "https://{}.herokuapp.com/menu/?key={}".format(app_name, SECRET_KEY)
 
     def get_initial(self):
         """
@@ -429,7 +432,7 @@ class NotificationsCenterView(FormView):
         """
         :return: contex data
         """
-        return super().get_context_data(**kwargs, urllink=self.urllink, urllink2=self.urllink2, )
+        return super().get_context_data(**kwargs, urllink=self.urllink, urllink2=self.urllink2, menu_url=self.menu_url)
 
     def form_valid(self, form):
         """
@@ -454,6 +457,7 @@ class ManageIFTTTMakersView(TemplateView):
     makers_dict = {}
     info = (False, "")
     menu_url = "https://{}.herokuapp.com/menu/?key={}".format(app_name, SECRET_KEY)
+    notifications_center_url = "https://{}.herokuapp.com/notifications-center/?key={}".format(app_name, SECRET_KEY)
 
     def post(self, request, *args, **kwargs):
         """
@@ -487,7 +491,8 @@ class ManageIFTTTMakersView(TemplateView):
         if new_maker_form.is_valid() and 'new_maker_button' in post_data:
             new_maker_form, self.info = self.save_changeenvvarform(new_maker_form, "IFTTT_MAKER_" + str(next_maker_id))
         contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=(False, ""),
-                                       delurl=self.delurl, menu_url=self.menu_url, )
+                                       delurl=self.delurl, menu_url=self.menu_url,
+                                       notifications_center_url=self.notifications_center_url)
 
         return self.render_to_response(contex)
 
@@ -527,7 +532,7 @@ class ManageIFTTTMakersView(TemplateView):
             self.forms_list[-1].fields["new_value"].label = "IFTTT MAKER " + str(
                 len(self.makers_dict) + 1) + "."
         contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=delinfo, delurl=self.delurl,
-                                       menu_url=self.menu_url, )
+                                       menu_url=self.menu_url, notifications_center_url=self.notifications_center_url)
 
         return self.render_to_response(contex)
 
