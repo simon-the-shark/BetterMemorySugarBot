@@ -2,13 +2,14 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ menu_url }}">MENU</a></li>
+            <li class="breadcrumb-item active" aria-current="page">NOTIFICATIONS CENTER</li>
+        </ol>
+    </nav>
     <div class="container">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ menu_url }}">MENU</a></li>
-                <li class="breadcrumb-item active" aria-current="page">NOTIFICATIONS CENTER</li>
-            </ol>
-        </nav>
+
         <h1 align="center" class="display-4"> 🔔 NOTIFICATIONS CENTER 🔔</h1>
         <div class="jumbotron">
             <h3 class="display-5">CHOOSE YOUR NOTIFICATIONS WAYS:</h3>
