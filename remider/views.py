@@ -12,7 +12,7 @@ from .api_interactions import change_config_var, create_trigger, notify
 from .data_processing import process_nightscouts_api_response, calculate_infusion, calculate_sensor, \
     get_sms_txt_infusion_set, get_sms_txt_sensor
 from .decorators import secret_key_required
-from .forms import ChangeEnvVariableForm, ChooseNotificationsWayForm, GetSecretForm, FileUploudForm
+from .forms import ChangeEnvVariableForm, ChooseNotificationsWayForm, GetSecretForm, FileUploudForm, ChooseLanguageForm
 from .languages import *
 
 
@@ -137,6 +137,12 @@ class MenuView(TemplateView):
         self.forms_link_dict = {}
         post_data = request.POST or None
 
+        if "language_button" in post_data:
+            language_form = ChooseLanguageForm(post_data)
+        else:
+            language_form = ChooseLanguageForm()
+        language_form.fields["language"].initial = LANGUAGE_CODE
+
         for form_tuple in self.forms:
             form = self.create_changeenvvarform(form_tuple[1], form_tuple[0], form_tuple[2], post_data)
             self.forms_link_dict[form_tuple[0]] = form
@@ -146,8 +152,12 @@ class MenuView(TemplateView):
             if form.is_valid() and form_tuple[1] in post_data:
                 form, self.info2 = self.save_changeenvvarform(form, form_tuple[0])
 
+        if language_form.is_valid() and "language_button" in post_data:
+            language_form, self.info2 = self.save_changeenvvarform(language_form, "LANGUAGE_CODE", "language")
+
         contex = self.get_context_data(forms_list=self.forms_list, urllink=self.urllink, urllink2=self.urllink2,
-                                       urllink3=self.urllink3, urllink4=self.urllink4, info=self.info, info2=self.info2)
+                                       urllink3=self.urllink3, urllink4=self.urllink4, info=self.info, info2=self.info2,
+                                       language_form=language_form, )
         return self.render_to_response(contex)
 
     def get(self, request, *args, **kwargs):
@@ -157,6 +167,9 @@ class MenuView(TemplateView):
         loads forms
         shows info about successful change
         """
+        language_form = ChooseLanguageForm()
+        language_form.fields["language"].initial = LANGUAGE_CODE
+
         self.forms_list = []
         try:
             self.info = request.GET.get("info", "")
@@ -168,7 +181,8 @@ class MenuView(TemplateView):
             self.create_changeenvvarform(form_tuple[1], form_tuple[0], form_tuple[2])
 
         contex = self.get_context_data(forms_list=self.forms_list, urllink=self.urllink, urllink2=self.urllink2,
-                                       urllink3=self.urllink3, urllink4=self.urllink4, info=self.info, info2=self.info2)
+                                       urllink3=self.urllink3, urllink4=self.urllink4, info=self.info, info2=self.info2,
+                                       language_form=language_form)
         return self.render_to_response(contex)
 
     def create_changeenvvarform(self, button_name, label, default, post_data=()):
@@ -190,14 +204,14 @@ class MenuView(TemplateView):
         self.forms_list.append(form)
         return form
 
-    def save_changeenvvarform(self, form, label):
+    def save_changeenvvarform(self, form, label, field_name="new_value"):
         """
         reads data from submitted form and changes config variables
         :param form: submitted form
         :param label: name of config variable
         :return: already used form and info about successful change
         """
-        var = form.cleaned_data["new_value"]
+        var = form.cleaned_data[field_name]
         change_config_var(label, var)
         info2 = (True, label)
 

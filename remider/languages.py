@@ -13,6 +13,7 @@ if LANGUAGE_CODE == "pl":
     languages_destination_number = "NUMER OBIORCY "
     languages_ifttt_label = "WYWOŁUJ IFTTT (WYSYŁAJ WEBHOOKI)"
     languages_sms_label = "WYSYŁAJ SMSy"
+    languages_language_label = "JĘZYK"
     # actions
     languages_add_action = "DODAJ"
     languages_added_action = "DODANO"
@@ -31,6 +32,7 @@ else:
     languages_destination_number = "DESTINATION NUMBER "
     languages_ifttt_label = "TRIGGER IFTTT (SEND WEBHOOKS)"
     languages_sms_label = "SEND SMS"
+    languages_language_label = "LANGUAGE"
     # actions
     languages_add_action = "ADD"
     languages_added_action = "ADDED"

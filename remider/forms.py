@@ -24,3 +24,9 @@ class ChooseNotificationsWayForm(forms.Form):
     """ form for choosing notifications way """
     ifttt_notifications = forms.BooleanField(required=False, label=languages_ifttt_label)
     sms_notifications = forms.BooleanField(required=False, label=languages_sms_label)
+
+
+class ChooseLanguageForm(forms.Form):
+    """ form for choosing your language """
+    language = forms.ChoiceField(required=True, choices=(("pl", "POLSKI"), ("en", "ENGLISH")),
+                                 label=languages_language_label)

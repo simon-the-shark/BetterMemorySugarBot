@@ -34,19 +34,29 @@
         {% endif %}
         <div class="container">
             <h1 class="display-4">SETTINGS:</h1><br/>
-            {% for form in forms_list %}
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="col-8 align-self-end">
-                            {{ form|crispy }}
-                        </div>
-                        <div class="col-4" style="margin-top: 3.3%">
-                            <button type="submit" class="btn btn-primary" name="{{ form.button_name }}">CHANGE</button>
-                        </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-8 align-self-end">
+                        {{ language_form|crispy }}
                     </div>
-                </form>
-            {% endfor %}
+                    <div class="col-4" style="margin-top: 3.3%">
+                        <button type="submit" class="btn btn-primary" name="language_button">CHANGE</button>
+                    </div>
+                </div>
+            </form>            {% for form in forms_list %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-8 align-self-end">
+                        {{ form|crispy }}
+                    </div>
+                    <div class="col-4" style="margin-top: 3.3%">
+                        <button type="submit" class="btn btn-primary" name="{{ form.button_name }}">CHANGE</button>
+                    </div>
+                </div>
+            </form>
+        {% endfor %}
             <div/>
         </div>
 {% endblock %}

@@ -33,6 +33,17 @@
         {% endif %}
         <div class="container">
             <h1 class="display-4">USTAWIENIA:</h1><br/>
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-8 align-self-end">
+                        {{ language_form|crispy }}
+                    </div>
+                    <div class="col-4" style="margin-top: 3.3%">
+                        <button type="submit" class="btn btn-primary" name="language_button">ZMIEŃ</button>
+                    </div>
+                </div>
+            </form>
             {% for form in forms_list %}
                 <form method="post">
                     {% csrf_token %}
