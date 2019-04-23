@@ -1,0 +1,14 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+    <div class="container">
+        <div class="jumbotron">
+            <h1 class="display-4">Hello, world!</h1>
+            <p class="lead">I`m diabetic and this website helps me in my life.</p>
+            <hr class="my-4">
+            <p>PLEASE LEAVE THIS WEBSITE ALONE</p>
+            <a class="btn btn-primary btn-lg" href="https://www.google.com/" role="button"> OK </a>
+            <a class="btn btn-warning btn-lg" href="{% url 'get_secret' %}" role="button"> TO JEST MOJA STRONA >>> </a>
+        </div>
+    </div>
+{% endblock %}

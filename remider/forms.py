@@ -1,5 +1,7 @@
 from django import forms
 
+from .languages import *
+
 
 class GetSecretForm(forms.Form):
     """ authorization form """
@@ -20,5 +22,5 @@ class ChangeEnvVariableForm(forms.Form):
 
 class ChooseNotificationsWayForm(forms.Form):
     """ form for choosing notifications way """
-    ifttt_notifications = forms.BooleanField(required=False, label="TRIGGER IFTTT (SEND WEBHOOKS)")
-    sms_notifications = forms.BooleanField(required=False, label="SEND SMS NOTIFICATIONS")
+    ifttt_notifications = forms.BooleanField(required=False, label=languages_ifttt_label)
+    sms_notifications = forms.BooleanField(required=False, label=languages_sms_label)

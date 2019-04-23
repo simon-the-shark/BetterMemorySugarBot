@@ -2,6 +2,7 @@ import sys
 from datetime import datetime, timedelta, timezone
 
 from infusionset_reminder.settings import INFUSION_SET_ALERT_FREQUENCY, SENSOR_ALERT_FREQUENCY
+from .languages import *
 from .models import InfusionChanged, SensorChanged
 
 
@@ -80,7 +81,7 @@ def get_sms_txt_infusion_set(time_remains):
     """
     days = time_remains.days
     hours = round(time_remains.seconds / 3600)
-    text = ".\n\n Zmień zestaw infuzyjny w {} dni i {} godzin.".format(days, hours)
+    text = languages_infusion_successful.format(days, hours)
 
     return text
 
@@ -93,6 +94,6 @@ def get_sms_txt_sensor(time_remains):
     """
     days = time_remains.days
     hours = round(time_remains.seconds / 3600)
-    text = "\n\n Zmień sensor CGM w {} dni i {} godzin".format(days, hours)
+    text = languages_sensor_successful.format(days, hours)
 
     return text

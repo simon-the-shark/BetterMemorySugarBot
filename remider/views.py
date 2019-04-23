@@ -12,8 +12,8 @@ from .api_interactions import change_config_var, create_trigger, notify
 from .data_processing import process_nightscouts_api_response, calculate_infusion, calculate_sensor, \
     get_sms_txt_infusion_set, get_sms_txt_sensor
 from .decorators import secret_key_required
-from .forms import ChangeEnvVariableForm, ChooseNotificationsWayForm
-from .forms import GetSecretForm, FileUploudForm
+from .forms import ChangeEnvVariableForm, ChooseNotificationsWayForm, GetSecretForm, FileUploudForm
+from .languages import *
 
 
 @secret_key_required
@@ -45,13 +45,13 @@ def reminder_and_notifier_view(request, send_notif=True):
         sms_text += inf_text
 
     except TypeError:  # date is None
-        inf_text = '.\n\nZestaw infuzyjny: nie udało się zczytać danych'
+        inf_text = languages_infusion_unsuccessful_reading
         sms_text += inf_text
 
     except Exception as error:
         print(error)
         sys.stdout.flush()
-        inf_text = '.\n\n Zestaw infuzyjny: nie udało się przetworzyć danych'
+        inf_text = languages_infusion_unsuccessful_processing
         sms_text += inf_text
     try:
         sensor_time_remains = calculate_sensor(sensor_date)
@@ -59,20 +59,20 @@ def reminder_and_notifier_view(request, send_notif=True):
         sms_text += sensor_text
 
     except TypeError:  # sensor_date is None
-        sensor_text = '\n\nSensor CGM: nie udało się zczytać danych'
+        sensor_text = languages_sensor_unsuccessful_reading
         sms_text += sensor_text
 
     except Exception as error:
         print(error)
         sys.stdout.flush()
-        sensor_text = '\n\nSensor CGM: nie udało się przetworzyć danych'
+        sensor_text = languages_sensor_unsuccessful_processing
         sms_text += sensor_text
 
     if send_notif:
         notify(sms_text)
         create_trigger()
 
-    return render(request, "remider/debug.html",
+    return render(request, "{}/debug.html".format(LANGUAGE_CODE),
                   {
                       "inf_text": inf_text[1:],
                       "sensor_text": sensor_text,
@@ -85,7 +85,6 @@ def file_view(request):
     view returns verification file for atrigger.com
     """
     file = open("staticfiles/uplouded/ATriggerVerify.txt", "rb")
-
     return FileResponse(file)
 
 
@@ -98,7 +97,7 @@ def auth_view(request):
     else:
         form = GetSecretForm()
 
-    return render(request, "remider/auth.html", {"form": form})
+    return render(request, "{}/auth.html".format(LANGUAGE_CODE), {"form": form})
 
 
 class MenuView(TemplateView):
@@ -106,7 +105,7 @@ class MenuView(TemplateView):
     menu view
     redirecting buttons and config variables control
     """
-    template_name = "remider/menu.html"
+    template_name = "{}/menu.html".format(LANGUAGE_CODE)
 
     urllink = 'https://{}.herokuapp.com/upload/?key={}'.format(app_name, SECRET_KEY)
     urllink2 = "https://{}.herokuapp.com/notifications-center/?key={}".format(app_name, SECRET_KEY)
@@ -219,14 +218,14 @@ def upload_view(request):
             return redirect("https://{}.herokuapp.com/menu/?key={}&info={}".format(app_name, SECRET_KEY, True))
     else:
         form = FileUploudForm()
-    return render(request, 'remider/upload.html', {'form': form, "menu_url": menu_url, })
+    return render(request, '{}/upload.html'.format(LANGUAGE_CODE), {'form': form, "menu_url": menu_url, })
 
 
 class ManagePhoneNumbersView(TemplateView):
     """
     allows user to change, add or delete his phone numbers
     """
-    template_name = "remider/manage_ph.html"
+    template_name = "{}/manage_ph.html".format(LANGUAGE_CODE)
     forms_list = []
     to_numbers_forms_list = {}
     info = (False, "")
@@ -243,18 +242,19 @@ class ManagePhoneNumbersView(TemplateView):
         self.to_numbers_forms_list = {}
         self.forms_list = []
         post_data = request.POST
-        from_number_form = self.create_changeenvvarform('from_number_button', "NUMBER OF SENDER", from_number,
+        from_number_form = self.create_changeenvvarform('from_number_button', languages_number_of_sender, from_number,
                                                         post_data)
 
         for i, number in enumerate(to_numbers):
             label = "to_number_" + str(i + 1)
             button_name = label + "_button"
-            label_tag = "RECEIVING NUMBER " + str(i + 1) + "."
+            label_tag = languages_destination_number + str(i + 1) + "."
             form = self.create_changeenvvarform(button_name, label_tag, number, post_data)
             self.to_numbers_forms_list[label] = form
         next_number_id = len(to_numbers) + 1
         new_number_form = self.create_changeenvvarform('new_number_button',
-                                                       "RECEIVING NUMBER" + str(next_number_id) + ".", "", post_data)
+                                                       languages_destination_number + str(next_number_id) + ".", "",
+                                                       post_data)
 
         if from_number_form.is_valid() and 'from_number_button' in post_data:
             from_number_form, self.info = self.save_changeenvvarform(from_number_form, "from_number", )
@@ -291,17 +291,17 @@ class ManagePhoneNumbersView(TemplateView):
 
         self.forms_list = []
         self.to_numbers_forms_list = {}
-        self.create_changeenvvarform('from_number_button', "NUMBER OF SENDER", from_number)
+        self.create_changeenvvarform('from_number_button', languages_number_of_sender, from_number)
 
         for i, number in enumerate(to_numbers):
             label = "to_number_" + str(i + 1)
             button_name = label + "_button"
-            label_tag = "RECEIVING NUMBER " + str(i + 1) + "."
+            label_tag = languages_destination_number + str(i + 1) + "."
             form = self.create_changeenvvarform(button_name, label_tag, number)
             self.to_numbers_forms_list[label] = form
 
         next_number_id = len(to_numbers) + 1
-        self.create_changeenvvarform('new_number_button', "RECEIVING NUMBER " + str(next_number_id) + ".", "")
+        self.create_changeenvvarform('new_number_button', languages_destination_number + str(next_number_id) + ".", "")
 
         if delinfo[0]:
             id = delinfo[1]
@@ -311,7 +311,7 @@ class ManagePhoneNumbersView(TemplateView):
             self.forms_list[-2].deletable = True
             self.delurl = "https://{}.herokuapp.com/deletephonenumber/{}/?key={}".format(app_name, str(int(id) - 1),
                                                                                          SECRET_KEY)
-            self.forms_list[-1].fields["new_value"].label = "RECEIVING NUMBER" + str(
+            self.forms_list[-1].fields["new_value"].label = languages_destination_number + str(
                 len(self.to_numbers_forms_list) + 1) + "."
         contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=delinfo, delurl=self.delurl,
                                        menu_url=self.menu_url, notifications_center_url=self.notifications_center_url)
@@ -337,13 +337,13 @@ class ManagePhoneNumbersView(TemplateView):
         form.fields['new_value'].initial = default
         form.fields["new_value"].required = False
         if form.button_name == 'new_number_button':  # special treatment for adding new number form
-            form.action = "ADD"
+            form.action = languages_add_action
             if len(self.forms_list) > 0:
                 self.forms_list[-1].deletable = True
             id = len(self.to_numbers_forms_list)
             self.delurl = "https://{}.herokuapp.com/deletephonenumber/{}/?key={}".format(app_name, id, SECRET_KEY)
         else:
-            form.action = "CHANGE"
+            form.action = languages_change_action
 
         self.forms_list.append(form)
         return form
@@ -358,18 +358,19 @@ class ManagePhoneNumbersView(TemplateView):
         var = form.cleaned_data["new_value"]
         change_config_var(label, var)
         if form.button_name == 'new_number_button':  # special treatment for adding new number form
-            action = "ADDED"
+            action = languages_added_action
             if len(self.forms_list) > 1:
                 self.forms_list[-2].deletable = False
-            form.action = "CHANGE"
+            form.action = languages_change_action
             form.button_name = label + "_button"
             self.to_numbers_forms_list[label] = form
             next_number_id = len(self.to_numbers_forms_list) + 1
-            self.create_changeenvvarform('new_number_button', "RECEIVING NUMBER " + str(next_number_id) + ".", "")
+            self.create_changeenvvarform('new_number_button', languages_destination_number + str(next_number_id) + ".",
+                                         "")
 
 
         else:
-            action = "CHANGED"
+            action = languages_changed_action
         info2 = (True, form.fields['new_value'].label, action)
 
         return form, info2
@@ -412,7 +413,7 @@ class NotificationsCenterView(FormView):
     view for notifications management
     """
     form_class = ChooseNotificationsWayForm
-    template_name = "remider/notifications.html"
+    template_name = "{}/notifications.html".format(LANGUAGE_CODE)
 
     urllink = "https://{}.herokuapp.com/iftttmakers/?key={}".format(app_name, SECRET_KEY)
     urllink2 = "https://{}.herokuapp.com/phonenumbers/?key={}".format(app_name, SECRET_KEY)
@@ -452,7 +453,7 @@ class ManageIFTTTMakersView(TemplateView):
     """
     view for adding, changing and deleting IFTTT makers
     """
-    template_name = "remider/manage_ifttt.html"
+    template_name = "{}/manage_ifttt.html".format(LANGUAGE_CODE)
     forms_list = []
     makers_dict = {}
     info = (False, "")
@@ -555,13 +556,13 @@ class ManageIFTTTMakersView(TemplateView):
         form.fields['new_value'].initial = default
         form.fields["new_value"].required = False
         if form.button_name == 'new_maker_button':  # special treatment for adding new maker form
-            form.action = "ADD"
+            form.action = languages_add_action
             if len(self.forms_list) > 0:
                 self.forms_list[-1].deletable = True
             id = len(self.makers_dict)
             self.delurl = "https://{}.herokuapp.com/deletemaker/{}/?key={}".format(app_name, id, SECRET_KEY)
         else:
-            form.action = "CHANGE"
+            form.action = languages_change_action
 
         self.forms_list.append(form)
         return form
@@ -576,10 +577,10 @@ class ManageIFTTTMakersView(TemplateView):
         var = form.cleaned_data["new_value"]
         change_config_var(label, var)
         if form.button_name == 'new_maker_button':  # special treatment for adding new maker form
-            action = "ADDED"
+            action = languages_added_action
             if len(self.forms_list) > 1:
                 self.forms_list[-2].deletable = False
-            form.action = "CHANGE"
+            form.action = languages_change_action
             form.button_name = label + "_button"
             self.makers_dict[label] = form
             next_maker_id = len(self.makers_dict) + 1
@@ -587,7 +588,7 @@ class ManageIFTTTMakersView(TemplateView):
 
 
         else:
-            action = "CHANGED"
+            action = languages_changed_action
         info2 = (True, form.fields['new_value'].label, action)
 
         return form, info2

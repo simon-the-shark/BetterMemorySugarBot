@@ -1,12 +1,13 @@
 from django.urls import re_path
 from django.views.generic import TemplateView
 
+from infusionset_reminder.settings import LANGUAGE_CODE
 from .decorators import secret_key_required
 from .views import reminder_and_notifier_view, file_view, auth_view, upload_view, ManagePhoneNumbersView, \
     number_delete_view, MenuView, quiet_checkup_view, NotificationsCenterView, ManageIFTTTMakersView, ifttt_delete_view
 
 urlpatterns = [
-    re_path(r"^$", TemplateView.as_view(template_name="remider/home.html"), name="home"),
+    re_path(r"^$", TemplateView.as_view(template_name="{}/home.html".format(LANGUAGE_CODE)), name="home"),
     re_path(r"^reminder/$", reminder_and_notifier_view, name="reminder"),
     re_path(r"^ATriggerVerify.txt$", file_view),
     re_path(r"^auth/$", auth_view, name='get_secret'),
