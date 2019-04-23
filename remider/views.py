@@ -1,6 +1,7 @@
 import sys
 
 import requests
+from django.core.files.storage import FileSystemStorage
 from django.http import FileResponse
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView, FormView
@@ -226,9 +227,8 @@ def upload_view(request):
         form = FileUploudForm(request.POST, request.FILES)
         if form.is_valid():
             file = request.FILES['file']
-            with open('staticfiles/uplouded/ATriggerVerify.txt', 'wb+') as f:
-                for chunk in file.chunks():
-                    f.write(chunk)
+            fs = FileSystemStorage(location='staticfiles/uplouded/')  # defaults to   MEDIA_ROOT
+            filename = fs.save("ATriggerVerify.txt", file)
             return redirect("https://{}.herokuapp.com/menu/?key={}&info={}".format(app_name, SECRET_KEY, True))
     else:
         form = FileUploudForm()
