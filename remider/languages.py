@@ -3,9 +3,11 @@ from infusionset_reminder.settings import LANGUAGE_CODE
 if LANGUAGE_CODE == "pl":
     # notifications texts
     languages_infusion_successful = ".\n\n Zmień zestaw infuzyjny w {} dni i {} godzin."
+    languages_infusion_over = ".\n\n Twój termin zmiany zestawu infuzyjnego minął."
     languages_infusion_unsuccessful_reading = '.\n\nZestaw infuzyjny: nie udało się zczytać danych'
     languages_infusion_unsuccessful_processing = '.\n\n Zestaw infuzyjny: nie udało się przetworzyć danych'
     languages_sensor_successful = "\n\n Zmień sensor CGM w {} dni i {} godzin"
+    languages_sensor_over = "\n\n Twój termin zmiany sensora CGM minął."
     languages_sensor_unsuccessful_reading = '\n\nSensor CGM: nie udało się zczytać danych'
     languages_sensor_unsuccessful_processing = '\n\nSensor CGM: nie udało się przetworzyć danych'
     # label tags
@@ -22,9 +24,11 @@ if LANGUAGE_CODE == "pl":
 else:
     # notifications texts
     languages_infusion_successful = ".\n\n Your infusion set should be changed in {} days and {} hours."
+    languages_infusion_over = ".\n\n Your infusion set change has already passed"
     languages_infusion_unsuccessful_reading = ".\n\nInfusion set: unsuccessful data reading"
     languages_infusion_unsuccessful_processing = ".\n\n Infusion set: unsuccessful data processing"
     languages_sensor_successful = "\n\n Your CGM sensor should be changed in {} days and {} hours."
+    languages_sensor_over = "\n\n Your CGM sensor change has already passed"
     languages_sensor_unsuccessful_reading = '\n\nCGM sensor: unsuccessful data reading'
     languages_sensor_unsuccessful_processing = "\n\nCGM sensor: unsuccessful data processing"
     # label tags

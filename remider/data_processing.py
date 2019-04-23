@@ -80,6 +80,8 @@ def get_sms_txt_infusion_set(time_remains):
     :return: part of text for sms notification
     """
     days = time_remains.days
+    if days < 0:
+        return languages_infusion_over
     hours = round(time_remains.seconds / 3600)
     text = languages_infusion_successful.format(days, hours)
 
@@ -93,6 +95,8 @@ def get_sms_txt_sensor(time_remains):
     :return: part of text for sms notification
     """
     days = time_remains.days
+    if days < 0:
+        return languages_sensor_over
     hours = round(time_remains.seconds / 3600)
     text = languages_sensor_successful.format(days, hours)
 
