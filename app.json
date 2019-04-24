@@ -7,9 +7,9 @@
     "CGM",
     "nightscout"
   ],
-  "addons": {
-    "plan": "heroku-postgresql"
-  },
+  "addons": [
+    "heroku-postgresql"
+  ],
   "env": {
     "app_name": {
       "description": "please type it again :) it has to be the same"
