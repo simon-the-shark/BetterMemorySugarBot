@@ -31,12 +31,12 @@
     "INFUSION_SET_ALERT_FREQUENCY": {
       "description": "numbers of hours between your infusion set changes. (settable later)",
       "required": false,
-      "value": 72
+      "value": "72"
     },
     "SENSOR_ALERT_FREQUENCY": {
       "description": "numbers of hours between your CGM sensor changes. (settable later)",
       "required": false,
-      "value": 144
+      "value": "144"
     },
     "ATRIGGER_KEY": {
       "description": "yours API key from atrigger.com (settable later)",
