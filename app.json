@@ -1,0 +1,53 @@
+{
+  "name": "BetterMemorySugarBot",
+  "description": "Now you will not forget about next infusion set or CGM sensor change! This app remembers for you!",
+  "repository": "https://github.com/Simon-the-Shark/BetterMemorySugarBot",
+  "keywords": [
+    "diabetes",
+    "CGM",
+    "nightscout"
+  ],
+  "addons": {
+    "plan": "heroku-postgresql"
+  },
+  "env": {
+    "app_name": {
+      "description": "please type it again :) it has to be the same"
+    },
+    "SECRET_KEY": {
+      "description": "Secret password for your application"
+    },
+    "LANGUAGE_CODE": {
+      "description": "yours application and messages language. ('en' or 'pl') ",
+      "value": "en"
+    },
+    "heroku_token": {
+      "description": "your secret heroku API token."
+    },
+    "NIGHTSCOUT_LINK": {
+      "description": "http link to your nightscout website, where last change data will be downloaded from. (settable later)",
+      "required": false
+    },
+    "INFUSION_SET_ALERT_FREQUENCY": {
+      "description": "numbers of hours between your infusion set changes. (settable later)",
+      "required": false,
+      "value": 72
+    },
+    "SENSOR_ALERT_FREQUENCY": {
+      "description": "numbers of hours between your CGM sensor changes. (settable later)",
+      "required": false,
+      "value": 144
+    },
+    "ATRIGGER_KEY": {
+      "description": "yours API key from atrigger.com (settable later)",
+      "required": false
+    },
+    "ATRIGGER_SECRET": {
+      "description": "yours secret API password from atrigger.com (settable later)",
+      "required": false
+    }
+  },
+  "scripts": {
+    "postdeploy": "./postdeploy.sh"
+  }
+}
