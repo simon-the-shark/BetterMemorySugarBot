@@ -79,7 +79,6 @@ def create_trigger(tag="typical"):
     r = requests.get(url)
 
     if r.status_code == 200:
-        print(r.text)
         return True
     else:
         print("unsuccessful trigger on atrigger.com creating \n perhaps wrong API key or secret ?? or an app_name ??")
