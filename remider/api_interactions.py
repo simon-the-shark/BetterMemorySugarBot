@@ -59,16 +59,27 @@ def change_config_var(label, new_value):
         return False
 
 
-def create_trigger():
+def delete_triggers(tag="typical"):
+    """ clean all of trigger (to prevent dublicates) """
+    url = "https://api.atrigger.com/v1/tasks/delete?key={}&secret={}&tag_id={}".format(ATRIGGER_KEY, ATRIGGER_SECRET,
+                                                                                       tag)
+    requests.get(url)
+
+
+def create_trigger(tag="typical"):
     """ creates trigger on atrigger.com"""
+
+    delete_triggers()
+
     notif_date = (datetime.utcnow() + timedelta(days=1)).replace(hour=16, minute=0, second=0, microsecond=0).isoformat()
 
-    url = "https://api.atrigger.com/v1/tasks/create?key={}&secret={}&timeSlice={}&count={}&tag_id=typical&url={}&first={}".format(
-        ATRIGGER_KEY, ATRIGGER_SECRET, '1minute', 1,
+    url = "https://api.atrigger.com/v1/tasks/create?key={}&secret={}&timeSlice={}&count={}&tag_id={}&url={}&first={}".format(
+        ATRIGGER_KEY, ATRIGGER_SECRET, '1minute', 1, tag,
         'https://{}.herokuapp.com/reminder/?key={}'.format(app_name, SECRET_KEY), notif_date)
     r = requests.get(url)
 
     if r.status_code == 200:
+        print(r.text)
         return True
     else:
         print("unsuccessful trigger on atrigger.com creating \n perhaps wrong API key or secret ?? or an app_name ??")
