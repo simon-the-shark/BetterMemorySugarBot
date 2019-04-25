@@ -118,10 +118,10 @@ class MenuView(TemplateView):
         ("NIGHTSCOUT_LINK", "ns_link_button", nightscout_link),
         ("INFUSION_SET_ALERT_FREQUENCY", "infusion_freq_button", INFUSION_SET_ALERT_FREQUENCY),
         ("SENSOR_ALERT_FREQUENCY", "sensor_freq_button", SENSOR_ALERT_FREQUENCY),
-        ("TWILIO_ACCOUNT_SID", "twilio_sid_button", TWILIO_ACCOUNT_SID),
-        ("TWILIO_AUTH_TOKEN", "twilio_token_button", TWILIO_AUTH_TOKEN),
         ("ATRIGGER_KEY", "atrigger_key_button", ATRIGGER_KEY),
         ("ATRIGGER_SECRET", "atrigger_secret_button", ATRIGGER_SECRET),
+        ("TWILIO_ACCOUNT_SID", "twilio_sid_button", TWILIO_ACCOUNT_SID),
+        ("TWILIO_AUTH_TOKEN", "twilio_token_button", TWILIO_AUTH_TOKEN),
     )
 
     def post(self, request, *args, **kwargs):
