@@ -30,6 +30,17 @@
                     </button>
                 </div>
             </div>
+        {% else %}
+            {% if not info2.0 and info2.1 == "unsuccess" %}
+                <div class="container" style="margin-top: 0.3%">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>BŁĄD W TRAKCIE ZMIENIANIA ZMIENNEJ</strong>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">X</span>
+                        </button>
+                    </div>
+                </div>
+            {% endif %}
         {% endif %}
         <div class="container">
             <h1 class="display-4">USTAWIENIA:</h1><br/>

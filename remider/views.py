@@ -172,10 +172,7 @@ class MenuView(TemplateView):
         language_form.fields["language"].initial = LANGUAGE_CODE
 
         self.forms_list = []
-        try:
-            self.info = request.GET.get("info", "")
-        except:
-            self.info = False
+        self.info = bool(int(request.GET.get("info", "0")))
         self.info2 = False
 
         for form_tuple in self.forms:
@@ -213,8 +210,10 @@ class MenuView(TemplateView):
         :return: already used form and info about successful change
         """
         var = form.cleaned_data[field_name]
-        change_config_var(label, var)
-        info2 = (True, label)
+        if change_config_var(label, var):
+            info2 = (True, label)
+        else:
+            info2 = (False, "unsuccess")
 
         return form, info2
 
@@ -229,7 +228,7 @@ def upload_view(request):
             file = request.FILES['file']
             fs = FileSystemStorage(location='staticfiles/uplouded/')  # defaults to   MEDIA_ROOT
             filename = fs.save("ATriggerVerify.txt", file)
-            return redirect("https://{}.herokuapp.com/menu/?key={}&info={}".format(app_name, SECRET_KEY, True))
+            return redirect("https://{}.herokuapp.com/menu/?key={}&info={}".format(app_name, SECRET_KEY, "1"))
     else:
         form = FileUploudForm()
     return render(request, '{}/upload.html'.format(LANGUAGE_CODE), {'form': form, "menu_url": menu_url, })
@@ -283,7 +282,7 @@ class ManagePhoneNumbersView(TemplateView):
 
         if new_number_form.is_valid() and 'new_number_button' in post_data:
             new_number_form, self.info = self.save_changeenvvarform(new_number_form, "to_number_" + str(next_number_id))
-        contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=(False, ""),
+        contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=(False, "normal"),
                                        delurl=self.delurl, menu_url=self.menu_url,
                                        notifications_center_url=self.notifications_center_url)
 
@@ -296,12 +295,7 @@ class ManagePhoneNumbersView(TemplateView):
         loads forms
         shows info about successful change
         """
-        try:
-            delinfo = (request.GET.get("delinfo", ""), request.GET.get("delid", ""))
-
-
-        except:
-            delinfo = (False, "")
+        delinfo = (bool(int(request.GET.get("delinfo", "0"))), request.GET.get("delid", "normal"))
 
         self.forms_list = []
         self.to_numbers_forms_list = {}
@@ -370,22 +364,25 @@ class ManagePhoneNumbersView(TemplateView):
         :return: already used form and info about successful change
         """
         var = form.cleaned_data["new_value"]
-        change_config_var(label, var)
-        if form.button_name == 'new_number_button':  # special treatment for adding new number form
-            action = languages_added_action
-            if len(self.forms_list) > 1:
-                self.forms_list[-2].deletable = False
-            form.action = languages_change_action
-            form.button_name = label + "_button"
-            self.to_numbers_forms_list[label] = form
-            next_number_id = len(self.to_numbers_forms_list) + 1
-            self.create_changeenvvarform('new_number_button', languages_destination_number + str(next_number_id) + ".",
-                                         "")
+        if change_config_var(label, var):
+            if form.button_name == 'new_number_button':  # special treatment for adding new number form
+                action = languages_added_action
+                if len(self.forms_list) > 1:
+                    self.forms_list[-2].deletable = False
+                form.action = languages_change_action
+                form.button_name = label + "_button"
+                self.to_numbers_forms_list[label] = form
+                next_number_id = len(self.to_numbers_forms_list) + 1
+                self.create_changeenvvarform('new_number_button',
+                                             languages_destination_number + str(next_number_id) + ".",
+                                             "")
 
 
+            else:
+                action = languages_changed_action
+            info2 = [True, form.fields['new_value'].label, action]
         else:
-            action = languages_changed_action
-        info2 = (True, form.fields['new_value'].label, action)
+            info2 = [False, form.fields['new_value'].label, "unsuccess"]
 
         return form, info2
 
@@ -399,10 +396,14 @@ def number_delete_view(request, number_id):
     :return: redirects to phone numbers management view
     """
     label = "to_number_" + str(number_id)
-    change_config_var(label, None)
+
+    if change_config_var(label, None):
+        deleted = 1
+    else:
+        deleted = 0
 
     return redirect(
-        "https://{}.herokuapp.com/phonenumbers/?key={}&delinfo={}&delid={}".format(app_name, SECRET_KEY, True,
+        "https://{}.herokuapp.com/phonenumbers/?key={}&delinfo={}&delid={}".format(app_name, SECRET_KEY, deleted,
                                                                                    number_id))
 
 
@@ -415,10 +416,12 @@ def ifttt_delete_view(request, maker_id):
     :return: redirects to IFTTT makers management view
     """
     label = "IFTTT_MAKER_" + str(maker_id)
-    change_config_var(label, None)
-
+    if change_config_var(label, None):
+        deleted = 1
+    else:
+        deleted = 0
     return redirect(
-        "https://{}.herokuapp.com/iftttmakers/?key={}&delinfo={}&delid={}".format(app_name, SECRET_KEY, True,
+        "https://{}.herokuapp.com/iftttmakers/?key={}&delinfo={}&delid={}".format(app_name, SECRET_KEY, deleted,
                                                                                   maker_id))
 
 
@@ -432,6 +435,9 @@ class NotificationsCenterView(FormView):
     urllink = "https://{}.herokuapp.com/iftttmakers/?key={}".format(app_name, SECRET_KEY)
     urllink2 = "https://{}.herokuapp.com/phonenumbers/?key={}".format(app_name, SECRET_KEY)
     menu_url = "https://{}.herokuapp.com/menu/?key={}".format(app_name, SECRET_KEY)
+
+    trig_info = True
+    sms_info = True
 
     def get_initial(self):
         """
@@ -447,7 +453,8 @@ class NotificationsCenterView(FormView):
         """
         :return: contex data
         """
-        return super().get_context_data(**kwargs, urllink=self.urllink, urllink2=self.urllink2, menu_url=self.menu_url)
+        return super().get_context_data(**kwargs, urllink=self.urllink, urllink2=self.urllink2, menu_url=self.menu_url,
+                                        trig_info=self.trig_info, sms_info=self.sms_info)
 
     def form_valid(self, form):
         """
@@ -455,8 +462,16 @@ class NotificationsCenterView(FormView):
         """
         ifttt = form.cleaned_data["ifttt_notifications"]
         sms = form.cleaned_data["sms_notifications"]
-        change_config_var("trigger_ifttt", ifttt)
-        change_config_var("send_sms", sms)
+        if change_config_var("trigger_ifttt", ifttt):
+            self.trig_info = True
+        else:
+            self.trig_info = False
+
+        if change_config_var("send_sms", sms):
+            self.sms_info = True
+        else:
+            self.sms_info = False
+
         form.fields["ifttt_notifications"].initial = ifttt
         form.fields["sms_notifications"].initial = sms
 
@@ -505,7 +520,7 @@ class ManageIFTTTMakersView(TemplateView):
 
         if new_maker_form.is_valid() and 'new_maker_button' in post_data:
             new_maker_form, self.info = self.save_changeenvvarform(new_maker_form, "IFTTT_MAKER_" + str(next_maker_id))
-        contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=(False, ""),
+        contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=(False, "normal"),
                                        delurl=self.delurl, menu_url=self.menu_url,
                                        notifications_center_url=self.notifications_center_url)
 
@@ -518,10 +533,7 @@ class ManageIFTTTMakersView(TemplateView):
         loads forms
         shows info about successful change
         """
-        try:
-            delinfo = (request.GET.get("delinfo", ""), request.GET.get("delid", ""))
-        except:
-            delinfo = (False, "")
+        delinfo = (bool(int(request.GET.get("delinfo", "0"))), request.GET.get("delid", "normal"))
 
         self.forms_list = []
         self.makers_dict = {}
@@ -589,20 +601,22 @@ class ManageIFTTTMakersView(TemplateView):
         :return: already used form and info about successful change
         """
         var = form.cleaned_data["new_value"]
-        change_config_var(label, var)
-        if form.button_name == 'new_maker_button':  # special treatment for adding new maker form
-            action = languages_added_action
-            if len(self.forms_list) > 1:
-                self.forms_list[-2].deletable = False
-            form.action = languages_change_action
-            form.button_name = label + "_button"
-            self.makers_dict[label] = form
-            next_maker_id = len(self.makers_dict) + 1
-            self.create_changeenvvarform('new_maker_button', "IFTTT MAKER " + str(next_maker_id) + ".", "")
+        if change_config_var(label, var):
+            if form.button_name == 'new_maker_button':  # special treatment for adding new maker form
+                action = languages_added_action
+                if len(self.forms_list) > 1:
+                    self.forms_list[-2].deletable = False
+                form.action = languages_change_action
+                form.button_name = label + "_button"
+                self.makers_dict[label] = form
+                next_maker_id = len(self.makers_dict) + 1
+                self.create_changeenvvarform('new_maker_button', "IFTTT MAKER " + str(next_maker_id) + ".", "")
 
 
+            else:
+                action = languages_changed_action
+            info2 = [True, form.fields['new_value'].label, action]
         else:
-            action = languages_changed_action
-        info2 = (True, form.fields['new_value'].label, action)
+            info2 = [False, form.fields['new_value'].label, "unsuccess"]
 
         return form, info2

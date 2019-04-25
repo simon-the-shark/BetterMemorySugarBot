@@ -8,9 +8,32 @@
             <li class="breadcrumb-item active" aria-current="page">NOTIFICATIONS CENTER</li>
         </ol>
     </nav>
+
     <div class="container">
 
         <h1 align="center" class="display-4"> 🔔 NOTIFICATIONS CENTER 🔔</h1>
+
+        {% if not trig_info %}
+            <div class="container" style="margin-top: 0.3%">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>AN ERROR OCCURED WHEN TRIED TO CHANGE VARIABLE</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">X</span>
+                    </button>
+                </div>
+            </div>
+        {% endif %}
+        {% if not sms_info %}
+            <div class="container" style="margin-top: 0.3%">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>AN ERROR OCCURED WHEN TRIED TO CHANGE VARIABLE</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">X</span>
+                    </button>
+                </div>
+            </div>
+        {% endif %}
+
         <div class="jumbotron">
             <h3 class="display-5">CHOOSE YOUR NOTIFICATIONS WAYS:</h3>
             <hr/>

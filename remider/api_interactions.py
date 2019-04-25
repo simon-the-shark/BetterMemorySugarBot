@@ -23,8 +23,11 @@ def notify(sms_text):
 def send_webhook_IFTTT(val1="", val2="", val3=""):
     """ sends IFTTT webhook to all of ifttt makers from ifttt_makers list """
     for IFTTT_MAKER in ifttt_makers:
-        requests.post("https://maker.ifttt.com/trigger/sugarbot-notification/with/key/{0}".format(IFTTT_MAKER),
-                      data={"value1": val1, "value2": val2, "value3": val3})
+        r = requests.post("https://maker.ifttt.com/trigger/sugarbot-notification/with/key/{0}".format(IFTTT_MAKER),
+                          data={"value1": val1, "value2": val2, "value3": val3})
+        if r.status_code != 200:
+            print("error: unsuccessful IFTTT notification to {}".format(str(IFTTT_MAKER)))
+            sys.stdout.flush()
 
 
 def send_message(body):
@@ -46,15 +49,28 @@ def change_config_var(label, new_value):
                "Authorization": "Bearer {}".format(token)}
     data = {label: new_value}
 
-    requests.patch('https://api.heroku.com/apps/reminder-rekina/config-vars', headers=headers,
-                   data=json.dumps(data))
+    r = requests.patch('https://api.heroku.com/apps/remindr-rekina/config-vars', headers=headers,
+                       data=json.dumps(data))
+    if r.status_code == 200:
+        return True
+    else:
+        print(r.text)
+        sys.stdout.flush()
+        return False
 
 
 def create_trigger():
     """ creates trigger on atrigger.com"""
     notif_date = (datetime.utcnow() + timedelta(days=1)).replace(hour=16, minute=0, second=0, microsecond=0).isoformat()
 
-    url = "https://api.atrigger.com/v1/tasks/create?key={}&secret={}&timeSlice={}&count={}&tag_id=typical&url={}&first={}".format(
+    url = "https://api.atrigger.com/v1/tassssks/create?key={}&secret={}&timeSlice={}&count={}&tag_id=typical&url={}&first={}".format(
         ATRIGGER_KEY, ATRIGGER_SECRET, '1minute', 1,
         'https://{}.herokuapp.com/reminder/?key={}'.format(app_name, SECRET_KEY), notif_date)
-    requests.get(url)
+    r = requests.get(url)
+
+    if r.status_code == 200:
+        return True
+    else:
+        print("unsuccessful trigger on atrigger.com creating \n perhaps wrong API key or secret ?? or an app_name ??")
+        sys.stdout.flush()
+        return False
