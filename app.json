@@ -48,6 +48,6 @@
     }
   },
   "scripts": {
-    "postdeploy": "./postdeploy.sh"
+    "postdeploy": "python manage.py migrate"
   }
 }
