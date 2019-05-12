@@ -7,6 +7,7 @@ from twilio.rest import Client
 
 from infusionset_reminder.settings import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, from_number, \
     to_numbers, token, ATRIGGER_KEY, ATRIGGER_SECRET, app_name, SECRET_KEY, ifttt_makers, trigger_ifttt, send_sms
+from .data_processing import not_today, update_last_triggerset
 
 
 def notify(sms_text):
@@ -58,29 +59,22 @@ def change_config_var(label, new_value):
         sys.stdout.flush()
         return False
 
-
-def delete_triggers(tag="typical"):
-    """ clean all of trigger (to prevent dublicates) """
-    url = "https://api.atrigger.com/v1/tasks/delete?key={}&secret={}&tag_id={}".format(ATRIGGER_KEY, ATRIGGER_SECRET,
-                                                                                       tag)
-    requests.get(url)
-
-
 def create_trigger(tag="typical"):
-    """ creates trigger on atrigger.com"""
+    """ creates trigger on atrigger.com """
+    if not_today():
+        notif_date = (datetime.utcnow() + timedelta(days=1)).replace(hour=16, minute=0, second=0,
+                                                                     microsecond=0).isoformat()
 
-    delete_triggers()
+        url = "https://api.atrigger.com/v1/tasks/create?key={}&secret={}&timeSlice={}&count={}&tag_id={}&url={}&first={}".format(
+            ATRIGGER_KEY, ATRIGGER_SECRET, '1minute', 1, tag,
+            'https://{}.herokuapp.com/reminder/?key={}'.format(app_name, SECRET_KEY), notif_date)
+        r = requests.get(url)
 
-    notif_date = (datetime.utcnow() + timedelta(days=1)).replace(hour=16, minute=0, second=0, microsecond=0).isoformat()
-
-    url = "https://api.atrigger.com/v1/tasks/create?key={}&secret={}&timeSlice={}&count={}&tag_id={}&url={}&first={}".format(
-        ATRIGGER_KEY, ATRIGGER_SECRET, '1minute', 1, tag,
-        'https://{}.herokuapp.com/reminder/?key={}'.format(app_name, SECRET_KEY), notif_date)
-    r = requests.get(url)
-
-    if r.status_code == 200:
-        return True
-    else:
-        print("unsuccessful trigger on atrigger.com creating \n perhaps wrong API key or secret ?? or an app_name ??")
-        sys.stdout.flush()
-        return False
+        if r.status_code == 200:
+            update_last_triggerset()
+            return True
+        else:
+            print(
+                "unsuccessful trigger on atrigger.com creating \n perhaps wrong API key or secret ?? or an app_name ??")
+            sys.stdout.flush()
+            return False

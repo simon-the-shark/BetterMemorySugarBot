@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 
 from infusionset_reminder.settings import INFUSION_SET_ALERT_FREQUENCY, SENSOR_ALERT_FREQUENCY
 from .languages import *
-from .models import InfusionChanged, SensorChanged
+from .models import InfusionChanged, SensorChanged, LastTriggerSet
 
 
 def process_nightscouts_api_response(response):
@@ -101,3 +101,21 @@ def get_sms_txt_sensor(time_remains):
     text = languages_sensor_successful.format(days, hours)
 
     return text
+
+
+def not_today():
+    """
+    check if triger was not created today
+    :return: boolean
+    """
+    now = datetime.now().date()
+    last, created = LastTriggerSet.objects.get_or_create(id=1, defaults={"date": now})
+    if created or last.date != now:
+        return True
+    else:
+        return False
+
+
+def update_last_triggerset():
+    """ updates date in LastTriggerSet"""
+    LastTriggerSet.objects.update_or_create(id=1, defaults={"date": datetime.now().date()})
