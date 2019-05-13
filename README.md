@@ -4,7 +4,7 @@
  [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/Simon-the-Shark/BetterMemorySugarBot)
 
  **Now you will not forget about next infusion set or CGM sensor change! This app remembers for you!**
- ######*__do it yourself__ project*
+ ###### *__do it yourself__ project*
 
 # Table of contents
  * [How does it work?](#how-does-it-work)
