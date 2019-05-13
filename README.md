@@ -4,7 +4,7 @@
  [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/Simon-the-Shark/BetterMemorySugarBot)
 
  **Now you will not forget about next infusion set or CGM sensor change! This app remembers for you!**
- -------------- *__do it yourself__ project*  --------------
+ ######*__do it yourself__ project*
 
 # Table of contents
  * [How does it work?](#how-does-it-work)
@@ -38,10 +38,10 @@
  1. [Create Github account](#creating-github-account) or [log in](https://github.com/login) if you had already one.
  2. Go to [this project page](https://github.com/Simon-the-Shark/BetterMemorySugarBot). (you are probably already here)
  3. Click `Fork` button. (picture below)
- ![doc5](/readme-images/doc5.png)
+ ![]
 4. Click `F5` on your keyboard to refresh website.
 
-##### Creating Github account
+#### Creating Github account
 1. Go to this [link](https://github.com/join?source=header-home)
 2. Fill in the form and verify your humanity. Click `Create an account` button. (example picture below)
 ![]
@@ -53,7 +53,7 @@
 ![]
 
 #### Deploy app to Heroku
-1. ###### Click
+1. Click
 
     [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/Simon-the-Shark/BetterMemorySugarBot)
 2. Create Heroku account.  New account is highly recomended by me, because of heroku`s free dynos.
@@ -70,7 +70,7 @@
 ![]
 7. Your app is properly deployed. Instalation process is over. Now time for [configuration](#configuration).
 
-##### Filling in configuration form on Heroku
+#### Filling in configuration form on Heroku
 example picture on bottom of this tab
 **FIELDS:**
 - **required**:
@@ -85,7 +85,7 @@ example picture on bottom of this tab
   * `SENSOR_ALERT_FREQUENCY` - amount of time beetwen CGM sensor changes. [in **hours**]
 
 
-##### heroku token
+#### heroku token
 heroku token is your unique API key.
 **getting instructions**:
 1. Go to [this link](https://dashboard.heroku.com/account)
@@ -100,7 +100,7 @@ heroku token is your unique API key.
  2. [Configurate your notifications](#notifications)
 
 
-##### atrigger.com configuration
+#### atrigger.com configuration
 1. go to [this link](https://atrigger.com/user/register)
 2. Fill in registration form and click `Create My Account` button (if had not already done this). (example picture below)
  ![]
@@ -120,7 +120,7 @@ heroku token is your unique API key.
 ![]
 7. Now your `ATRIGGER_KEY` and `ATRIGGER_SECRET` are set. Go back to [atrigger configuration](atrigger.com-configuration).
 
-##### ATriggerVerify.txt
+#### ATriggerVerify.txt
 1. Go to [atrigger setup website](https://atrigger.com/panel/setup) and download verification file. (picture below)
 ![]
 2. Now [log in to your website](#logging-in-to-your-website)
@@ -178,7 +178,7 @@ heroku token is your unique API key.
     * [email](#email-notifications)
     * explore IFTTT and create some other custom applet
 #### IFTTT Applets tutorials
-##### Facebook Messenger
+#### Facebook Messenger
 1. Go to [this link](https://ifttt.com/create)
 2. Click `+this` button. (picture below)
 ![]
@@ -216,7 +216,7 @@ heroku token is your unique API key.
 17. Click `Finish` button and now your applet is ready.
 18. If you had done all the steps from [instalation](#instalation) and [configuration](#configuration) instructions, you are ready to [turn this app on](#turn-it-on) !!!
 
-##### Push Notifications
+#### Push Notifications
 1. Go to [this link](https://ifttt.com/create)
 2. Click `+this` button. (picture below)
 ![]
@@ -248,7 +248,7 @@ heroku token is your unique API key.
 18. Now you just have to download IFTTT app and log in to your account. IFTTT asks you for your number. You can give it them and they will send you a link or just download it from [Google Play](http://ift.tt/google-play-download) or [App Store](http://ift.tt/app-store-download)
 18. If you had done all the steps from [instalation](#instalation) and [configuration](#configuration) instructions, you are ready to [turn this app on](#turn-it-on) !!!
 
-##### Email notifications
+#### Email notifications
 1. Go to [this link](https://ifttt.com/create)
 2. Click `+this` button. (picture below)
 ![]
