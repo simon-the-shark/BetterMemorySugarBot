@@ -4,7 +4,7 @@
  [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/Simon-the-Shark/BetterMemorySugarBot)
 
  **Now you will not forget about next infusion set or CGM sensor change! This app remembers for you!**
- ###### *__do it yourself__ project*
+ ##### *__do it yourself__ project*
 
 # Table of contents
  * [How does it work?](#how-does-it-work)
@@ -12,7 +12,7 @@
    * [Fork project on Github](#fork-project-on-github)
    * [Deploy app to heroku](#deploy-app-to-heroku)
  * [Configuration](#configuration)
-   * [Configurate atrigger](#atrigger.com-configuration)
+   * [Configurate atrigger](#atrigger-configuration)
    * [Configurate your notifications](#notifications)
  * [Notifications](#notifications)
  * [IFTTT Applets tutorials](#ifttt-applets-tutorials)
@@ -34,14 +34,14 @@
 2. [Deploy app to heroku](#deploy-app-to-heroku)
 3. [Configurate](#configuration)
 
-#### Fork project on Github
+### Fork project on Github
  1. [Create Github account](#creating-github-account) or [log in](https://github.com/login) if you had already one.
  2. Go to [this project page](https://github.com/Simon-the-Shark/BetterMemorySugarBot). (you are probably already here)
  3. Click `Fork` button. (picture below)
  ![]
 4. Click `F5` on your keyboard to refresh website.
 
-#### Creating Github account
+### Creating Github account
 1. Go to this [link](https://github.com/join?source=header-home)
 2. Fill in the form and verify your humanity. Click `Create an account` button. (example picture below)
 ![]
@@ -52,7 +52,7 @@
 5. Verify your email addres (example picture below)
 ![]
 
-#### Deploy app to Heroku
+### Deploy app to Heroku
 1. Click
 
     [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/Simon-the-Shark/BetterMemorySugarBot)
@@ -70,7 +70,7 @@
 ![]
 7. Your app is properly deployed. Instalation process is over. Now time for [configuration](#configuration).
 
-#### Filling in configuration form on Heroku
+### Filling in configuration form on Heroku
 example picture on bottom of this tab
 **FIELDS:**
 - **required**:
@@ -79,13 +79,13 @@ example picture on bottom of this tab
     * `LANGUAGE_CODE` - language of your app. Only accepted vaues are `en` (english)(default) or `pl` (polish).
     * `SECRET_KEY` - secret password for your app. Keep it in secret!! It will be used for authorization.
 - ###### **settable later**:
-  * `ATRIGGER_KEY` and `ATRIGGER_SECRET` - read more in [atrigger](#atrigger.com-configuration) section
+  * `ATRIGGER_KEY` and `ATRIGGER_SECRET` - read more in [atrigger](#atrigger-configuration) section
   * `INFUSION_SET_ALERT_FREQUENCY` - amount of time beetwen infusion set changes. [in **hours**]
   * `NIGHTSCOUT_LINK` - http link to your nightscout website
   * `SENSOR_ALERT_FREQUENCY` - amount of time beetwen CGM sensor changes. [in **hours**]
 
 
-#### heroku token
+### heroku token
 heroku token is your unique API key.
 **getting instructions**:
 1. Go to [this link](https://dashboard.heroku.com/account)
@@ -96,11 +96,11 @@ heroku token is your unique API key.
 ![]
 
 # Configuration
- 1. [Configurate atrigger](#atrigger.com-configuration)
+ 1. [Configurate atrigger](#atrigger-configuration)
  2. [Configurate your notifications](#notifications)
 
 
-#### atrigger.com configuration
+### atrigger configuration
 1. go to [this link](https://atrigger.com/user/register)
 2. Fill in registration form and click `Create My Account` button (if had not already done this). (example picture below)
  ![]
@@ -110,7 +110,7 @@ heroku token is your unique API key.
 5. [Verify atrigger with ATriggerVerify.txt](#atriggerverify.txt)
 6. Now you can go back to [configuration instructions](#configuration).
 ###### `ATRIGGER_KEY` and `ATRIGGER_SECRET` setting
-1. In order to find out how to get them, go [here](#atrigger.com-configuration)
+1. In order to find out how to get them, go [here](#atrigger-configuration)
 2. If you already had them, time for [logging in to your website](#logging-in-to-your-website)
 4. Now you should see a page like below. Now you can paste your `ATRIGGER_KEY` in right field and click `CHANGE` button.
 ![]
@@ -118,10 +118,10 @@ heroku token is your unique API key.
 ![]
 6. Now you can paste your `ATRIGGER_SECRET` in right field and click `CHANGE` button. You should see similar green message. (example picture below)
 ![]
-7. Now your `ATRIGGER_KEY` and `ATRIGGER_SECRET` are set. Go back to [atrigger configuration](atrigger.com-configuration).
+7. Now your `ATRIGGER_KEY` and `ATRIGGER_SECRET` are set. Go back to [atrigger configuration](atrigger-configuration).
 
-#### ATriggerVerify.txt
-1. Go to [atrigger setup website](https://atrigger.com/panel/setup) and download verification file. (picture below)
+### ATriggerVerify.txt
+1. Go to [atrigger setup website](https://atrigger/panel/setup) and download verification file. (picture below)
 ![]
 2. Now [log in to your website](#logging-in-to-your-website)
 3. You should see page like below. Click gray `Upload verification file` button.
@@ -143,7 +143,7 @@ heroku token is your unique API key.
 # Notifications
 **BetterMemorySugarBot** has two ways of notifying. I recomend notifying via **IFTTT**. It`s completly free, easier to set up and it is flexible. You can choose notifying via **facebook messenger**, **push notifications** from mobile app or **email**. Of course, you can explore this platform and combine BetterMemorySugarBot with other services on your own.Second options is **SMS via Twilio API**. I have to warn you, that **when free credits are run out, you will have to pay for text messages**. To use your free credits you do not have to give them any credit card or any other billing info. It is also a little more complicated to configurate than IFTTT. If you had decided, you can go to [notifications configuration instruction](#notifications-configuration-instructions)
 
-#### Notifications configuration instruction
+### Notifications configuration instruction
 1. [Log in to your website](#logging-in-to-your-website)
 2. Click blue `NOTIFICATIONS CENTER` button. (picture below)
 ![]
@@ -152,7 +152,7 @@ heroku token is your unique API key.
 4. Now go to [IFTTT configuration](#ifttt-configuration) or to [SMS configuration](#sms-configuration)
 
 
-#### IFTTT configurating
+### IFTTT configurating
 1. If you are here, I assume you had already followed [notifications configuration instruction](#notifications-configuration-instructions)
 2. Create account on IFTTT or if you already done this, you can [log in](https://ifttt.com/login?wp_=1)
    * Go to [this link](https://ifttt.com)
@@ -177,8 +177,8 @@ heroku token is your unique API key.
     * [push notifications](#push-notifications) from IFTTT mobile app
     * [email](#email-notifications)
     * explore IFTTT and create some other custom applet
-#### IFTTT Applets tutorials
-#### Facebook Messenger
+### IFTTT Applets tutorials
+### Facebook Messenger
 1. Go to [this link](https://ifttt.com/create)
 2. Click `+this` button. (picture below)
 ![]
@@ -216,7 +216,7 @@ heroku token is your unique API key.
 17. Click `Finish` button and now your applet is ready.
 18. If you had done all the steps from [instalation](#instalation) and [configuration](#configuration) instructions, you are ready to [turn this app on](#turn-it-on) !!!
 
-#### Push Notifications
+### Push Notifications
 1. Go to [this link](https://ifttt.com/create)
 2. Click `+this` button. (picture below)
 ![]
@@ -248,7 +248,7 @@ heroku token is your unique API key.
 18. Now you just have to download IFTTT app and log in to your account. IFTTT asks you for your number. You can give it them and they will send you a link or just download it from [Google Play](http://ift.tt/google-play-download) or [App Store](http://ift.tt/app-store-download)
 18. If you had done all the steps from [instalation](#instalation) and [configuration](#configuration) instructions, you are ready to [turn this app on](#turn-it-on) !!!
 
-#### Email notifications
+### Email notifications
 1. Go to [this link](https://ifttt.com/create)
 2. Click `+this` button. (picture below)
 ![]
@@ -286,7 +286,7 @@ heroku token is your unique API key.
 17. Click `Finish` button and now your applet is ready.
 18. If you had done all the steps from [instalation](#instalation) and [configuration](#configuration) instructions, you are ready to [turn this app on](#turn-it-on) !!!
 
-#### SMS configurating
+### SMS configurating
 This tutorial will be avaible soon.
 
 # Turn it on
