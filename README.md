@@ -8,7 +8,7 @@
 
 # Table of contents
  * [How does it work?](#how-does-it-work)
- * [Bugs, new features or questions](#bugs,-new-features-or-questions)!
+ * [Bugs, new features and questions](#bugs-new-features-or-questions)
  * [Instalation](#instalation)
    * [Fork project on Github](#fork-project-on-github)
    * [Deploy app to heroku](#deploy-app-to-heroku)
@@ -30,7 +30,7 @@
  3. BetterMemorySugarBot calculates your next change date
  4.  BetterMemorySugarBot notifies you via IFTTT or SMS about remaing hours to approaching change. Read more about notifications [here](#notifications)
 
-#Bugs, new features or questions
+#Bugs new features or questions
 You discovered some bug ?? Need some new feature? Have a question? Or maybe, you just need little help during instalation process or further usage ? Feel free to [create a new issue](https://github.com/Simon-the-Shark/BetterMemorySugarBot/issues/new)
 
 # Instalation
@@ -259,7 +259,7 @@ heroku token is your unique API key.
 ![doc50](/readme-images/doc50.png)
 15. In `Message` field paste:
     >{{Value1}}
-16. Click `Create action` button. (picture below)
+16. Click `Create action`` button. (picture below)
 ![doc58](/readme-images/doc58.png)
 17. Click `Finish` button and now your applet is ready.
 18. Now you just have to download IFTTT app and log in to your account. IFTTT asks you for your number. You can give it them and they will send you a link or just download it from [Google Play](http://ift.tt/google-play-download) or [App Store](http://ift.tt/app-store-download)
@@ -304,7 +304,7 @@ heroku token is your unique API key.
 18. If you had done all the steps from [instalation](#instalation) and [configuration](#configuration) instructions, you are ready to [turn this app on](#turn-it-on) !!!
 
 ### SMS configuration
-This tutorial will be avaible soon. Do you really need it?? [Let me know](#bugs,-new-features-or-questions)!
+This tutorial will be avaible soon. Do you really need it?? [Let me know](#bugs-new-features-or-questions)!
 
 # Turn it on
 If you had done all the steps from [instalation](#instalation) and [configuration](#configuration) instructions, your app is fully prepared for this final step.
