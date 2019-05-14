@@ -188,7 +188,7 @@ heroku token is your unique API key.
 2. Click `+this` button. (picture below)
 ![doc35](/readme-images/doc35.png)
 3. Search for `webhooks` and click it. (picture below)
-![doc]36(/readme-images/doc36.png)
+![doc36](/readme-images/doc36.png)
 4. Click `Receive web request` (picture below)
 ![doc37](/readme-images/doc37.png)
 5. Type
@@ -208,11 +208,14 @@ heroku token is your unique API key.
 9. Log in to your Facebook account
 
 ![doc42](/readme-images/doc42.png)
+
 10. Click `Get Started` button. (picture below)
 ![doc43](/readme-images/doc43.png)
+
 11. You should see something like below
 
 ![doc44](/readme-images/doc44.png)
+
 12. Confirm your connection via link in your email box.(example picture below)
 ![doc45](/readme-images/doc45.png)
 13. Now get back to your applet creation site.
@@ -231,7 +234,7 @@ heroku token is your unique API key.
 2. Click `+this` button. (picture below)
 ![doc35](/readme-images/doc35.png)
 3. Search for `webhooks` and click it. (picture below)
-![doc]36(/readme-images/doc36.png)
+![doc36](/readme-images/doc36.png)
 4. Click `Receive web request` (picture below)
 ![doc37](/readme-images/doc37.png)
 5. Type
@@ -263,7 +266,7 @@ heroku token is your unique API key.
 2. Click `+this` button. (picture below)
 ![doc35](/readme-images/doc35.png)
 3. Search for `webhooks` and click it. (picture below)
-![doc]36(/readme-images/doc36.png)
+![doc36](/readme-images/doc36.png)
 4. Click `Receive web request` (picture below)
 ![doc37](/readme-images/doc37.png)
 5. Type
