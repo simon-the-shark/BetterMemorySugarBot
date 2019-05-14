@@ -56,7 +56,7 @@
 1. Click
 
     [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/Simon-the-Shark/BetterMemorySugarBot)
-2. Create Heroku account.  New account is highly recomended by me, because of heroku`s free dynos.
+2. Create Heroku account.  New account is highly recomended by me, because of heroku`s free dynos(read more [here](https://devcenter.heroku.com/articles/free-dyno-hours)).
    * Fill in registration form (example picture below)
    ![doc6](/readme-images/doc6.png)
    * Confirm your email addres. (example picture below)
@@ -74,8 +74,8 @@
 example picture on bottom of this tab
 **FIELDS:**
 - **required**:
-    * `App name` and `app_name` - first of all, I apologize for duplication, but it is necessary. It`s unique name of your app. It will be used in website URL (https://www.<app_name>.herokuapp.com). Please make sure, that this two fields are equal.
-    * `heroku_token` - your unique token on heroku. Go to [this intructions]() in order to find out how to get it.
+    * `App name` and `app_name` - first of all, I apologize for duplication, but it is necessary. It`s unique name of your app. It will be used in website URL (https://<app_name>.herokuapp.com). Please make sure, that this two fields are equal.
+    * `heroku_token` - your unique token on heroku. Go to [this intructions](#heroku-token) in order to find out how to get it.
     * `LANGUAGE_CODE` - language of your app. Only accepted vaues are `en` (english)(default) or `pl` (polish).
     * `SECRET_KEY` - secret password for your app. Keep it in secret!! It will be used for authorization.
 - ###### **settable later**:
@@ -133,7 +133,7 @@ heroku token is your unique API key.
 ![doc25](/readme-images/doc25.png)
 
 # Logging in to your website
-1. Go to your website (https://`<app_name>`.herokuapp.com). You should see page like below. Now click `IT IS MYWEBSITE >>` buttton.
+1. Go to your website (https://`<app_name>`.herokuapp.com). You should see page like below. Now click `IT IS MYWEBSITE` buttton.
 ![doc16](/readme-images/doc16.png)
 
 2. Now type your `SECRET_KEY` (it has been set during [instalation process](#filling-in-configuration-form-on-heroku)) and click `LOG IN` button. (example picture below)
@@ -145,14 +145,14 @@ heroku token is your unique API key.
 **BetterMemorySugarBot** has two ways of notifying. I recomend notifying via **IFTTT**. It`s completly free, easier to set up and it is flexible. You can choose notifying via **facebook messenger**, **push notifications** from mobile app or **email**. Of course, you can explore this platform and combine BetterMemorySugarBot with other services on your own.Second options is **SMS via Twilio API**. I have to warn you, that **when free credits are run out, you will have to pay for text messages**. To use your free credits you do not have to give them any credit card or any other billing info. It is also a little more complicated to configurate than IFTTT. If you had decided, you can go to [notifications configuration instruction](#notifications-configuration-instructions)
 
 ### Notifications configuration instruction
-1. [Log in to your website](#logging-in-to-your-website)
+1. [Log in to your website](#logging-in-to-your-website) and go to notifications center.
 ![doc26](/readme-images/doc26.png)
 3.  Choose your notifications way (you can choose both) and click `CHANGE` button. (picture below)
 ![doc27](/readme-images/doc27.png)
 4. Now go to [IFTTT configuration](#ifttt-configuration) or to [SMS configuration](#sms-configuration)
 
 
-### IFTTT configurating
+### IFTTT configuration
 1. If you are here, I assume you had already followed [notifications configuration instruction](#notifications-configuration-instructions)
 2. Create account on IFTTT or if you already done this, you can [log in](https://ifttt.com/login?wp_=1)
    * Go to [this link](https://ifttt.com)
@@ -206,10 +206,12 @@ heroku token is your unique API key.
 8. Click `connect` button. (picture below)
 ![doc41](/readme-images/doc41.png)
 9. Log in to your Facebook account
+
 ![doc42](/readme-images/doc42.png)
 10. Click `Get Started` button. (picture below)
 ![doc43](/readme-images/doc43.png)
 11. You should see something like below
+
 ![doc44](/readme-images/doc44.png)
 12. Confirm your connection via link in your email box.(example picture below)
 ![doc45](/readme-images/doc45.png)
@@ -294,7 +296,7 @@ heroku token is your unique API key.
 17. Click `Finish` button and now your applet is ready.
 18. If you had done all the steps from [instalation](#instalation) and [configuration](#configuration) instructions, you are ready to [turn this app on](#turn-it-on) !!!
 
-### SMS configurating
+### SMS configuration
 This tutorial will be avaible soon.
 
 # Turn it on
