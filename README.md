@@ -1,7 +1,7 @@
 
  # BetterMemorySugarBot
  [![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/) [![Open Source Love svg1](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
- [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/Simon-the-Shark/BetterMemorySugarBot)
+ [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
  **Now you will not forget about next infusion set or CGM sensor change! This app remembers for you!**
  ##### *__do it yourself__ project*
@@ -59,7 +59,7 @@ You discovered some bug ?? Need some new feature? Have a question? Or maybe, you
 ### Deploy app to Heroku
 1. Click
 
-    [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/Simon-the-Shark/BetterMemorySugarBot)
+    [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 2. Create Heroku account.  New account is highly recomended by me, because of heroku`s free dynos(read more [here](https://devcenter.heroku.com/articles/free-dyno-hours)).
    * Fill in registration form (example picture below)
    ![doc6](/readme-images/doc6.png)
