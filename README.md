@@ -30,7 +30,7 @@
  3. BetterMemorySugarBot calculates your next change date
  4.  BetterMemorySugarBot notifies you via IFTTT or SMS about remaing hours to approaching change. Read more about notifications [here](#notifications)
 
-#Bugs new features or questions
+# Bugs new features or questions
 You discovered some bug ?? Need some new feature? Have a question? Or maybe, you just need little help during instalation process or further usage ? Feel free to [create a new issue](https://github.com/Simon-the-Shark/BetterMemorySugarBot/issues/new)
 
 # Instalation
