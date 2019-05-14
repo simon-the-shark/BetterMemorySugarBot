@@ -8,6 +8,7 @@
 
 # Table of contents
  * [How does it work?](#how-does-it-work)
+ * [Bugs, new features or questions](#bugs,-new-features-or-questions)!
  * [Instalation](#instalation)
    * [Fork project on Github](#fork-project-on-github)
    * [Deploy app to heroku](#deploy-app-to-heroku)
@@ -28,6 +29,9 @@
  2.  BetterMemorySugarBot automatically reads last change data from your [nightscout](https://github.com/nightscout/cgm-remote-monitor) website
  3. BetterMemorySugarBot calculates your next change date
  4.  BetterMemorySugarBot notifies you via IFTTT or SMS about remaing hours to approaching change. Read more about notifications [here](#notifications)
+
+#Bugs, new features or questions
+You discovered some bug ?? Need some new feature? Have a question? Or maybe, you just need little help during instalation process or further usage ? Feel free to [create a new issue](https://github.com/Simon-the-Shark/BetterMemorySugarBot/issues/new)
 
 # Instalation
 1. [Fork project on Github](#fork-project-on-github)
@@ -300,7 +304,7 @@ heroku token is your unique API key.
 18. If you had done all the steps from [instalation](#instalation) and [configuration](#configuration) instructions, you are ready to [turn this app on](#turn-it-on) !!!
 
 ### SMS configuration
-This tutorial will be avaible soon.
+This tutorial will be avaible soon. Do you really need it?? [Let me know](#bugs,-new-features-or-questions)!
 
 # Turn it on
 If you had done all the steps from [instalation](#instalation) and [configuration](#configuration) instructions, your app is fully prepared for this final step.
