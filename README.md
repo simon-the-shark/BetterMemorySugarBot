@@ -15,6 +15,7 @@
  * [Configuration](#configuration)
    * [Configurate atrigger](#atrigger-configuration)
    * [Configurate your notifications](#notifications)
+     * [Filling in configuration form](#filling-in-configuration-form-on-heroku))
  * [Notifications](#notifications)
  * [IFTTT Applets tutorials](#ifttt-applets-tutorials)
     * [Facebook Messenger notifications](#facebook-messenger)
@@ -22,6 +23,7 @@
     * [email](#email-notifications)
  * [Logging in to your website](#logging-in-to-your-website)
  * [**Turn your app on**](#turn-it-on)
+ * [Update my site](#update-my-site)
 
 
 # How does it work?
@@ -44,6 +46,7 @@ You discovered some bug ?? Need some new feature? Have a question? Or maybe, you
  3. Click `Fork` button. (picture below)
  ![doc5](/readme-images/doc5.png)
 4. Click `F5` on your keyboard to refresh website.
+5. You have your own fork of repository now. Since now, do all instructions there.
 
 ### Creating Github account
 1. Go to this [link](https://github.com/join?source=header-home)
@@ -57,6 +60,7 @@ You discovered some bug ?? Need some new feature? Have a question? Or maybe, you
 ![doc4](/readme-images/doc4.png)
 
 ### Deploy app to Heroku
+1. Make sure you are in **YOUR forked repositorium** (not in original one). Read about forking [here](#fork-project-on-github)
 1. Click
 
     [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
@@ -315,3 +319,5 @@ If you had done all the steps from [instalation](#instalation) and [configuratio
 3. You should see page similar to below one
 ![doc57](/readme-images/doc57.png)
 4. **Congratulations !!!** Your app is working. Your first notifications has been sended ! Now every day at give time, BetterMemorySugarBot will send you a notification with remaing time. If you wants to check remaing time without notification, just click `QUIET CHECKUP` button in menu.
+
+# Update my site
