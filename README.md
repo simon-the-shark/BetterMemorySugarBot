@@ -87,7 +87,8 @@ example picture on bottom of this tab
   * `INFUSION_SET_ALERT_FREQUENCY` - amount of time beetwen infusion set changes. [in **hours**]
   * `NIGHTSCOUT_LINK` - http link to your nightscout website
   * `SENSOR_ALERT_FREQUENCY` - amount of time beetwen CGM sensor changes. [in **hours**]
-
+![doc11](/readme-images/doc11.png)
+![doc12](/readme-images/doc12.png)
 
 ### heroku token
 heroku token is your unique API key.
