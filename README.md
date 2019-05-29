@@ -321,3 +321,24 @@ If you had done all the steps from [instalation](#instalation) and [configuratio
 4. **Congratulations !!!** Your app is working. Your first notifications has been sended ! Now every day at give time, BetterMemorySugarBot will send you a notification with remaing time. If you wants to check remaing time without notification, just click `QUIET CHECKUP` button in menu.
 
 # Update my site
+To check, if your site is up-to-date or not you should go to your forked repo.
+1. Now look for message
+    > This branch is `<some number>` commits behind Simon-the-Shark:master.
+    (picture below)
+![doc60](/readme-images/doc60.png)
+2. If there is no message like this, your website is up-to-date
+3. If you can see the message, your website needs to be updated. Follow the instructions below.
+4. Click `Compare` button
+![doc61](/readme-images/doc61.png)
+5. Click `switching the base`
+![doc62](/readme-images/doc62.png)
+6. You should see page similar to below. Click `View pull request` button
+![doc63](/readme-images/doc63.png)
+7. Now click green `Merge pull request` button
+![doc64](/readme-images/doc64.png)
+8. Type short description and click `Confirm merge1 button` (example picture below)
+![doc65](/readme-images/doc65.png)
+9. Now message in your repository should contain `ahead` word
+![doc66](/readme-images/doc66.png)
+
+
