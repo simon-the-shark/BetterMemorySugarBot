@@ -336,11 +336,11 @@ To check, if your site is up-to-date or not you should go to your forked repo.
 5. Click `switching the base` if you see that link. Otherwise, manually set the base fork drop down to your fork, and the head fork to the upstream.
 ![doc62](/readme-images/doc62.png)
 6. You should see page similar to below. Click `Create new pull request` button
-![doc63](/readme-images/doc63.png)
+![doc632](/readme-images/doc632.png)
 8. Type short description and click `Confirm merge button` (example picture below)
-![doc64](/readme-images/doc64.png)
+![doc642](/readme-images/doc642.png)
 9. Click `Merge pull request`
-![doc65](/readme-images/doc65.png)
+![doc652](/readme-images/doc652.png)
 9. Click `Confirm merge`
 ![doc68](/readme-images/doc68.png)
 9. Now message in your repository should contain `ahead` word
