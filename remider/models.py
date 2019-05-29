@@ -15,3 +15,8 @@ class LastTriggerSet(models.Model):
     """ model for avoiding triggers duplicates """
 
     date = models.DateField()
+
+
+class TriggerTime(models.Model):
+    """ model for saving waking up app time """
+    time = models.TimeField()

@@ -16,6 +16,7 @@ if LANGUAGE_CODE == "pl":
     languages_ifttt_label = "WYWOŁUJ IFTTT (WYSYŁAJ WEBHOOKI)"
     languages_sms_label = "WYSYŁAJ SMSy"
     languages_language_label = "JĘZYK"
+    languages_time_label = "GODZINA POWIADOMIENIA. Proszę wprowadzić CZAS UTC"
     # actions
     languages_add_action = "DODAJ"
     languages_added_action = "DODANO"
@@ -37,6 +38,7 @@ else:
     languages_ifttt_label = "TRIGGER IFTTT (SEND WEBHOOKS)"
     languages_sms_label = "SEND SMS"
     languages_language_label = "LANGUAGE"
+    languages_time_label = "NOTIFICATION TIME. Please give UTC TIME"
     # actions
     languages_add_action = "ADD"
     languages_added_action = "ADDED"

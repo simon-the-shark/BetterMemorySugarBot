@@ -1,6 +1,7 @@
 from django import forms
 
 from .languages import *
+from .models import TriggerTime
 
 
 class GetSecretForm(forms.Form):
@@ -30,3 +31,12 @@ class ChooseLanguageForm(forms.Form):
     """ form for choosing your language """
     language = forms.ChoiceField(required=True, choices=(("pl", "POLSKI"), ("en", "ENGLISH")),
                                  label=languages_language_label)
+
+
+class TriggerTimeForm(forms.ModelForm):
+    """ form for changing waking up time """
+
+    class Meta:
+        model = TriggerTime
+        fields = ["time"]
+        labels = {"time": languages_time_label, }

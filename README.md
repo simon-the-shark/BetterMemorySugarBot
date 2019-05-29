@@ -15,7 +15,7 @@
  * [Configuration](#configuration)
    * [Configurate atrigger](#atrigger-configuration)
    * [Configurate your notifications](#notifications)
-     * [Filling in configuration form](#filling-in-configuration-form-on-heroku))
+     * [Filling in configuration form](#filling-in-configuration-form-on-heroku)
  * [Notifications](#notifications)
  * [IFTTT Applets tutorials](#ifttt-applets-tutorials)
     * [Facebook Messenger notifications](#facebook-messenger)
@@ -154,7 +154,10 @@ heroku token is your unique API key.
 **BetterMemorySugarBot** has two ways of notifying. I recomend notifying via **IFTTT**. It`s completly free, easier to set up and it is flexible. You can choose notifying via **facebook messenger**, **push notifications** from mobile app or **email**. Of course, you can explore this platform and combine BetterMemorySugarBot with other services on your own.Second options is **SMS via Twilio API**. I have to warn you, that **when free credits are run out, you will have to pay for text messages**. To use your free credits you do not have to give them any credit card or any other billing info. It is also a little more complicated to configurate than IFTTT. If you had decided, you can go to [notifications configuration instruction](#notifications-configuration-instructions)
 
 ### Notifications configuration instruction
-1. [Log in to your website](#logging-in-to-your-website) and go to notifications center.
+1. Log in to your website](#logging-in-to-your-website) and go to menu view.
+2. Choose your notification time (custom time when notifications occures). **PLEASE TYPE UTC TIME**. Click `Change`.
+![doc67](/readme-images/doc67.png)
+2. Go to notifications center.
 ![doc26](/readme-images/doc26.png)
 3.  Choose your notifications way (you can choose both) and click `CHANGE` button. (picture below)
 ![doc27](/readme-images/doc27.png)

@@ -11,9 +11,10 @@ from infusionset_reminder.settings import SENSOR_ALERT_FREQUENCY, INFUSION_SET_A
     to_numbers, ifttt_makers, trigger_ifttt, send_sms
 from .api_interactions import change_config_var, create_trigger, notify
 from .data_processing import process_nightscouts_api_response, calculate_infusion, calculate_sensor, \
-    get_sms_txt_infusion_set, get_sms_txt_sensor
+    get_sms_txt_infusion_set, get_sms_txt_sensor, get_trigger_model
 from .decorators import secret_key_required
-from .forms import ChangeEnvVariableForm, ChooseNotificationsWayForm, GetSecretForm, FileUploudForm, ChooseLanguageForm
+from .forms import ChangeEnvVariableForm, ChooseNotificationsWayForm, GetSecretForm, FileUploudForm, ChooseLanguageForm, \
+    TriggerTimeForm
 from .languages import *
 
 
@@ -144,6 +145,12 @@ class MenuView(TemplateView):
             language_form = ChooseLanguageForm()
         language_form.fields["language"].initial = LANGUAGE_CODE
 
+        time_model = get_trigger_model()
+        if "time_button" in post_data:
+            time_form = TriggerTimeForm(post_data, instance=time_model)
+        else:
+            time_form = TriggerTimeForm(instance=time_model)
+
         for form_tuple in self.forms:
             form = self.create_changeenvvarform(form_tuple[1], form_tuple[0], form_tuple[2], post_data)
             self.forms_link_dict[form_tuple[0]] = form
@@ -155,10 +162,11 @@ class MenuView(TemplateView):
 
         if language_form.is_valid() and "language_button" in post_data:
             language_form, self.info2 = self.save_changeenvvarform(language_form, "LANGUAGE_CODE", "language")
-
+        if time_form.is_valid() and "time_button" in post_data:
+            time_form.save()
         contex = self.get_context_data(forms_list=self.forms_list, urllink=self.urllink, urllink2=self.urllink2,
                                        urllink3=self.urllink3, urllink4=self.urllink4, info=self.info, info2=self.info2,
-                                       language_form=language_form, )
+                                       language_form=language_form, time_form=time_form, )
         return self.render_to_response(contex)
 
     def get(self, request, *args, **kwargs):
@@ -171,6 +179,9 @@ class MenuView(TemplateView):
         language_form = ChooseLanguageForm()
         language_form.fields["language"].initial = LANGUAGE_CODE
 
+        time_model = get_trigger_model()
+        time_form = TriggerTimeForm(instance=time_model)
+
         self.forms_list = []
         self.info = bool(int(request.GET.get("info", "0")))
         self.info2 = False
@@ -180,7 +191,7 @@ class MenuView(TemplateView):
 
         contex = self.get_context_data(forms_list=self.forms_list, urllink=self.urllink, urllink2=self.urllink2,
                                        urllink3=self.urllink3, urllink4=self.urllink4, info=self.info, info2=self.info2,
-                                       language_form=language_form)
+                                       language_form=language_form, time_form=time_form, )
         return self.render_to_response(contex)
 
     def create_changeenvvarform(self, button_name, label, default, post_data=()):

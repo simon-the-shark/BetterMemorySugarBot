@@ -1,9 +1,9 @@
 import sys
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone, time
 
 from infusionset_reminder.settings import INFUSION_SET_ALERT_FREQUENCY, SENSOR_ALERT_FREQUENCY
 from .languages import *
-from .models import InfusionChanged, SensorChanged, LastTriggerSet
+from .models import InfusionChanged, SensorChanged, LastTriggerSet, TriggerTime
 
 
 def process_nightscouts_api_response(response):
@@ -119,3 +119,8 @@ def not_today():
 def update_last_triggerset():
     """ updates date in LastTriggerSet"""
     LastTriggerSet.objects.update_or_create(id=1, defaults={"date": datetime.now().date()})
+
+
+def get_trigger_model():
+    time_model, created = TriggerTime.objects.get_or_create(id=1, defaults={"time": time(16)})
+    return time_model

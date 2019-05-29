@@ -7,7 +7,7 @@ from twilio.rest import Client
 
 from infusionset_reminder.settings import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, from_number, \
     to_numbers, token, ATRIGGER_KEY, ATRIGGER_SECRET, app_name, SECRET_KEY, ifttt_makers, trigger_ifttt, send_sms
-from .data_processing import not_today, update_last_triggerset
+from .data_processing import not_today, update_last_triggerset, get_trigger_model
 
 
 def notify(sms_text):
@@ -59,10 +59,13 @@ def change_config_var(label, new_value):
         sys.stdout.flush()
         return False
 
+
 def create_trigger(tag="typical"):
     """ creates trigger on atrigger.com """
     if not_today():
-        notif_date = (datetime.utcnow() + timedelta(days=1)).replace(hour=16, minute=0, second=0,
+        time_model = get_trigger_model()
+        notif_date = (datetime.utcnow() + timedelta(days=1)).replace(hour=time_model.hour, minute=time_model.minute,
+                                                                     second=time_model.second,
                                                                      microsecond=0).isoformat()
 
         url = "https://api.atrigger.com/v1/tasks/create?key={}&secret={}&timeSlice={}&count={}&tag_id={}&url={}&first={}".format(

@@ -55,19 +55,31 @@
                         <button type="submit" class="btn btn-primary" name="language_button">CHANGE</button>
                     </div>
                 </div>
-            </form>            {% for form in forms_list %}
+            </form>
             <form method="post">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-8 align-self-end">
-                        {{ form|crispy }}
+                        {{ time_form|crispy }}
                     </div>
                     <div class="col-4" style="margin-top: 3.3%">
-                        <button type="submit" class="btn btn-primary" name="{{ form.button_name }}">CHANGE</button>
+                        <button type="submit" class="btn btn-primary" name="time_button">CHANGE</button>
                     </div>
                 </div>
             </form>
-        {% endfor %}
+            {% for form in forms_list %}
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-8 align-self-end">
+                            {{ form|crispy }}
+                        </div>
+                        <div class="col-4" style="margin-top: 3.3%">
+                            <button type="submit" class="btn btn-primary" name="{{ form.button_name }}">CHANGE</button>
+                        </div>
+                    </div>
+                </form>
+            {% endfor %}
             <div/>
         </div>
 {% endblock %}

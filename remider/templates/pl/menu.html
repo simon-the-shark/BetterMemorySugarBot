@@ -55,6 +55,17 @@
                     </div>
                 </div>
             </form>
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-8 align-self-end">
+                        {{ time_form|crispy }}
+                    </div>
+                    <div class="col-4" style="margin-top: 3.3%">
+                        <button type="submit" class="btn btn-primary" name="time_button">ZMIEŃ</button>
+                    </div>
+                </div>
+            </form>
             {% for form in forms_list %}
                 <form method="post">
                     {% csrf_token %}
