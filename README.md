@@ -337,7 +337,7 @@ To check, if your site is up-to-date or not you should go to your forked repo.
 ![doc62](/readme-images/doc62.png)
 6. You should see page similar to below. Click `Create new pull request` button
 ![doc632](/readme-images/doc632.png)
-8. Type short description and click `Confirm merge button` (example picture below)
+8. Type short description and click `Create pull request` (example picture below)
 ![doc642](/readme-images/doc642.png)
 9. Click `Merge pull request`
 ![doc652](/readme-images/doc652.png)
