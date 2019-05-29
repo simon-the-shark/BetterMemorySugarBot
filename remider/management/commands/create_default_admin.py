@@ -14,8 +14,8 @@ class Command(createsuperuser.Command):
         options.setdefault('interactive', False)
         database = options.get('database')
         user_data = {
-            'username': SECRET_KEY,
-            'password': app_name,
+            'username': app_name,
+            'password': SECRET_KEY,
             'email': "",
         }
         self.UserModel._default_manager.db_manager(database).create_superuser(**user_data)
