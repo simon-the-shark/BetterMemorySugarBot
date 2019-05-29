@@ -333,14 +333,16 @@ To check, if your site is up-to-date or not you should go to your forked repo.
 3. If you can see the message, your website needs to be updated. Follow the instructions below.
 4. Click `Compare` button
 ![doc61](/readme-images/doc61.png)
-5. Click `switching the base`
+5. Click `switching the base` if you see that link. Otherwise, manually set the base fork drop down to your fork, and the head fork to the upstream.
 ![doc62](/readme-images/doc62.png)
-6. You should see page similar to below. Click `Create pull request` button
+6. You should see page similar to below. Click `Create new pull request` button
 ![doc63](/readme-images/doc63.png)
-7. Now click green `Merge pull request` button
-![doc64](/readme-images/doc64.png)
 8. Type short description and click `Confirm merge button` (example picture below)
+![doc64](/readme-images/doc64.png)
+9. Click `Merge pull request`
 ![doc65](/readme-images/doc65.png)
+9. Click `Confirm merge`
+![doc68](/readme-images/doc68.png)
 9. Now message in your repository should contain `ahead` word
 ![doc66](/readme-images/doc66.png)
 
