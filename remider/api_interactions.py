@@ -64,8 +64,9 @@ def create_trigger(tag="typical"):
     """ creates trigger on atrigger.com """
     if not_today():
         time_model = get_trigger_model()
-        notif_date = (datetime.utcnow() + timedelta(days=1)).replace(hour=time_model.hour, minute=time_model.minute,
-                                                                     second=time_model.second,
+        notif_date = (datetime.utcnow() + timedelta(days=1)).replace(hour=time_model.time.hour,
+                                                                     minute=time_model.time.minute,
+                                                                     second=time_model.time.second,
                                                                      microsecond=0).isoformat()
 
         url = "https://api.atrigger.com/v1/tasks/create?key={}&secret={}&timeSlice={}&count={}&tag_id={}&url={}&first={}".format(
