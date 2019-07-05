@@ -253,8 +253,6 @@ class ManagePhoneNumbersView(TemplateView):
     forms_list = []
     to_numbers_forms_list = {}
     info = (False, "")
-    menu_url = "https://{}.herokuapp.com/menu/?key={}".format(app_name, SECRET_KEY)
-    notifications_center_url = "https://{}.herokuapp.com/notifications-center/?key={}".format(app_name, SECRET_KEY)
 
     def post(self, request, *args, **kwargs):
         """
@@ -294,10 +292,15 @@ class ManagePhoneNumbersView(TemplateView):
         if new_number_form.is_valid() and 'new_number_button' in post_data:
             new_number_form, self.info = self.save_changeenvvarform(new_number_form, "to_number_" + str(next_number_id))
         contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=(False, "normal"),
-                                       delurl=self.delurl, menu_url=self.menu_url,
-                                       notifications_center_url=self.notifications_center_url)
+                                       SECRET_KEY=SECRET_KEY, last_id=self.get_del_id())
 
         return self.render_to_response(contex)
+
+    def get_del_id(self):
+        if bool(int(self.request.GET.get("delinfo", "0"))):
+            return str(int(self.request.GET.get("delid", "normal")) - 1)
+        else:
+            return len(self.to_numbers_forms_list)
 
     def get(self, request, *args, **kwargs):
         """
@@ -328,12 +331,10 @@ class ManagePhoneNumbersView(TemplateView):
             form = self.to_numbers_forms_list.pop(label)
             self.forms_list.remove(form)
             self.forms_list[-2].deletable = True
-            self.delurl = "https://{}.herokuapp.com/deletephonenumber/{}/?key={}".format(app_name, str(int(id) - 1),
-                                                                                         SECRET_KEY)
             self.forms_list[-1].fields["new_value"].label = languages_destination_number + str(
                 len(self.to_numbers_forms_list) + 1) + "."
-        contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=delinfo, delurl=self.delurl,
-                                       menu_url=self.menu_url, notifications_center_url=self.notifications_center_url)
+        contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=delinfo,
+                                       SECRET_KEY=SECRET_KEY, last_id=self.get_del_id())
 
         return self.render_to_response(contex)
 
@@ -359,8 +360,6 @@ class ManagePhoneNumbersView(TemplateView):
             form.action = languages_add_action
             if len(self.forms_list) > 0:
                 self.forms_list[-1].deletable = True
-            id = len(self.to_numbers_forms_list)
-            self.delurl = "https://{}.herokuapp.com/deletephonenumber/{}/?key={}".format(app_name, id, SECRET_KEY)
         else:
             form.action = languages_change_action
 
@@ -431,9 +430,7 @@ def ifttt_delete_view(request, maker_id):
         deleted = 1
     else:
         deleted = 0
-    return redirect(
-        "https://{}.herokuapp.com/iftttmakers/?key={}&delinfo={}&delid={}".format(app_name, SECRET_KEY, deleted,
-                                                                                  maker_id))
+    return redirect("/iftttmakers/?key={}&delinfo={}&delid={}".format(SECRET_KEY, deleted, maker_id))
 
 
 class NotificationsCenterView(FormView):
@@ -497,8 +494,6 @@ class ManageIFTTTMakersView(TemplateView):
     forms_list = []
     makers_dict = {}
     info = (False, "")
-    menu_url = "https://{}.herokuapp.com/menu/?key={}".format(app_name, SECRET_KEY)
-    notifications_center_url = "https://{}.herokuapp.com/notifications-center/?key={}".format(app_name, SECRET_KEY)
 
     def post(self, request, *args, **kwargs):
         """
@@ -532,8 +527,7 @@ class ManageIFTTTMakersView(TemplateView):
         if new_maker_form.is_valid() and 'new_maker_button' in post_data:
             new_maker_form, self.info = self.save_changeenvvarform(new_maker_form, "IFTTT_MAKER_" + str(next_maker_id))
         contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=(False, "normal"),
-                                       delurl=self.delurl, menu_url=self.menu_url,
-                                       notifications_center_url=self.notifications_center_url)
+                                       SECRET_KEY=SECRET_KEY, last_id=self.get_del_id())
 
         return self.render_to_response(contex)
 
@@ -565,14 +559,17 @@ class ManageIFTTTMakersView(TemplateView):
             form = self.makers_dict.pop(label)
             self.forms_list.remove(form)
             self.forms_list[-2].deletable = True
-            self.delurl = "https://{}.herokuapp.com/deletemaker/{}/?key={}".format(app_name, str(int(id) - 1),
-                                                                                   SECRET_KEY)
             self.forms_list[-1].fields["new_value"].label = "IFTTT MAKER " + str(
                 len(self.makers_dict) + 1) + "."
-        contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=delinfo, delurl=self.delurl,
-                                       menu_url=self.menu_url, notifications_center_url=self.notifications_center_url)
+        contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=delinfo,
+                                       SECRET_KEY=SECRET_KEY, last_id=self.get_del_id())
 
         return self.render_to_response(contex)
+
+    def get_del_id(self):
+        delinfo = (bool(int(self.request.GET.get("delinfo", "0"))), self.request.GET.get("delid", "normal"))
+
+        return str(int(delinfo[1]) - 1) if delinfo[0] else len(self.makers_dict)
 
     def create_changeenvvarform(self, button_name, label, default, post_data=()):
         """
@@ -596,8 +593,6 @@ class ManageIFTTTMakersView(TemplateView):
             form.action = languages_add_action
             if len(self.forms_list) > 0:
                 self.forms_list[-1].deletable = True
-            id = len(self.makers_dict)
-            self.delurl = "https://{}.herokuapp.com/deletemaker/{}/?key={}".format(app_name, id, SECRET_KEY)
         else:
             form.action = languages_change_action
 

@@ -6,8 +6,9 @@
 
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ menu_url }}">MENU</a></li>
-                <li class="breadcrumb-item"><a href="{{ notifications_center_url }}">NOTIFICATIONS CENTER</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'menu' %}?key={{ SECRET_KEY }}">MENU</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'notif-center' %}?key={{ SECRET_KEY }}">NOTIFICATIONS
+                    CENTER</a></li>
                 <li class="breadcrumb-item active" aria-current="page">IFTTT MAKERS MANAGEMENT</li>
             </ol>
         </nav>
@@ -71,7 +72,8 @@
                         </div>
                         <div class="col.no-gutters" style="margin-top: 3.3%">
                             {% if form.deletable %}
-                                <a role="button" class="btn btn-danger" href="{{ delurl }}">DELETE</a>
+                                <a role="button" class="btn btn-danger"
+                                   href="{% url 'del-ifttt' last_id %}?key={{ SECRET_KEY }}">DELETE</a>
                             {% endif %}
                         </div>
                     </div>
