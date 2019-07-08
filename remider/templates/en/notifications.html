@@ -4,7 +4,7 @@
 {% block content %}
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ menu_url }}">MENU</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'menu' %}?key={{ SECRET_KEY }}">MENU</a></li>
             <li class="breadcrumb-item active" aria-current="page">NOTIFICATIONS CENTER</li>
         </ol>
     </nav>
@@ -43,9 +43,11 @@
                 <input type="submit" role="button" class="btn btn-primary" value="CHANGE">
             </form>
         </div>
-        <a href="{{ urllink }}" role="button" class="btn btn-primary btn-lg btn-block" style="margin: 0.2%">MANAGE IFTTT
+        <a href="{% url 'manage_ifttt_makers' %}?key={{ SECRET_KEY }}" role="button"
+           class="btn btn-primary btn-lg btn-block" style="margin: 0.2%">MANAGE IFTTT
             MAKERS</a>
-        <a href="{{ urllink2 }}" role="button" class="btn btn-info btn-lg btn-block" style="margin: 0.2%">MANAGE
+        <a href="{% url 'manage_ph_numbers' %}?key={{ SECRET_KEY }}" role="button" class="btn btn-info btn-lg btn-block"
+           style="margin: 0.2%">MANAGE
             PHONE NUMBERS</a>
     </div>
 

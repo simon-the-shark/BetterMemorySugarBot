@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import TemplateView, FormView
 
 from infusionset_reminder.settings import SENSOR_ALERT_FREQUENCY, INFUSION_SET_ALERT_FREQUENCY, ATRIGGER_KEY, \
-    ATRIGGER_SECRET, SECRET_KEY, app_name, nightscout_link, TWILIO_AUTH_TOKEN, TWILIO_ACCOUNT_SID, from_number, \
+    ATRIGGER_SECRET, SECRET_KEY, nightscout_link, TWILIO_AUTH_TOKEN, TWILIO_ACCOUNT_SID, from_number, \
     to_numbers, ifttt_makers, trigger_ifttt, send_sms
 from .api_interactions import change_config_var, create_trigger, notify
 from .data_processing import process_nightscouts_api_response, calculate_infusion, calculate_sensor, \
@@ -78,7 +78,7 @@ def reminder_and_notifier_view(request, send_notif=True):
                   {
                       "inf_text": inf_text[1:],
                       "sensor_text": sensor_text,
-                      "menu_url": "https://{}.herokuapp.com/menu/?key={}".format(app_name, SECRET_KEY),
+                      "SECRET_KEY": SECRET_KEY,
                   })
 
 
@@ -95,7 +95,7 @@ def auth_view(request):
     if request.method == "POST":
         form = GetSecretForm(request.POST)
         if form.is_valid():
-            return redirect("https://{}.herokuapp.com/menu/?key={}".format(app_name, form.cleaned_data['apisecret']))
+            return redirect("/menu/?key={}".format(form.cleaned_data['apisecret']))
     else:
         form = GetSecretForm()
 
@@ -108,11 +108,6 @@ class MenuView(TemplateView):
     redirecting buttons and config variables control
     """
     template_name = "{}/menu.html".format(LANGUAGE_CODE)
-
-    urllink = 'https://{}.herokuapp.com/upload/?key={}'.format(app_name, SECRET_KEY)
-    urllink2 = "https://{}.herokuapp.com/notifications-center/?key={}".format(app_name, SECRET_KEY)
-    urllink3 = "https://{}.herokuapp.com/reminder/?key={}".format(app_name, SECRET_KEY)
-    urllink4 = "https://{}.herokuapp.com/reminder/quiet/?key={}".format(app_name, SECRET_KEY)
 
     forms_list = []
     forms = (
@@ -164,8 +159,8 @@ class MenuView(TemplateView):
             language_form, self.info2 = self.save_changeenvvarform(language_form, "LANGUAGE_CODE", "language")
         if time_form.is_valid() and "time_button" in post_data:
             time_form.save()
-        contex = self.get_context_data(forms_list=self.forms_list, urllink=self.urllink, urllink2=self.urllink2,
-                                       urllink3=self.urllink3, urllink4=self.urllink4, info=self.info, info2=self.info2,
+        contex = self.get_context_data(forms_list=self.forms_list, SECRET_KEY=SECRET_KEY, info=self.info,
+                                       info2=self.info2,
                                        language_form=language_form, time_form=time_form, )
         return self.render_to_response(contex)
 
@@ -189,8 +184,8 @@ class MenuView(TemplateView):
         for form_tuple in self.forms:
             self.create_changeenvvarform(form_tuple[1], form_tuple[0], form_tuple[2])
 
-        contex = self.get_context_data(forms_list=self.forms_list, urllink=self.urllink, urllink2=self.urllink2,
-                                       urllink3=self.urllink3, urllink4=self.urllink4, info=self.info, info2=self.info2,
+        contex = self.get_context_data(forms_list=self.forms_list, SECRET_KEY=SECRET_KEY, info=self.info,
+                                       info2=self.info2,
                                        language_form=language_form, time_form=time_form, )
         return self.render_to_response(contex)
 
@@ -232,17 +227,16 @@ class MenuView(TemplateView):
 @secret_key_required
 def upload_view(request):
     """ allows user to upload verification file for atrigger.com """
-    menu_url = "https://{}.herokuapp.com/menu/?key={}".format(app_name, SECRET_KEY)
     if request.method == 'POST':
         form = FileUploudForm(request.POST, request.FILES)
         if form.is_valid():
             file = request.FILES['file']
             fs = FileSystemStorage(location='staticfiles/uplouded/')  # defaults to   MEDIA_ROOT
             filename = fs.save("ATriggerVerify.txt", file)
-            return redirect("https://{}.herokuapp.com/menu/?key={}&info={}".format(app_name, SECRET_KEY, "1"))
+            return redirect("/menu/?key={}&info={}".format(SECRET_KEY, "1"))
     else:
         form = FileUploudForm()
-    return render(request, '{}/upload.html'.format(LANGUAGE_CODE), {'form': form, "menu_url": menu_url, })
+    return render(request, '{}/upload.html'.format(LANGUAGE_CODE), {'form': form, "SECRET_KEY": SECRET_KEY, })
 
 
 class ManagePhoneNumbersView(TemplateView):
@@ -412,9 +406,7 @@ def number_delete_view(request, number_id):
     else:
         deleted = 0
 
-    return redirect(
-        "https://{}.herokuapp.com/phonenumbers/?key={}&delinfo={}&delid={}".format(app_name, SECRET_KEY, deleted,
-                                                                                   number_id))
+    return redirect("/phonenumbers/?key={}&delinfo={}&delid={}".format(SECRET_KEY, deleted, number_id))
 
 
 @secret_key_required
@@ -440,10 +432,6 @@ class NotificationsCenterView(FormView):
     form_class = ChooseNotificationsWayForm
     template_name = "{}/notifications.html".format(LANGUAGE_CODE)
 
-    urllink = "https://{}.herokuapp.com/iftttmakers/?key={}".format(app_name, SECRET_KEY)
-    urllink2 = "https://{}.herokuapp.com/phonenumbers/?key={}".format(app_name, SECRET_KEY)
-    menu_url = "https://{}.herokuapp.com/menu/?key={}".format(app_name, SECRET_KEY)
-
     trig_info = True
     sms_info = True
 
@@ -461,8 +449,8 @@ class NotificationsCenterView(FormView):
         """
         :return: contex data
         """
-        return super().get_context_data(**kwargs, urllink=self.urllink, urllink2=self.urllink2, menu_url=self.menu_url,
-                                        trig_info=self.trig_info, sms_info=self.sms_info)
+        return super().get_context_data(**kwargs, SECRET_KEY=SECRET_KEY, trig_info=self.trig_info,
+                                        sms_info=self.sms_info)
 
     def form_valid(self, form):
         """

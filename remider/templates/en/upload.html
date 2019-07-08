@@ -2,11 +2,11 @@
 {% load crispy_forms_tags %}
 {% block content %}
     <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ menu_url }}">MENU</a></li>
-                <li class="breadcrumb-item active" aria-current="page">UPLOAD ATriggerVerify.txt FILE</li>
-            </ol>
-        </nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'menu' %}?key={{ SECRET_KEY }}">MENU</a></li>
+            <li class="breadcrumb-item active" aria-current="page">UPLOAD ATriggerVerify.txt FILE</li>
+        </ol>
+    </nav>
     <div class="container">
         <div class="jumbotron">
             <h1 class="display-5">UPLOAD YOUR ATriggerVerify.txt FILE</h1>
