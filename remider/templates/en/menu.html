@@ -1,6 +1,7 @@
 {% extends 'core/base.html' %}
 {% load bootstrap4 %}
 {% block content %}
+    {{ time_form.media }}
     <div class="jumbotron jumbotron-fluid">
 
         <a href="{% url 'notif-center' %}?key={{ SECRET_KEY }}" role="button" class="btn btn-primary btn-lg btn-block"

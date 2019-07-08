@@ -1,3 +1,4 @@
+from bootstrap_datepicker_plus import TimePickerInput
 from django import forms
 
 from .languages import *
@@ -40,3 +41,4 @@ class TriggerTimeForm(forms.ModelForm):
         model = TriggerTime
         fields = ["time"]
         labels = {"time": languages_time_label, }
+        widgets = {"time": TimePickerInput(), }
