@@ -1,9 +1,10 @@
 {% extends "core/base.html" %}
+{% load i18n %}
 {% block content %}
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'menu' %}?key={{ SECRET_KEY }}">MENU</a></li>
-            <li class="breadcrumb-item active" aria-current="page">NOTIFY</li>
+            <li class="breadcrumb-item"><a href="{% url 'menu' %}?key={{ SECRET_KEY }}">{% trans 'MENU' %}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{% trans "NOTIFY" %}</li>
         </ol>
     </nav>
     <div class="container">

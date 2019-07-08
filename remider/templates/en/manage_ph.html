@@ -1,24 +1,24 @@
 {% extends "core/base.html" %}
 {% load bootstrap4 %}
-
+{% load i18n %}
 {% block content %}
     <div class="jumbotron jumbotron-fluid">
 
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'menu' %}?key={{ SECRET_KEY }}">MENU</a></li>
-                <li class="breadcrumb-item"><a href="{% url 'notif-center' %}?key={{ SECRET_KEY }}">NOTIFICATIONS
-                    CENTER</a></li>
-                <li class="breadcrumb-item active" aria-current="page">PHONE NUMBERS MANAGEMENT</li>
+                <li class="breadcrumb-item"><a href="{% url 'menu' %}?key={{ SECRET_KEY }}">{% trans 'MENU' %}</a></li>
+                <li class="breadcrumb-item"><a
+                        href="{% url 'notif-center' %}?key={{ SECRET_KEY }}">{% trans 'NOTIFICATIONS CENTER' %}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{% trans 'PHONE NUMBERS MANAGEMENT' %}</li>
             </ol>
         </nav>
         <div align="center">
-            <h1 class="display-5"> MANAGE PHONE NUMBERS</h1>
+            <h1 class="display-5">{% trans 'MANAGE PHONE NUMBERS' %}</h1>
         </div>
         {% if info.0 %}
             <div class="container" style="margin-top: 0.3%">
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <strong>SUCCESSFULLY {{ info.2 }} {{ info.1 }}</strong>
+                    <strong>{% trans 'SUCCESSFULLY' %} {{ info.2 }} {{ info.1 }}</strong>
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">X</span>
                     </button>
@@ -28,7 +28,7 @@
             {% if not info.0 and info.2 == "unsuccess" %}
                 <div class="container" style="margin-top: 0.3%">
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <strong>AN ERROR OCCURED WHEN TRIED TO CHANGE VARIABLE</strong>
+                        <strong>{% trans 'AN ERROR OCCURED WHEN TRIED TO CHANGE VARIABLE' %}</strong>
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">X</span>
                         </button>
@@ -39,7 +39,7 @@
         {% if delinfo.0 %}
             <div class="container" style="margin-top: 0.3%">
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>SUCCESSFULLY DELETED DESTINATION NUMBER {{ delinfo.1 }}.</strong>
+                    <strong>{% trans 'SUCCESSFULLY DELETED DESTINATION NUMBER ' %}{{ delinfo.1 }}.</strong>
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">X</span>
                     </button>
@@ -49,7 +49,7 @@
             {% if not delinfo.1 == "normal" %}
                 <div class="container" style="margin-top: 0.3%">
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <strong>AN ERROR OCURRED WHEN TRIED TO DELETE PHONE NUMBER</strong>
+                        <strong>{% trans 'AN ERROR OCURRED WHEN TRIED TO DELETE PHONE NUMBER' %}</strong>
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">X</span>
                         </button>
@@ -89,7 +89,7 @@
                         <div class="col.no-gutters" style="margin-top: 3.3%">
                             {% if form.deletable %}
                                 <a role="button" class="btn btn-danger"
-                                   href="{% url 'del-ph' last_id %}?key={{ SECRET_KEY }}">DELETE</a>
+                                   href="{% url 'del-ph' last_id %}?key={{ SECRET_KEY }}">{% trans 'DELETE' %}</a>
                             {% endif %}
                         </div>
                     </div>

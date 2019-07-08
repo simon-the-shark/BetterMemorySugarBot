@@ -1,26 +1,22 @@
 {% extends 'core/base.html' %}
 {% load bootstrap4 %}
+{% load i18n %}
 {% block content %}
     {{ time_form.media }}
     <div class="jumbotron jumbotron-fluid">
 
         <a href="{% url 'notif-center' %}?key={{ SECRET_KEY }}" role="button" class="btn btn-primary btn-lg btn-block"
-           style="margin: 0.2%">🔔
-            NOTIFICATIONS
-            CENTER 🔔</a>
+           style="margin: 0.2%">🔔{ % trans 'NOTIFICATIONS CENTER' %} 🔔</a>
         <a href="{% url 'reminder' %}?key={{ SECRET_KEY }}" role="button" class="btn btn-success btn-lg btn-block"
-           style="margin: 0.2%"> &#9993;
-            SEND NOTIFICATION NOW &#9993;</a>
+           style="margin: 0.2%"> &#9993;{% trans 'SEND NOTIFICATION NOW' %}&#9993;</a>
         <a href="{% url 'quiet' %}?key={{ SECRET_KEY }}" role="button" class="btn btn-info btn-lg btn-block"
-           style="margin: 0.2%">🔕 QUIET
-            CHECKUP 🔕</a>
+           style="margin: 0.2%">🔕 {% trans 'QUIET CHECKUP' %} 🔕</a>
         <a href="{% url 'upload' %}?key={{ SECRET_KEY }}" role="button" class="btn btn-secondary btn-lg btn-block"
-           style="margin: 0.2%">&#x21ea;
-            Upload verification file (ATriggerVerify.txt) &#x21ea;</a>
+           style="margin: 0.2%">&#x21ea; {% trans 'Upload verification file (ATriggerVerify.txt)' %} &#x21ea;</a>
         {% if info %}
             <div class="container" style="margin-top: 0.3%">
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <strong>SUCCESFULLY UPLODED ATriggerVerify.txt</strong>
+                    <strong>{% trans 'SUCCESFULLY UPLODED ATriggerVerify.txt' %}</strong>
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">X</span>
                     </button>
@@ -30,7 +26,7 @@
         {% if info2.0 %}
             <div class="container" style="margin-top: 0.3%">
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <strong>SUCCESSFULLY CHANGED {{ info2.1 }}</strong>
+                    <strong>{% trans 'SUCCESSFULLY CHANGED ' %}{{ info2.1 }}</strong>
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">X</span>
                     </button>
@@ -40,7 +36,7 @@
             {% if not info2.0 and info2.1 == "unsuccess" %}
                 <div class="container" style="margin-top: 0.3%">
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <strong>AN ERROR OCCURED WHEN TRIED TO CHANGE VARIABLE</strong>
+                        <strong>{% trans 'AN ERROR OCCURED WHEN TRIED TO CHANGE VARIABLE' %}</strong>
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">X</span>
                         </button>
@@ -49,7 +45,7 @@
             {% endif %}
         {% endif %}
         <div class="container">
-            <h1 class="display-4">SETTINGS:</h1><br/>
+            <h1 class="display-4">{% trans 'SETTINGS:' %}</h1><br/>
             <form method="post">
                 {% csrf_token %}
                 <div class="row">
@@ -57,7 +53,8 @@
                         {% bootstrap_form language_form %}
                     </div>
                     <div class="col-4" style="margin-top: 3.3%">
-                        <button type="submit" class="btn btn-primary" name="language_button">CHANGE</button>
+                        <button type="submit" class="btn btn-primary"
+                                name="language_button">{% trans 'CHANGE' %}</button>
                     </div>
                 </div>
             </form>
@@ -68,7 +65,7 @@
                         {% bootstrap_form time_form %}
                     </div>
                     <div class="col-4" style="margin-top: 3.3%">
-                        <button type="submit" class="btn btn-primary" name="time_button">CHANGE</button>
+                        <button type="submit" class="btn btn-primary" name="time_button">{% trans 'CHANGE' %}</button>
                     </div>
                 </div>
             </form>
@@ -80,7 +77,8 @@
                             {% bootstrap_form form %}
                         </div>
                         <div class="col-4" style="margin-top: 3.3%">
-                            <button type="submit" class="btn btn-primary" name="{{ form.button_name }}">CHANGE</button>
+                            <button type="submit" class="btn btn-primary"
+                                    name="{{ form.button_name }}">{% trans 'CHANGE' %}</button>
                         </div>
                     </div>
                 </form>

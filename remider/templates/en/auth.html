@@ -1,5 +1,6 @@
 {% extends 'core/base.html' %}
 {% load bootstrap4 %}
+{% load i18n %}
 {% block content %}
     <div class="container" style="background-color:#e9ecef; padding-top: 2%; padding-bottom: 2%">
 
@@ -7,7 +8,7 @@
             {% csrf_token %}
             <div class="row1">{% bootstrap_form form %}</div>
             <div class="row2">
-                <button type="submit" class="btn btn-primary">LOG IN</button>
+                <button type="submit" class="btn btn-primary">{% trans 'LOG IN' %}</button>
             </div>
         </form>
     </div>
