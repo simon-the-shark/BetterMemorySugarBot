@@ -1,5 +1,5 @@
 {% extends 'core/base.html' %}
-{% load crispy_forms_tags %}
+{% load bootstrap4 %}
 {% block content %}
     <div class="jumbotron jumbotron-fluid">
 
@@ -53,7 +53,7 @@
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-8 align-self-end">
-                        {{ language_form|crispy }}
+                        {% bootstrap_form language_form %}
                     </div>
                     <div class="col-4" style="margin-top: 3.3%">
                         <button type="submit" class="btn btn-primary" name="language_button">CHANGE</button>
@@ -64,7 +64,7 @@
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-8 align-self-end">
-                        {{ time_form|crispy }}
+                        {% bootstrap_form time_form %}
                     </div>
                     <div class="col-4" style="margin-top: 3.3%">
                         <button type="submit" class="btn btn-primary" name="time_button">CHANGE</button>
@@ -76,7 +76,7 @@
                     {% csrf_token %}
                     <div class="row">
                         <div class="col-8 align-self-end">
-                            {{ form|crispy }}
+                            {% bootstrap_form form %}
                         </div>
                         <div class="col-4" style="margin-top: 3.3%">
                             <button type="submit" class="btn btn-primary" name="{{ form.button_name }}">CHANGE</button>

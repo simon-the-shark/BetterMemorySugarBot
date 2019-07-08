@@ -1,5 +1,5 @@
 {% extends "core/base.html" %}
-{% load crispy_forms_tags %}
+{% load bootstrap4 %}
 
 {% block content %}
     <nav aria-label="breadcrumb">
@@ -39,7 +39,7 @@
             <hr/>
             <form method="post">
                 {% csrf_token %}
-                {{ form|crispy }}
+                {% bootstrap_form form %}
                 <input type="submit" role="button" class="btn btn-primary" value="CHANGE">
             </form>
         </div>

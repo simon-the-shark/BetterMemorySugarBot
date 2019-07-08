@@ -1,12 +1,11 @@
 {% extends 'core/base.html' %}
-{% load crispy_forms_tags %}
-
+{% load bootstrap4 %}
 {% block content %}
     <div class="container" style="background-color:#e9ecef; padding-top: 2%; padding-bottom: 2%">
 
         <form method="post">
             {% csrf_token %}
-            <div class="row1">{{ form|crispy }}</div>
+            <div class="row1">{% bootstrap_form form %}</div>
             <div class="row2">
                 <button type="submit" class="btn btn-primary">LOG IN</button>
             </div>
