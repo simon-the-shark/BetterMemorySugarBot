@@ -52,6 +52,10 @@ def change_config_var(label, new_value):
 
     r = requests.patch('https://api.heroku.com/apps/{}/config-vars'.format(settings.APP_NAME), headers=headers,
                        data=json.dumps(data))
+
+    if label == "LANGUAGE_CODE":
+        settings.LANGUAGE_CODE = new_value
+
     if r.status_code == 200:
         return True
     else:
