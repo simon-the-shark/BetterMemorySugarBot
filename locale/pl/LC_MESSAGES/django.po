@@ -1,0 +1,290 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-07-09 12:45+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n"
+"%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n"
+"%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+#: .\infusionset_reminder\settings.py:110
+msgid "Polish"
+msgstr "Polski"
+
+#: .\infusionset_reminder\settings.py:111
+msgid "English"
+msgstr "Angielski"
+
+#: .\remider\api_interactions.py:31
+msgid "error: unsuccessful IFTTT notification to {}"
+msgstr "error: nieudane powiadomienie IFTTT do {}"
+
+#: .\remider\api_interactions.py:43
+msgid "error: unsuccessful notification to {}"
+msgstr "error: nieudane powiadomienie do {}"
+
+#: .\remider\api_interactions.py:83
+msgid ""
+"unsuccessful trigger on atrigger.com creating \n"
+" perhaps wrong API key or secret ?? or an app_name ??"
+msgstr "nieudane stworzenie triggera na atrigger.com \n prawdopodobnie zły API key lub secret ?? lub app_name ??"
+
+#: .\remider\data_processing.py:39
+msgid "warning: infusion set change has never been cached"
+msgstr "warning: nigdy nie zanotowano zmiany zestawu infuzyjnego"
+
+#: .\remider\data_processing.py:45
+msgid "warning: CGM sensor change has never been cached"
+msgstr "warning: nigdy nie zanotowano zmiany sensora CGM"
+
+#: .\remider\data_processing.py:85
+msgid ""
+".\n"
+"\n"
+" Your infusion set change has already passed"
+msgstr ".\n\n Twój termin zmiany zestawu infuzyjnego minął"
+
+#: .\remider\data_processing.py:87
+msgid ""
+".\n"
+"\n"
+" Your infusion set should be changed in {} days and {} hours."
+msgstr "Zmień zestaw infuzyjny w {} dni i {} godzin."
+
+#: .\remider\data_processing.py:100
+msgid ""
+"\n"
+"\n"
+" Your CGM sensor change has already passed"
+msgstr "\n\n Twój termin zmiany sensora CGM minął."
+
+#: .\remider\data_processing.py:102
+msgid ""
+"\n"
+"\n"
+" Your CGM sensor should be changed in {} days and {} hours."
+msgstr "\n\n Zmień sensor CGM w {} dni i {} godzin."
+
+#: .\remider\forms.py:27
+msgid "TRIGGER IFTTT (SEND WEBHOOKS)"
+msgstr "WYWOŁUJ IFTTT (WYSYŁAJ WEBHOOKI)"
+
+#: .\remider\forms.py:28
+msgid "SEND SMS"
+msgstr "WYSYŁAJ SMSy"
+
+#: .\remider\forms.py:34
+msgid "LANGUAGE"
+msgstr "JĘZYK"
+
+#: .\remider\forms.py:43
+msgid "NOTIFICATION TIME. Please give UTC TIME"
+msgstr "GODZINA POWIADOMIENIA. Proszę wprowadzić CZAS UTC"
+
+#: .\remider\management\commands\create_default_admin.py:13
+msgid "creating admin ..."
+msgstr "tworzenie admina ..."
+
+#: .\remider\management\commands\create_default_admin.py:25
+msgid "Superuser created successfully."
+msgstr "Superuser stworzony pomyślnie."
+
+#: .\remider\management\commands\wake_up.py:14
+msgid "waking up ..."
+msgstr "budzenie ..."
+
+#: .\remider\management\commands\wake_up.py:16
+msgid "website successfully woke up"
+msgstr "strona pomyślnie wybudzona."
+
+#: .\remider\templates\remider\auth.html:11
+msgid "LOG IN"
+msgstr "ZALOGUJ SIĘ"
+
+#: .\remider\templates\remider\debug.html:6
+#: .\remider\templates\remider\manage_ifttt.html:9
+#: .\remider\templates\remider\manage_ph.html:9
+#: .\remider\templates\remider\notifications.html:7
+#: .\remider\templates\remider\upload.html:7
+msgid "MENU"
+msgstr "MENU"
+
+#: .\remider\templates\remider\debug.html:7
+msgid "NOTIFY"
+msgstr "POWIADOMIENIE"
+
+#: .\remider\templates\remider\home.html:10
+msgid "OK"
+msgstr "OK"
+
+#: .\remider\templates\remider\home.html:12
+msgid "IT IS MY WEBSITE  >>>"
+msgstr "TO JEST MOJA STRONA >>>"
+
+#: .\remider\templates\remider\manage_ifttt.html:11
+#: .\remider\templates\remider\manage_ph.html:11
+#: .\remider\templates\remider\notifications.html:8
+#: .\remider\templates\remider\notifications.html:14
+msgid "NOTIFICATIONS CENTER"
+msgstr "CENTRUM POWIADOMIEŃ"
+
+#: .\remider\templates\remider\manage_ifttt.html:12
+msgid "IFTTT MAKERS MANAGEMENT"
+msgstr "ZARZĄDZANIE MAKERAMI IFTTT"
+
+#: .\remider\templates\remider\manage_ifttt.html:16
+#: .\remider\templates\remider\notifications.html:47
+msgid "MANAGE IFTTT MAKERS"
+msgstr "ZARZĄDZAJ MAKERAMI IFTTT"
+
+#: .\remider\templates\remider\manage_ifttt.html:21
+#: .\remider\templates\remider\manage_ph.html:21
+msgid "SUCCESSFULLY"
+msgstr "POMYŚLNIE"
+
+#: .\remider\templates\remider\manage_ifttt.html:31
+#: .\remider\templates\remider\manage_ph.html:31
+#: .\remider\templates\remider\menu.html:39
+#: .\remider\templates\remider\notifications.html:19
+#: .\remider\templates\remider\notifications.html:29
+msgid "AN ERROR OCCURED WHEN TRIED TO CHANGE VARIABLE"
+msgstr "WYSTĄPIŁ BŁĄD PODCZAS PRÓBY ZMIANY ZMIENNEJ"
+
+#: .\remider\templates\remider\manage_ifttt.html:42
+msgid "SUCCESSFULLY DELETED IFTTT MAKER "
+msgstr "POMYŚLNIE USUNIĘTO MAKER IFTTT"
+
+#: .\remider\templates\remider\manage_ifttt.html:52
+msgid "AN ERROR OCURRED WHEN TRIED TO DELETE IFTTT MAKER"
+msgstr "WYSTĄPIŁ BŁĄD PODCZAS PRÓBY USUNIĘCIA MAKERA IFTTT"
+
+#: .\remider\templates\remider\manage_ifttt.html:76
+#: .\remider\templates\remider\manage_ph.html:92
+msgid "DELETE"
+msgstr "USUŃ"
+
+#: .\remider\templates\remider\manage_ph.html:12
+msgid "PHONE NUMBERS MANAGEMENT"
+msgstr "ZARZĄDZANIE NUMERAMI TELEFONÓW"
+
+#: .\remider\templates\remider\manage_ph.html:16
+#: .\remider\templates\remider\notifications.html:49
+msgid "MANAGE PHONE NUMBERS"
+msgstr "ZARZĄDZAJ NUMERAMI TELEFONÓW"
+
+#: .\remider\templates\remider\manage_ph.html:42
+msgid "SUCCESSFULLY DELETED DESTINATION NUMBER "
+msgstr "POMYŚLNIE USUNIĘTO NUMER ODBIORCY"
+
+#: .\remider\templates\remider\manage_ph.html:52
+msgid "AN ERROR OCURRED WHEN TRIED TO DELETE PHONE NUMBER"
+msgstr "WYSTĄPIŁ BŁĄD PODCZAS PRÓBY USUNIĘCIA NUMERU TELEFONU"
+
+#: .\remider\templates\remider\menu.html:11
+msgid "SEND NOTIFICATION NOW"
+msgstr "WYŚLIJ POWIADOMIENIE TERAZ"
+
+#: .\remider\templates\remider\menu.html:13
+msgid "QUIET CHECKUP"
+msgstr "SPRAWDŹ BEZ POWIADAMIANIA"
+
+#: .\remider\templates\remider\menu.html:15
+msgid "Upload verification file (ATriggerVerify.txt)"
+msgstr "WGRAJ SWÓJ PLIK ATriggerVerify.txt"
+
+#: .\remider\templates\remider\menu.html:19
+msgid "SUCCESFULLY UPLODED ATriggerVerify.txt"
+msgstr "POMYŚLNIE WGRANO ATriggerVerify.txt"
+
+#: .\remider\templates\remider\menu.html:29
+msgid "SUCCESSFULLY CHANGED "
+msgstr "POMYŚLNIE ZMIENIONO "
+
+#: .\remider\templates\remider\menu.html:48
+msgid "SETTINGS:"
+msgstr "USTWIENIA:"
+
+#: .\remider\templates\remider\menu.html:57
+#: .\remider\templates\remider\menu.html:68
+#: .\remider\templates\remider\menu.html:81 .\remider\views.py:358
+#: .\remider\views.py:376 .\remider\views.py:585 .\remider\views.py:603
+msgid "CHANGE"
+msgstr "ZMIEŃ"
+
+#: .\remider\templates\remider\notifications.html:38
+msgid "CHOOSE YOUR NOTIFICATIONS WAYS:"
+msgstr "WYBIERZ SPOSÓB POWIADAMIANIA:"
+
+#: .\remider\templates\remider\upload.html:8
+msgid "UPLOAD ATriggerVerify.txt FILE"
+msgstr "WGRAJ PLIK ATriggerVerify.txt"
+
+#: .\remider\templates\remider\upload.html:13
+msgid "UPLOAD YOUR ATriggerVerify.txt FILE"
+msgstr "WGRAJ SWÓJ PLIK ATriggerVerify.txt"
+
+#: .\remider\templates\remider\upload.html:18
+msgid "UPLOAD"
+msgstr "WGRAJ"
+
+#: .\remider\views.py:50
+msgid ""
+".\n"
+"\n"
+"Infusion set: unsuccessful data reading"
+msgstr ".\n\nZestaw infuzyjny: nie udało się zczytać danych"
+
+#: .\remider\views.py:56
+msgid ""
+".\n"
+"\n"
+" Infusion set: unsuccessful data processing"
+msgstr ".\n\n Zestaw infuzyjny: nie udało się przetworzyć danych"
+
+#: .\remider\views.py:64
+msgid ""
+"\n"
+"\n"
+"CGM sensor: unsuccessful data reading"
+msgstr "\n\nSensor CGM: nie udało się zczytać danych"
+
+#: .\remider\views.py:70
+msgid ""
+"\n"
+"\n"
+"CGM sensor: unsuccessful data processing"
+msgstr "\n\nSensor CGM: nie udało się przetworzyć danych"
+
+#: .\remider\views.py:261 .\remider\views.py:310
+msgid "NUMBER OF SENDER"
+msgstr "NUMER ADRESATA"
+
+#: .\remider\views.py:267 .\remider\views.py:272 .\remider\views.py:315
+#: .\remider\views.py:320 .\remider\views.py:328 .\remider\views.py:381
+msgid "DESTINATION NUMBER "
+msgstr "NUMER ODBIORCY "
+
+#: .\remider\views.py:354 .\remider\views.py:581
+msgid "ADD"
+msgstr "DODAJ"
+
+#: .\remider\views.py:373 .\remider\views.py:600
+msgid "ADDED"
+msgstr "DODANO"
+
+#: .\remider\views.py:386 .\remider\views.py:611
+msgid "CHANGED"
+msgstr "ZMIENIONO"
