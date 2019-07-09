@@ -6,7 +6,7 @@
     <div class="jumbotron jumbotron-fluid">
 
         <a href="{% url 'notif-center' %}?key={{ SECRET_KEY }}" role="button" class="btn btn-primary btn-lg btn-block"
-           style="margin: 0.2%">🔔{ % trans 'NOTIFICATIONS CENTER' %} 🔔</a>
+           style="margin: 0.2%">🔔{% trans 'NOTIFICATIONS CENTER' %} 🔔</a>
         <a href="{% url 'reminder' %}?key={{ SECRET_KEY }}" role="button" class="btn btn-success btn-lg btn-block"
            style="margin: 0.2%"> &#9993;{% trans 'SEND NOTIFICATION NOW' %}&#9993;</a>
         <a href="{% url 'quiet' %}?key={{ SECRET_KEY }}" role="button" class="btn btn-info btn-lg btn-block"

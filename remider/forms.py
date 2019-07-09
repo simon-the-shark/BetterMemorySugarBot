@@ -2,6 +2,7 @@ from bootstrap_datepicker_plus import TimePickerInput
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
+from infusionset_reminder.settings import LANGUAGES
 from .models import TriggerTime
 
 
@@ -30,7 +31,7 @@ class ChooseNotificationsWayForm(forms.Form):
 
 class ChooseLanguageForm(forms.Form):
     """ form for choosing your language """
-    language = forms.ChoiceField(required=True, choices=(("pl", "POLSKI"), ("en", "ENGLISH")),
+    language = forms.ChoiceField(required=True, choices=LANGUAGES,
                                  label=_("LANGUAGE"))
 
 
