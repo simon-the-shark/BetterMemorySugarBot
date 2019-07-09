@@ -1,15 +1,13 @@
 import sys
 
 import requests
+from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.http import FileResponse
 from django.shortcuts import render, redirect
 from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView, FormView
 
-from infusionset_reminder.settings import SENSOR_ALERT_FREQUENCY, INFUSION_SET_ALERT_FREQUENCY, ATRIGGER_KEY, \
-    ATRIGGER_SECRET, SECRET_KEY, nightscout_link, TWILIO_AUTH_TOKEN, TWILIO_ACCOUNT_SID, from_number, \
-    to_numbers, ifttt_makers, trigger_ifttt, send_sms, LANGUAGE_CODE
 from .api_interactions import change_config_var, create_trigger, notify
 from .data_processing import process_nightscouts_api_response, calculate_infusion, calculate_sensor, \
     get_sms_txt_infusion_set, get_sms_txt_sensor, get_trigger_model
@@ -18,12 +16,18 @@ from .forms import ChangeEnvVariableForm, ChooseNotificationsWayForm, GetSecretF
     TriggerTimeForm
 
 
+# SENSOR_ALERT_FREQUENCY, INFUSION_SET_ALERT_FREQUENCY, ATRIGGER_KEY, \
+#     ATRIGGER_SECRET, SECRET_KEY, nightscout_link, TWILIO_AUTH_TOKEN, TWILIO_ACCOUNT_SID, from_number, \
+#     to_numbers, ifttt_makers, trigger_ifttt, send_sms, LANGUAGE_CODE
+
+
 @secret_key_required
 def quiet_checkup_view(request):
     """
     shows remaining time to next change (infusion set or CGM sensor)
     without sending notification
     """
+    request.session[settings.LANGUAGE_SESSION_KEY] = settings.LANGUAGE_CODE
     return reminder_and_notifier_view(request, False)
 
 
@@ -36,7 +40,7 @@ def reminder_and_notifier_view(request, send_notif=True):
     sends notification via sms
     """
 
-    response = requests.get(nightscout_link + "/api/v1/treatments")
+    response = requests.get(settings.nightscout_link + "/api/v1/treatments")
     date, sensor_date = process_nightscouts_api_response(response)
 
     sms_text = ""
@@ -78,7 +82,7 @@ def reminder_and_notifier_view(request, send_notif=True):
                   {
                       "inf_text": inf_text[1:],
                       "sensor_text": sensor_text,
-                      "SECRET_KEY": SECRET_KEY,
+                      "SECRET_KEY": settings.SECRET_KEY,
                   })
 
 
@@ -111,13 +115,13 @@ class MenuView(TemplateView):
 
     forms_list = []
     forms = (
-        ("NIGHTSCOUT_LINK", "ns_link_button", nightscout_link),
-        ("INFUSION_SET_ALERT_FREQUENCY", "infusion_freq_button", INFUSION_SET_ALERT_FREQUENCY),
-        ("SENSOR_ALERT_FREQUENCY", "sensor_freq_button", SENSOR_ALERT_FREQUENCY),
-        ("ATRIGGER_KEY", "atrigger_key_button", ATRIGGER_KEY),
-        ("ATRIGGER_SECRET", "atrigger_secret_button", ATRIGGER_SECRET),
-        ("TWILIO_ACCOUNT_SID", "twilio_sid_button", TWILIO_ACCOUNT_SID),
-        ("TWILIO_AUTH_TOKEN", "twilio_token_button", TWILIO_AUTH_TOKEN),
+        ("NIGHTSCOUT_LINK", "ns_link_button", settings.nightscout_link),
+        ("INFUSION_SET_ALERT_FREQUENCY", "infusion_freq_button", settings.INFUSION_SET_ALERT_FREQUENCY),
+        ("SENSOR_ALERT_FREQUENCY", "sensor_freq_button", settings.SENSOR_ALERT_FREQUENCY),
+        ("ATRIGGER_KEY", "atrigger_key_button", settings.ATRIGGER_KEY),
+        ("ATRIGGER_SECRET", "atrigger_secret_button", settings.ATRIGGER_SECRET),
+        ("TWILIO_ACCOUNT_SID", "twilio_sid_button", settings.TWILIO_ACCOUNT_SID),
+        ("TWILIO_AUTH_TOKEN", "twilio_token_button", settings.TWILIO_AUTH_TOKEN),
     )
 
     def post(self, request, *args, **kwargs):
@@ -138,7 +142,7 @@ class MenuView(TemplateView):
             language_form = ChooseLanguageForm(post_data)
         else:
             language_form = ChooseLanguageForm()
-        language_form.fields["language"].initial = LANGUAGE_CODE
+        language_form.fields["language"].initial = settings.LANGUAGE_CODE
 
         time_model = get_trigger_model()
         if "time_button" in post_data:
@@ -159,7 +163,7 @@ class MenuView(TemplateView):
             language_form, self.info2 = self.save_changeenvvarform(language_form, "LANGUAGE_CODE", "language")
         if time_form.is_valid() and "time_button" in post_data:
             time_form.save()
-        contex = self.get_context_data(forms_list=self.forms_list, SECRET_KEY=SECRET_KEY, info=self.info,
+        contex = self.get_context_data(forms_list=self.forms_list, SECRET_KEY=settings.SECRET_KEY, info=self.info,
                                        info2=self.info2,
                                        language_form=language_form, time_form=time_form, )
         return self.render_to_response(contex)
@@ -172,7 +176,7 @@ class MenuView(TemplateView):
         shows info about successful change
         """
         language_form = ChooseLanguageForm()
-        language_form.fields["language"].initial = LANGUAGE_CODE
+        language_form.fields["language"].initial = settings.LANGUAGE_CODE
 
         time_model = get_trigger_model()
         time_form = TriggerTimeForm(instance=time_model)
@@ -184,7 +188,7 @@ class MenuView(TemplateView):
         for form_tuple in self.forms:
             self.create_changeenvvarform(form_tuple[1], form_tuple[0], form_tuple[2])
 
-        contex = self.get_context_data(forms_list=self.forms_list, SECRET_KEY=SECRET_KEY, info=self.info,
+        contex = self.get_context_data(forms_list=self.forms_list, SECRET_KEY=settings.SECRET_KEY, info=self.info,
                                        info2=self.info2,
                                        language_form=language_form, time_form=time_form, )
         return self.render_to_response(contex)
@@ -233,10 +237,10 @@ def upload_view(request):
             file = request.FILES['file']
             fs = FileSystemStorage(location='staticfiles/uplouded/')  # defaults to   MEDIA_ROOT
             filename = fs.save("ATriggerVerify.txt", file)
-            return redirect("/menu/?key={}&info={}".format(SECRET_KEY, "1"))
+            return redirect("/menu/?key={}&info={}".format(settings.SECRET_KEY, "1"))
     else:
         form = FileUploudForm()
-    return render(request, 'remider/upload.html', {'form': form, "SECRET_KEY": SECRET_KEY, })
+    return render(request, 'remider/upload.html', {'form': form, "SECRET_KEY": settings.SECRET_KEY, })
 
 
 class ManagePhoneNumbersView(TemplateView):
@@ -258,16 +262,17 @@ class ManagePhoneNumbersView(TemplateView):
         self.to_numbers_forms_list = {}
         self.forms_list = []
         post_data = request.POST
-        from_number_form = self.create_changeenvvarform('from_number_button', _("NUMBER OF SENDER"), from_number,
+        from_number_form = self.create_changeenvvarform('from_number_button', _("NUMBER OF SENDER"),
+                                                        settings.from_number,
                                                         post_data)
 
-        for i, number in enumerate(to_numbers):
+        for i, number in enumerate(settings.to_numbers):
             label = "to_number_" + str(i + 1)
             button_name = label + "_button"
             label_tag = _("DESTINATION NUMBER ") + str(i + 1) + "."
             form = self.create_changeenvvarform(button_name, label_tag, number, post_data)
             self.to_numbers_forms_list[label] = form
-        next_number_id = len(to_numbers) + 1
+        next_number_id = len(settings.to_numbers) + 1
         new_number_form = self.create_changeenvvarform('new_number_button',
                                                        _("DESTINATION NUMBER ") + str(next_number_id) + ".", "",
                                                        post_data)
@@ -275,7 +280,7 @@ class ManagePhoneNumbersView(TemplateView):
         if from_number_form.is_valid() and 'from_number_button' in post_data:
             from_number_form, self.info = self.save_changeenvvarform(from_number_form, "from_number", )
 
-        for i, number in enumerate(to_numbers):
+        for i, number in enumerate(settings.to_numbers):
             label = "to_number_" + str(i + 1)
             button_name = label + "_button"
             form = self.to_numbers_forms_list[label]
@@ -286,7 +291,7 @@ class ManagePhoneNumbersView(TemplateView):
         if new_number_form.is_valid() and 'new_number_button' in post_data:
             new_number_form, self.info = self.save_changeenvvarform(new_number_form, "to_number_" + str(next_number_id))
         contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=(False, "normal"),
-                                       SECRET_KEY=SECRET_KEY, last_id=self.get_del_id())
+                                       SECRET_KEY=settings.SECRET_KEY, last_id=self.get_del_id())
 
         return self.render_to_response(contex)
 
@@ -307,16 +312,16 @@ class ManagePhoneNumbersView(TemplateView):
 
         self.forms_list = []
         self.to_numbers_forms_list = {}
-        self.create_changeenvvarform('from_number_button', _("NUMBER OF SENDER"), from_number)
+        self.create_changeenvvarform('from_number_button', _("NUMBER OF SENDER"), settings.from_number)
 
-        for i, number in enumerate(to_numbers):
+        for i, number in enumerate(settings.to_numbers):
             label = "to_number_" + str(i + 1)
             button_name = label + "_button"
             label_tag = _("DESTINATION NUMBER ") + str(i + 1) + "."
             form = self.create_changeenvvarform(button_name, label_tag, number)
             self.to_numbers_forms_list[label] = form
 
-        next_number_id = len(to_numbers) + 1
+        next_number_id = len(settings.to_numbers) + 1
         self.create_changeenvvarform('new_number_button', _("DESTINATION NUMBER ") + str(next_number_id) + ".", "")
 
         if delinfo[0]:
@@ -328,7 +333,7 @@ class ManagePhoneNumbersView(TemplateView):
             self.forms_list[-1].fields["new_value"].label = _("DESTINATION NUMBER ") + str(
                 len(self.to_numbers_forms_list) + 1) + "."
         contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=delinfo,
-                                       SECRET_KEY=SECRET_KEY, last_id=self.get_del_id())
+                                       SECRET_KEY=settings.SECRET_KEY, last_id=self.get_del_id())
 
         return self.render_to_response(contex)
 
@@ -406,7 +411,7 @@ def number_delete_view(request, number_id):
     else:
         deleted = 0
 
-    return redirect("/phonenumbers/?key={}&delinfo={}&delid={}".format(SECRET_KEY, deleted, number_id))
+    return redirect("/phonenumbers/?key={}&delinfo={}&delid={}".format(settings.SECRET_KEY, deleted, number_id))
 
 
 @secret_key_required
@@ -422,7 +427,7 @@ def ifttt_delete_view(request, maker_id):
         deleted = 1
     else:
         deleted = 0
-    return redirect("/iftttmakers/?key={}&delinfo={}&delid={}".format(SECRET_KEY, deleted, maker_id))
+    return redirect("/iftttmakers/?key={}&delinfo={}&delid={}".format(settings.SECRET_KEY, deleted, maker_id))
 
 
 class NotificationsCenterView(FormView):
@@ -440,8 +445,8 @@ class NotificationsCenterView(FormView):
         :return: initial values for form
         """
         initial = super(NotificationsCenterView, self).get_initial()
-        initial["ifttt_notifications"] = trigger_ifttt
-        initial["sms_notifications"] = send_sms
+        initial["ifttt_notifications"] = settings.trigger_ifttt
+        initial["sms_notifications"] = settings.send_sms
 
         return initial
 
@@ -449,7 +454,7 @@ class NotificationsCenterView(FormView):
         """
         :return: contex data
         """
-        return super().get_context_data(**kwargs, SECRET_KEY=SECRET_KEY, trig_info=self.trig_info,
+        return super().get_context_data(**kwargs, SECRET_KEY=settings.SECRET_KEY, trig_info=self.trig_info,
                                         sms_info=self.sms_info)
 
     def form_valid(self, form):
@@ -494,17 +499,17 @@ class ManageIFTTTMakersView(TemplateView):
         self.forms_list = []
         post_data = request.POST
 
-        for i, maker in enumerate(ifttt_makers):
+        for i, maker in enumerate(settings.ifttt_makers):
             label = "IFTTT_MAKER_" + str(i + 1)
             button_name = label + "_button"
             label_tag = "IFTTT MAKER " + str(i + 1) + "."
             form = self.create_changeenvvarform(button_name, label_tag, maker, post_data)
             self.makers_dict[label] = form
-        next_maker_id = len(ifttt_makers) + 1
+        next_maker_id = len(settings.ifttt_makers) + 1
         new_maker_form = self.create_changeenvvarform('new_maker_button',
                                                       "IFTTT MAKER " + str(next_maker_id) + ".", "", post_data)
 
-        for i, maker in enumerate(ifttt_makers):
+        for i, maker in enumerate(settings.ifttt_makers):
             label = "IFTTT_MAKER_" + str(i + 1)
             button_name = label + "_button"
             form = self.makers_dict[label]
@@ -515,7 +520,7 @@ class ManageIFTTTMakersView(TemplateView):
         if new_maker_form.is_valid() and 'new_maker_button' in post_data:
             new_maker_form, self.info = self.save_changeenvvarform(new_maker_form, "IFTTT_MAKER_" + str(next_maker_id))
         contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=(False, "normal"),
-                                       SECRET_KEY=SECRET_KEY, last_id=self.get_del_id())
+                                       SECRET_KEY=settings.SECRET_KEY, last_id=self.get_del_id())
 
         return self.render_to_response(contex)
 
@@ -531,14 +536,14 @@ class ManageIFTTTMakersView(TemplateView):
         self.forms_list = []
         self.makers_dict = {}
 
-        for i, maker in enumerate(ifttt_makers):
+        for i, maker in enumerate(settings.ifttt_makers):
             label = "IFTTT_MAKER_" + str(i + 1)
             button_name = label + "_button"
             label_tag = "IFTTT MAKER " + str(i + 1) + "."
             form = self.create_changeenvvarform(button_name, label_tag, maker)
             self.makers_dict[label] = form
 
-        next_maker_id = len(ifttt_makers) + 1
+        next_maker_id = len(settings.fttt_makers) + 1
         self.create_changeenvvarform('new_maker_button', "IFTTT MAKER " + str(next_maker_id) + ".", "")
 
         if delinfo[0]:
@@ -550,7 +555,7 @@ class ManageIFTTTMakersView(TemplateView):
             self.forms_list[-1].fields["new_value"].label = "IFTTT MAKER " + str(
                 len(self.makers_dict) + 1) + "."
         contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=delinfo,
-                                       SECRET_KEY=SECRET_KEY, last_id=self.get_del_id())
+                                       SECRET_KEY=settings.SECRET_KEY, last_id=self.get_del_id())
 
         return self.render_to_response(contex)
 

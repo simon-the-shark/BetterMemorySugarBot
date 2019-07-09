@@ -1,9 +1,9 @@
 import sys
 from datetime import datetime, timedelta, timezone, time
 
+from django.conf import settings
 from django.utils.translation import ugettext as _
 
-from infusionset_reminder.settings import INFUSION_SET_ALERT_FREQUENCY, SENSOR_ALERT_FREQUENCY
 from .models import InfusionChanged, SensorChanged, LastTriggerSet, TriggerTime
 
 
@@ -54,7 +54,7 @@ def calculate_infusion(date):
     :param date: datetime of previous change of infusion set
     :return: time remains to next change
     """
-    infusion = timedelta(hours=INFUSION_SET_ALERT_FREQUENCY)
+    infusion = timedelta(hours=settings.INFUSION_SET_ALERT_FREQUENCY)
     infusion_alert_date = date + infusion
     infusion_time_remains = infusion_alert_date - datetime.now(timezone.utc)
 
@@ -67,7 +67,7 @@ def calculate_sensor(date):
     :param date:  datetime of previous change of CGM sensor
     :return: time remains to next change
     """
-    sensor = timedelta(hours=SENSOR_ALERT_FREQUENCY)
+    sensor = timedelta(hours=settings.SENSOR_ALERT_FREQUENCY)
     sensor_alert_date = date + sensor
     sensor_time_remains = sensor_alert_date - datetime.now(timezone.utc)
 
