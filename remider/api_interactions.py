@@ -15,15 +15,15 @@ def notify(sms_text):
     sends notifications via chosen ways
     :param sms_text: text of notification
     """
-    if settings.send_sms:
+    if settings.SEND_SMS:
         send_message(sms_text)
-    if settings.trigger_ifttt:
+    if settings.TRIGGER_IFTTT:
         send_webhook_IFTTT(val1=sms_text[1:])
 
 
 def send_webhook_IFTTT(val1="", val2="", val3=""):
     """ sends IFTTT webhook to all of ifttt makers from ifttt_makers list """
-    for IFTTT_MAKER in settings.ifttt_makers:
+    for IFTTT_MAKER in settings.IFTTT_MAKERS:
         r = requests.post("https://maker.ifttt.com/trigger/sugarbot-notification/with/key/{0}".format(IFTTT_MAKER),
                           data={"value1": val1, "value2": val2, "value3": val3})
         if r.status_code != 200:
@@ -35,9 +35,9 @@ def send_message(body):
     """ sends sms via Twilio gateway """
     client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
 
-    for to_number in settings.to_numbers:
+    for to_number in settings.TO_NUMBERS:
         try:
-            client.messages.create(body=body, from_=settings.rom_number, to=to_number)
+            client.messages.create(body=body, from_=settings.FROM_NUMBER, to=to_number)
         except:
             print(_("error: unsuccessful notification to {}").format(str(to_number)))
             sys.stdout.flush()
@@ -47,10 +47,10 @@ def change_config_var(label, new_value):
     """ changes config variables on heroku.com"""
     headers = {'Content-Type': 'application/json',
                'Accept': 'application/vnd.heroku+json; version=3',
-               "Authorization": "Bearer {}".format(settings.token)}
+               "Authorization": "Bearer {}".format(settings.TOKEN)}
     data = {label: new_value}
 
-    r = requests.patch('https://api.heroku.com/apps/{}/config-vars'.format(settings.app_name), headers=headers,
+    r = requests.patch('https://api.heroku.com/apps/{}/config-vars'.format(settings.APP_NAME), headers=headers,
                        data=json.dumps(data))
     if r.status_code == 200:
         return True
@@ -71,7 +71,7 @@ def create_trigger(tag="typical"):
 
         url = "https://api.atrigger.com/v1/tasks/create?key={}&secret={}&timeSlice={}&count={}&tag_id={}&url={}&first={}".format(
             settings.ATRIGGER_KEY, settings.ATRIGGER_SECRET, '1minute', 1, tag,
-            'https://{}.herokuapp.com/reminder/?key={}'.format(settings.app_name, settings.SECRET_KEY), notif_date)
+            'https://{}.herokuapp.com/reminder/?key={}'.format(settings.APP_NAME, settings.SECRET_KEY), notif_date)
         r = requests.get(url)
 
         if r.status_code == 200:
