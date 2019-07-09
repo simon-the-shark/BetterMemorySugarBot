@@ -11,22 +11,24 @@ from django.views.generic import TemplateView, FormView
 from .api_interactions import change_config_var, create_trigger, notify
 from .data_processing import process_nightscouts_api_response, calculate_infusion, calculate_sensor, \
     get_sms_txt_infusion_set, get_sms_txt_sensor, get_trigger_model
-from .decorators import secret_key_required
+from .decorators import secret_key_required, set_language_to_LANGUAGE_CODE
 from .forms import ChangeEnvVariableForm, ChooseNotificationsWayForm, GetSecretForm, FileUploudForm, ChooseLanguageForm, \
     TriggerTimeForm
 
 
 @secret_key_required
+@set_language_to_LANGUAGE_CODE
 def quiet_checkup_view(request):
     """
     shows remaining time to next change (infusion set or CGM sensor)
     without sending notification
     """
-    request.session[settings.LANGUAGE_SESSION_KEY] = settings.LANGUAGE_CODE
+    print(request.COOKIES)
     return reminder_and_notifier_view(request, False)
 
 
 @secret_key_required
+@set_language_to_LANGUAGE_CODE
 def reminder_and_notifier_view(request, send_notif=True):
     """
     get latest infusion set or CGM sensor change date from Nightscout`s API
@@ -81,6 +83,7 @@ def reminder_and_notifier_view(request, send_notif=True):
                   })
 
 
+@set_language_to_LANGUAGE_CODE
 def file_view(request):
     """
     view returns verification file for atrigger.com
@@ -89,6 +92,7 @@ def file_view(request):
     return FileResponse(file)
 
 
+@set_language_to_LANGUAGE_CODE
 def auth_view(request):
     """ authorization view via SECRET_KEY """
     if request.method == "POST":
@@ -99,7 +103,6 @@ def auth_view(request):
         form = GetSecretForm()
 
     return render(request, "remider/auth.html", {"form": form})
-
 
 class MenuView(TemplateView):
     """
@@ -224,6 +227,7 @@ class MenuView(TemplateView):
 
 
 @secret_key_required
+@set_language_to_LANGUAGE_CODE
 def upload_view(request):
     """ allows user to upload verification file for atrigger.com """
     if request.method == 'POST':
@@ -392,6 +396,7 @@ class ManagePhoneNumbersView(TemplateView):
 
 
 @secret_key_required
+@set_language_to_LANGUAGE_CODE
 def number_delete_view(request, number_id):
     """
      view handles requests for phone number deleting
@@ -410,6 +415,7 @@ def number_delete_view(request, number_id):
 
 
 @secret_key_required
+@set_language_to_LANGUAGE_CODE
 def ifttt_delete_view(request, maker_id):
     """
      view handles requests for IFTTT makers deleting
