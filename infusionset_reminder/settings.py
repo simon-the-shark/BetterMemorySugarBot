@@ -129,8 +129,8 @@ LOCALE_PATHS = (
 
 STATIC_URL = '/static/'
 
-token = config("heroku_token", default="")
-app_name = config("app_name")
+TOKEN = config("heroku_token", default="")
+APP_NAME = config("app_name")
 
 INFUSION_SET_ALERT_FREQUENCY = config("INFUSION_SET_ALERT_FREQUENCY", default=72, cast=int)
 SENSOR_ALERT_FREQUENCY = config("SENSOR_ALERT_FREQUENCY", default=144, cast=int)
@@ -141,30 +141,30 @@ TWILIO_AUTH_TOKEN = config("TWILIO_AUTH_TOKEN", default="")
 ATRIGGER_KEY = config("ATRIGGER_KEY", default="")
 ATRIGGER_SECRET = config("ATRIGGER_SECRET", default="")
 
-from_number = config("from_number", default="")
-nightscout_link = config("NIGHTSCOUT_LINK", default="")
+FROM_NUMBER = config("from_number", default="")
+NIGTSCOUT_LINK = config("NIGHTSCOUT_LINK", default="")
 
-to_numbers = []
+TO_NUMBERS = []
 i = 0
 while True:
     i += 1
     try:
         number = config("to_number_" + str(i))
-        to_numbers.append(number)
+        TO_NUMBERS.append(number)
     except:
         break
 
-ifttt_makers = []
+IFTTT_MAKERS = []
 i = 0
 
 while True:
     i += 1
     try:
         marker = config("IFTTT_MAKER_" + str(i))
-        ifttt_makers.append(marker)
+        IFTTT_MAKERS.append(marker)
     except:
         break
 
-trigger_ifttt = config("trigger_ifttt", default=False, cast=bool)
-send_sms = config("send_sms", default=False, cast=bool)
+TRIGGER_IFTTT = config("trigger_ifttt", default=False, cast=bool)
+SEND_SMS = config("send_sms", default=False, cast=bool)
 django_heroku.settings(locals())

@@ -16,11 +16,6 @@ from .forms import ChangeEnvVariableForm, ChooseNotificationsWayForm, GetSecretF
     TriggerTimeForm
 
 
-# SENSOR_ALERT_FREQUENCY, INFUSION_SET_ALERT_FREQUENCY, ATRIGGER_KEY, \
-#     ATRIGGER_SECRET, SECRET_KEY, nightscout_link, TWILIO_AUTH_TOKEN, TWILIO_ACCOUNT_SID, from_number, \
-#     to_numbers, ifttt_makers, trigger_ifttt, send_sms, LANGUAGE_CODE
-
-
 @secret_key_required
 def quiet_checkup_view(request):
     """
@@ -40,7 +35,7 @@ def reminder_and_notifier_view(request, send_notif=True):
     sends notification via sms
     """
 
-    response = requests.get(settings.nightscout_link + "/api/v1/treatments")
+    response = requests.get(settings.NIGTSCOUT_LINK + "/api/v1/treatments")
     date, sensor_date = process_nightscouts_api_response(response)
 
     sms_text = ""
@@ -115,7 +110,7 @@ class MenuView(TemplateView):
 
     forms_list = []
     forms = (
-        ("NIGHTSCOUT_LINK", "ns_link_button", settings.nightscout_link),
+        ("NIGHTSCOUT_LINK", "ns_link_button", settings.NIGTSCOUT_LINK),
         ("INFUSION_SET_ALERT_FREQUENCY", "infusion_freq_button", settings.INFUSION_SET_ALERT_FREQUENCY),
         ("SENSOR_ALERT_FREQUENCY", "sensor_freq_button", settings.SENSOR_ALERT_FREQUENCY),
         ("ATRIGGER_KEY", "atrigger_key_button", settings.ATRIGGER_KEY),
@@ -263,16 +258,16 @@ class ManagePhoneNumbersView(TemplateView):
         self.forms_list = []
         post_data = request.POST
         from_number_form = self.create_changeenvvarform('from_number_button', _("NUMBER OF SENDER"),
-                                                        settings.from_number,
+                                                        settings.FROM_NUMBER,
                                                         post_data)
 
-        for i, number in enumerate(settings.to_numbers):
+        for i, number in enumerate(settings.TO_NUMBERS):
             label = "to_number_" + str(i + 1)
             button_name = label + "_button"
             label_tag = _("DESTINATION NUMBER ") + str(i + 1) + "."
             form = self.create_changeenvvarform(button_name, label_tag, number, post_data)
             self.to_numbers_forms_list[label] = form
-        next_number_id = len(settings.to_numbers) + 1
+        next_number_id = len(settings.TO_NUMBERS) + 1
         new_number_form = self.create_changeenvvarform('new_number_button',
                                                        _("DESTINATION NUMBER ") + str(next_number_id) + ".", "",
                                                        post_data)
@@ -280,7 +275,7 @@ class ManagePhoneNumbersView(TemplateView):
         if from_number_form.is_valid() and 'from_number_button' in post_data:
             from_number_form, self.info = self.save_changeenvvarform(from_number_form, "from_number", )
 
-        for i, number in enumerate(settings.to_numbers):
+        for i, number in enumerate(settings.TO_NUMBERS):
             label = "to_number_" + str(i + 1)
             button_name = label + "_button"
             form = self.to_numbers_forms_list[label]
@@ -312,16 +307,16 @@ class ManagePhoneNumbersView(TemplateView):
 
         self.forms_list = []
         self.to_numbers_forms_list = {}
-        self.create_changeenvvarform('from_number_button', _("NUMBER OF SENDER"), settings.from_number)
+        self.create_changeenvvarform('from_number_button', _("NUMBER OF SENDER"), settings.FROM_NUMBER)
 
-        for i, number in enumerate(settings.to_numbers):
+        for i, number in enumerate(settings.TO_NUMBERS):
             label = "to_number_" + str(i + 1)
             button_name = label + "_button"
             label_tag = _("DESTINATION NUMBER ") + str(i + 1) + "."
             form = self.create_changeenvvarform(button_name, label_tag, number)
             self.to_numbers_forms_list[label] = form
 
-        next_number_id = len(settings.to_numbers) + 1
+        next_number_id = len(settings.TO_NUMBERS) + 1
         self.create_changeenvvarform('new_number_button', _("DESTINATION NUMBER ") + str(next_number_id) + ".", "")
 
         if delinfo[0]:
@@ -445,8 +440,8 @@ class NotificationsCenterView(FormView):
         :return: initial values for form
         """
         initial = super(NotificationsCenterView, self).get_initial()
-        initial["ifttt_notifications"] = settings.trigger_ifttt
-        initial["sms_notifications"] = settings.send_sms
+        initial["ifttt_notifications"] = settings.TRIGGER_IFTTT
+        initial["sms_notifications"] = settings.SEND_SMS
 
         return initial
 
@@ -499,17 +494,17 @@ class ManageIFTTTMakersView(TemplateView):
         self.forms_list = []
         post_data = request.POST
 
-        for i, maker in enumerate(settings.ifttt_makers):
+        for i, maker in enumerate(settings.IFTTT_MAKERS):
             label = "IFTTT_MAKER_" + str(i + 1)
             button_name = label + "_button"
             label_tag = "IFTTT MAKER " + str(i + 1) + "."
             form = self.create_changeenvvarform(button_name, label_tag, maker, post_data)
             self.makers_dict[label] = form
-        next_maker_id = len(settings.ifttt_makers) + 1
+        next_maker_id = len(settings.IFTTT_MAKERS) + 1
         new_maker_form = self.create_changeenvvarform('new_maker_button',
                                                       "IFTTT MAKER " + str(next_maker_id) + ".", "", post_data)
 
-        for i, maker in enumerate(settings.ifttt_makers):
+        for i, maker in enumerate(settings.IFTTT_MAKERS):
             label = "IFTTT_MAKER_" + str(i + 1)
             button_name = label + "_button"
             form = self.makers_dict[label]
@@ -536,14 +531,14 @@ class ManageIFTTTMakersView(TemplateView):
         self.forms_list = []
         self.makers_dict = {}
 
-        for i, maker in enumerate(settings.ifttt_makers):
+        for i, maker in enumerate(settings.IFTTT_MAKERS):
             label = "IFTTT_MAKER_" + str(i + 1)
             button_name = label + "_button"
             label_tag = "IFTTT MAKER " + str(i + 1) + "."
             form = self.create_changeenvvarform(button_name, label_tag, maker)
             self.makers_dict[label] = form
 
-        next_maker_id = len(settings.fttt_makers) + 1
+        next_maker_id = len(settings.IFTTT_MAKERS) + 1
         self.create_changeenvvarform('new_maker_button', "IFTTT MAKER " + str(next_maker_id) + ".", "")
 
         if delinfo[0]:
