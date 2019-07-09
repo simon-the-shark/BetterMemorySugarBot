@@ -3,6 +3,7 @@ import sys
 from datetime import datetime, timedelta
 
 import requests.exceptions
+from django.utils.translation import ugettext as _
 from twilio.rest import Client
 
 from infusionset_reminder.settings import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, from_number, \
@@ -27,7 +28,7 @@ def send_webhook_IFTTT(val1="", val2="", val3=""):
         r = requests.post("https://maker.ifttt.com/trigger/sugarbot-notification/with/key/{0}".format(IFTTT_MAKER),
                           data={"value1": val1, "value2": val2, "value3": val3})
         if r.status_code != 200:
-            print("error: unsuccessful IFTTT notification to {}".format(str(IFTTT_MAKER)))
+            print(_("error: unsuccessful IFTTT notification to {}").format(str(IFTTT_MAKER)))
             sys.stdout.flush()
 
 
@@ -39,7 +40,7 @@ def send_message(body):
         try:
             client.messages.create(body=body, from_=from_number, to=to_number)
         except:
-            print("error: unsuccessful notification to {}".format(str(to_number)))
+            print(_("error: unsuccessful notification to {}").format(str(to_number)))
             sys.stdout.flush()
 
 
@@ -78,7 +79,7 @@ def create_trigger(tag="typical"):
             update_last_triggerset()
             return True
         else:
-            print(
-                "unsuccessful trigger on atrigger.com creating \n perhaps wrong API key or secret ?? or an app_name ??")
+            print(_(
+                "unsuccessful trigger on atrigger.com creating \n perhaps wrong API key or secret ?? or an app_name ??"))
             sys.stdout.flush()
             return False

@@ -1,22 +1,22 @@
 {% extends "core/base.html" %}
 {% load bootstrap4 %}
-
+{% load i18n %}
 {% block content %}
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'menu' %}?key={{ SECRET_KEY }}">MENU</a></li>
-            <li class="breadcrumb-item active" aria-current="page">NOTIFICATIONS CENTER</li>
+            <li class="breadcrumb-item"><a href="{% url 'menu' %}?key={{ SECRET_KEY }}">{% trans 'MENU' %}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{% trans 'NOTIFICATIONS CENTER' %}</li>
         </ol>
     </nav>
 
     <div class="container">
 
-        <h1 align="center" class="display-4"> 🔔 NOTIFICATIONS CENTER 🔔</h1>
+        <h1 align="center" class="display-4"> 🔔 {% trans 'NOTIFICATIONS CENTER' %} 🔔</h1>
 
         {% if not trig_info %}
             <div class="container" style="margin-top: 0.3%">
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>AN ERROR OCCURED WHEN TRIED TO CHANGE VARIABLE</strong>
+                    <strong>{% trans 'AN ERROR OCCURED WHEN TRIED TO CHANGE VARIABLE' %}</strong>
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">X</span>
                     </button>
@@ -26,7 +26,7 @@
         {% if not sms_info %}
             <div class="container" style="margin-top: 0.3%">
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>AN ERROR OCCURED WHEN TRIED TO CHANGE VARIABLE</strong>
+                    <strong>{% trans 'AN ERROR OCCURED WHEN TRIED TO CHANGE VARIABLE' %}</strong>
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">X</span>
                     </button>
@@ -35,7 +35,7 @@
         {% endif %}
 
         <div class="jumbotron">
-            <h3 class="display-5">CHOOSE YOUR NOTIFICATIONS WAYS:</h3>
+            <h3 class="display-5">{% trans 'CHOOSE YOUR NOTIFICATIONS WAYS:' %}</h3>
             <hr/>
             <form method="post">
                 {% csrf_token %}
@@ -44,11 +44,9 @@
             </form>
         </div>
         <a href="{% url 'manage_ifttt_makers' %}?key={{ SECRET_KEY }}" role="button"
-           class="btn btn-primary btn-lg btn-block" style="margin: 0.2%">MANAGE IFTTT
-            MAKERS</a>
+           class="btn btn-primary btn-lg btn-block" style="margin: 0.2%">{% trans "MANAGE IFTTT MAKERS" %}</a>
         <a href="{% url 'manage_ph_numbers' %}?key={{ SECRET_KEY }}" role="button" class="btn btn-info btn-lg btn-block"
-           style="margin: 0.2%">MANAGE
-            PHONE NUMBERS</a>
+           style="margin: 0.2%">{% trans 'MANAGE PHONE NUMBERS' %}</a>
     </div>
 
 {% endblock %}

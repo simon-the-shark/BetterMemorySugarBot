@@ -1,7 +1,7 @@
 from bootstrap_datepicker_plus import TimePickerInput
 from django import forms
+from django.utils.translation import ugettext_lazy as _
 
-from .languages import *
 from .models import TriggerTime
 
 
@@ -24,14 +24,14 @@ class ChangeEnvVariableForm(forms.Form):
 
 class ChooseNotificationsWayForm(forms.Form):
     """ form for choosing notifications way """
-    ifttt_notifications = forms.BooleanField(required=False, label=languages_ifttt_label)
-    sms_notifications = forms.BooleanField(required=False, label=languages_sms_label)
+    ifttt_notifications = forms.BooleanField(required=False, label=_("TRIGGER IFTTT (SEND WEBHOOKS)"))
+    sms_notifications = forms.BooleanField(required=False, label=_("SEND SMS"))
 
 
 class ChooseLanguageForm(forms.Form):
     """ form for choosing your language """
     language = forms.ChoiceField(required=True, choices=(("pl", "POLSKI"), ("en", "ENGLISH")),
-                                 label=languages_language_label)
+                                 label=_("LANGUAGE"))
 
 
 class TriggerTimeForm(forms.ModelForm):
@@ -40,5 +40,5 @@ class TriggerTimeForm(forms.ModelForm):
     class Meta:
         model = TriggerTime
         fields = ["time"]
-        labels = {"time": languages_time_label, }
+        labels = {"time": _("NOTIFICATION TIME. Please give UTC TIME"), }
         widgets = {"time": TimePickerInput(), }

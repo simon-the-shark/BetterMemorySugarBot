@@ -1,20 +1,21 @@
 {% extends 'core/base.html' %}
 {% load bootstrap4 %}
+{% load i18n %}
 {% block content %}
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'menu' %}?key={{ SECRET_KEY }}">MENU</a></li>
-            <li class="breadcrumb-item active" aria-current="page">UPLOAD ATriggerVerify.txt FILE</li>
+            <li class="breadcrumb-item"><a href="{% url 'menu' %}?key={{ SECRET_KEY }}">{% trans 'MENU' %}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{% trans 'UPLOAD ATriggerVerify.txt FILE' %}</li>
         </ol>
     </nav>
     <div class="container">
         <div class="jumbotron">
-            <h1 class="display-5">UPLOAD YOUR ATriggerVerify.txt FILE</h1>
+            <h1 class="display-5">{% trans 'UPLOAD YOUR ATriggerVerify.txt FILE' %}</h1>
             <hr class="display-5"/>
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {% bootstrap_form form %}
-                <button type="submit" class="btn btn-primary">UPLOAD</button>
+                <button type="submit" class="btn btn-primary">{% trans 'UPLOAD' %}</button>
             </form>
         </div>
     </div>

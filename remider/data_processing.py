@@ -1,8 +1,9 @@
 import sys
 from datetime import datetime, timedelta, timezone, time
 
+from django.utils.translation import ugettext as _
+
 from infusionset_reminder.settings import INFUSION_SET_ALERT_FREQUENCY, SENSOR_ALERT_FREQUENCY
-from .languages import *
 from .models import InfusionChanged, SensorChanged, LastTriggerSet, TriggerTime
 
 
@@ -35,13 +36,13 @@ def process_nightscouts_api_response(response):
         try:
             inf_date = InfusionChanged.objects.get(id=1).date
         except InfusionChanged.DoesNotExist:
-            print("warning: infusion set change has never been cached")
+            print(_("warning: infusion set change has never been cached"))
             sys.stdout.flush()
 
         try:
             sensor_date = SensorChanged.objects.get(id=1).date
         except SensorChanged.DoesNotExist:
-            print("warning: CGM sensor change has never been cached")
+            print(_("warning: CGM sensor change has never been cached"))
             sys.stdout.flush()
 
         return inf_date, sensor_date
@@ -81,9 +82,9 @@ def get_sms_txt_infusion_set(time_remains):
     """
     days = time_remains.days
     if days < 0:
-        return languages_infusion_over
+        return _(".\n\n Your infusion set change has already passed")
     hours = round(time_remains.seconds / 3600)
-    text = languages_infusion_successful.format(days, hours)
+    text = _(".\n\n Your infusion set should be changed in {} days and {} hours.").format(days, hours)
 
     return text
 
@@ -96,9 +97,9 @@ def get_sms_txt_sensor(time_remains):
     """
     days = time_remains.days
     if days < 0:
-        return languages_sensor_over
+        return _("\n\n Your CGM sensor change has already passed")
     hours = round(time_remains.seconds / 3600)
-    text = languages_sensor_successful.format(days, hours)
+    text = _("\n\n Your CGM sensor should be changed in {} days and {} hours.").format(days, hours)
 
     return text
 
