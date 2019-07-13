@@ -1,0 +1,1 @@
+﻿ATrigger Verify.txt test file
