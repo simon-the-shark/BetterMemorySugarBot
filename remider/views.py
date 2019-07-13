@@ -104,6 +104,7 @@ def auth_view(request):
 
     return render(request, "remider/auth.html", {"form": form})
 
+
 class MenuView(TemplateView):
     """
     menu view
@@ -228,13 +229,13 @@ class MenuView(TemplateView):
 
 @secret_key_required
 @set_language_to_LANGUAGE_CODE
-def upload_view(request):
+def upload_view(request, location='staticfiles/uplouded/'):
     """ allows user to upload verification file for atrigger.com """
     if request.method == 'POST':
         form = FileUploudForm(request.POST, request.FILES)
         if form.is_valid():
             file = request.FILES['file']
-            fs = FileSystemStorage(location='staticfiles/uplouded/')  # defaults to   MEDIA_ROOT
+            fs = FileSystemStorage(location=location)  # defaults to   MEDIA_ROOT
             filename = fs.save("ATriggerVerify.txt", file)
             return redirect("/menu/?key={}&info={}".format(settings.SECRET_KEY, "1"))
     else:

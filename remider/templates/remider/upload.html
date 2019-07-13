@@ -15,7 +15,7 @@
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {% bootstrap_form form %}
-                <button type="submit" class="btn btn-primary">{% trans 'UPLOAD' %}</button>
+                <button id="upload_button" type="submit" class="btn btn-primary">{% trans 'UPLOAD' %}</button>
             </form>
         </div>
     </div>
