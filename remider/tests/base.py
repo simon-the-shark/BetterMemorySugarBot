@@ -37,11 +37,11 @@ class FunctionalTest(StaticLiveServerTestCase):
                     raise e
                 time.sleep(0.5)
 
-    def wait_for_finding(self, find_expression, *args):
+    def wait_for_finding(self, find_expression):
         start = time.time()
         while True:
             try:
-                return find_expression(*args)
+                return find_expression()
             except WebDriverException as e:
                 if time.time() - start > self.MAX_TIME:
                     raise e

@@ -10,14 +10,14 @@ class LoggingTest(FunctionalTest):
         self.browser.get(self.live_server_url)
         self.browser.find_element_by_id("continue_buton").click()
         self.assertUrlNow(url="get_secret")
-        input = self.wait_for_finding(self.browser.find_element_by_id, "id_apisecret")
+        input = self.wait_for_finding(lambda: self.browser.find_element_by_id("id_apisecret"))
 
         input.send_keys("mycoolsecretkey")
         input.send_keys(Keys.ENTER)
         self.wait_and_assertUrlNow(url="menu")
 
         self.browser.get(self.live_server_url + reverse("get_secret"))
-        input = self.wait_for_finding(self.browser.find_element_by_id, "id_apisecret")
+        input = self.wait_for_finding(lambda: self.browser.find_element_by_id("id_apisecret"))
 
         input.send_keys("mynotcoolsecretkey")
         input.send_keys(Keys.ENTER)
