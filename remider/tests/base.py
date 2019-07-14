@@ -3,6 +3,7 @@ from django.shortcuts import reverse
 from django.conf import settings
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
+import requests
 
 import time
 
@@ -17,7 +18,9 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.browser.quit()
 
     def assertUrlNow(self, url, add_secret_key=False, status=200, extras=""):
-        if add_secret_key:
+        if url.startswith("https://"):
+            expeted_url = url
+        elif add_secret_key:
             expeted_url = self.live_server_url + reverse(url) + "?key={}".format(settings.SECRET_KEY) + extras
         else:
             expeted_url = self.live_server_url + reverse(url) + extras
@@ -46,3 +49,11 @@ class FunctionalTest(StaticLiveServerTestCase):
                 if time.time() - start > self.MAX_TIME:
                     raise e
                 time.sleep(0.5)
+
+
+def check_internet_connection():
+    try:
+        requests.get("https://www.google.com/")
+        return True
+    except requests.ConnectionError:
+        return False
