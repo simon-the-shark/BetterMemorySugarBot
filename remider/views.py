@@ -23,7 +23,6 @@ def quiet_checkup_view(request):
     shows remaining time to next change (infusion set or CGM sensor)
     without sending notification
     """
-    print(request.COOKIES)
     return reminder_and_notifier_view(request, False)
 
 
