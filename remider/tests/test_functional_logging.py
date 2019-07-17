@@ -22,12 +22,12 @@ class LoggingTest(FunctionalTest):
         self.assertTemplateUsed(response, "remider/menu.html")
         self.assertEqual(response.status_code, 200)
 
-    @skipIf(check_internet_connection(), "internet disconnect")
+    @skipIf(not check_internet_connection(), "internet disconnect")
     @override_settings(SECRET_KEY="mycoolsecretkey", LANGUAGE_CODE='en', app_name="benc-test", DEBUG=True)
     def test_google_redirect(self):
         self.browser.get(self.live_server_url)
         self.wait_for_finding(lambda: self.browser.find_element_by_id("OK-btn")).click()
-        self.wait_and_assertUrlNow("https://www.google.com")
+        self.wait_and_assertUrlNow("https://www.google.com/")
 
     @override_settings(SECRET_KEY="mycoolsecretkey", LANGUAGE_CODE='en', app_name="benc-test", DEBUG=True)
     def test_logging(self):
