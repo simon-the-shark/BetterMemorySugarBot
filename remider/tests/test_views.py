@@ -1,5 +1,6 @@
 from django.test import TestCase, override_settings
 from django.shortcuts import reverse
+from django.conf import settings
 
 from ..forms import GetSecretForm, TriggerTimeForm, ChangeEnvVariableForm, ChooseLanguageForm
 
@@ -40,21 +41,19 @@ class MenuViewTests(TestCase):
         response = self.client.get(reverse("menu") + "?key=mycoolsecretkey&info=1")
         self.assertEqual(response.context["info"], True)
 
-    @override_settings(SECRET_KEY="mycoolsecretkey", NIGTSCOUT_LINK="https://test.com", SENSOR_ALERT_FREQUENCY=1,
-                       INFUSION_SET_ALERT_FREQUENCY=2, ATRIGGER_KEY="akey", ATRIGGER_SECRET="asecret",
-                       TWILIO_ACCOUNT_SID="tsid", TWILIO_AUTH_TOKEN="ttoken")
+    @override_settings(SECRET_KEY="mycoolsecretkey")
     def test_proper_forms(self):
         response = self.client.get(reverse("menu") + "?key=mycoolsecretkey")
         self.assertIsInstance(response.context["language_form"], ChooseLanguageForm)
         self.assertIsInstance(response.context["time_form"], TriggerTimeForm)
         forms = (
-            ("NIGHTSCOUT_LINK", "ns_link_button", "https://test.com"),
-            ("INFUSION_SET_ALERT_FREQUENCY", "infusion_freq_button", 2),
-            ("SENSOR_ALERT_FREQUENCY", "sensor_freq_button", 1),
-            ("ATRIGGER_KEY", "atrigger_key_button", "akey"),
-            ("ATRIGGER_SECRET", "atrigger_secret_button", "asecret"),
-            ("TWILIO_ACCOUNT_SID", "twilio_sid_button", "tsid"),
-            ("TWILIO_AUTH_TOKEN", "twilio_token_button", "ttoken"),
+            ("NIGHTSCOUT_LINK", "ns_link_button", settings.NIGTSCOUT_LINK),
+            ("INFUSION_SET_ALERT_FREQUENCY", "infusion_freq_button", settings.INFUSION_SET_ALERT_FREQUENCY),
+            ("SENSOR_ALERT_FREQUENCY", "sensor_freq_button", settings.SENSOR_ALERT_FREQUENCY),
+            ("ATRIGGER_KEY", "atrigger_key_button", settings.ATRIGGER_KEY),
+            ("ATRIGGER_SECRET", "atrigger_secret_button", settings.ATRIGGER_SECRET),
+            ("TWILIO_ACCOUNT_SID", "twilio_sid_button", settings.TWILIO_ACCOUNT_SID),
+            ("TWILIO_AUTH_TOKEN", "twilio_token_button", settings.TWILIO_AUTH_TOKEN),
         )
         for indx, form in enumerate(response.context["forms_list"]):
             self.assertIsInstance(form, ChangeEnvVariableForm)
