@@ -10,14 +10,6 @@ class LoggingTest(FunctionalTest):
 
     @override_settings(DEBUG=True, SECRET_KEY="mycoolsecretkey")
     def test_templates(self):
-        response = self.client.get(reverse("home") + "?key=mycoolsecretkey")
-        self.assertTemplateUsed(response, "remider/home.html")
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get(reverse("get_secret") + "?key=mycoolsecretkey")
-        self.assertTemplateUsed(response, "remider/auth.html")
-        self.assertEqual(response.status_code, 200)
-
         response = self.client.get(reverse("menu") + "?key=mycoolsecretkey")
         self.assertTemplateUsed(response, "remider/menu.html")
         self.assertEqual(response.status_code, 200)
