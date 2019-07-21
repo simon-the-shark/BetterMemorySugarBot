@@ -2,7 +2,8 @@ from django.test import TestCase, override_settings
 from django.shortcuts import reverse
 from django.conf import settings
 
-from ..forms import GetSecretForm, TriggerTimeForm, ChangeEnvVariableForm, ChooseLanguageForm
+from ..forms import GetSecretForm, TriggerTimeForm, ChangeEnvVariableForm, ChooseLanguageForm, \
+    ChooseNotificationsWayForm
 
 
 class HomeViewTests(TestCase):
@@ -60,3 +61,25 @@ class MenuViewTests(TestCase):
             self.assertEqual(form.button_name, forms[indx][1])
             self.assertEqual(form.fields['new_value'].label, forms[indx][0])
             self.assertEqual(form.fields['new_value'].initial, forms[indx][2])
+
+
+class NotificationCenterViewTests(TestCase):
+    @override_settings(SECRET_KEY="mycoolsecretkey")
+    def test_template_loading(self):
+        response = self.client.get(reverse("notif-center") + "?key=mycoolsecretkey")
+        self.assertTemplateUsed(response, "remider/notifications.html")
+        self.assertEqual(response.status_code, 200)
+
+    @override_settings(SECRET_KEY="mycoolsecretkey")
+    def test_template_context(self):
+        response = self.client.get(reverse("notif-center") + "?key=mycoolsecretkey")
+        self.assertEqual(response.context["SECRET_KEY"], "mycoolsecretkey")
+        self.assertEqual(response.context["trig_info"], True)
+        self.assertEqual(response.context["sms_info"], True)
+
+    @override_settings(SECRET_KEY="mycoolsecretkey")
+    def test_displays_proper_form(self):
+        response = self.client.get(reverse("notif-center") + "?key=mycoolsecretkey")
+        self.assertIsInstance(response.context['form'], ChooseNotificationsWayForm)
+        self.assertContains(response, 'type="checkbox"')
+        self.assertContains(response, 'type="submit"')
