@@ -13,10 +13,10 @@ class PostMenuTest(FunctionalTest):
         else:
             self.assertIn("alert-success", alert.get_attribute("class"))
 
-    def assertPost(self, id, new_value, indx=0, backspaces=0):
+    def assertPost(self, id, new_value, indx=0, clear=False):
         input = self.wait_for_finding(lambda: self.browser.find_elements_by_id(id))[indx]
-        for i in range(backspaces):
-            input.send_keys(Keys.BACK_SPACE)
+        if clear:
+            input.clear()
         input.send_keys(new_value)
         input.send_keys(Keys.ENTER)
         self.check_alert()
@@ -41,4 +41,4 @@ class PostMenuTest(FunctionalTest):
         self.assertChangeEnvVarPost(4, "asecret")
         self.assertChangeEnvVarPost(5, "tsid")
         self.assertChangeEnvVarPost(6, "tsecret")
-        self.assertPost("id_time", "16:01", backspaces=5)
+        self.assertPost("id_time", "16:01", clear=True)
