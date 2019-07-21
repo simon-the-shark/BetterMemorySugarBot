@@ -1,25 +1,9 @@
 from .base import FunctionalTest
 from django.shortcuts import reverse
 from django.test import override_settings
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
-import time
 
 class PostMenuTest(FunctionalTest):
-    def check_alert(self):
-        alert = self.wait_for_finding(lambda: self.browser.find_element_by_css_selector(".alert"))
-        if self.live_server_url.startswith("http://localhost"):
-            self.assertIn("alert-danger", alert.get_attribute("class"))
-        else:
-            self.assertIn("alert-success", alert.get_attribute("class"))
-
-    def assertPost(self, id, new_value, indx=0, clear=False):
-        input = self.wait_for_finding(lambda: self.browser.find_elements_by_id(id))[indx]
-        if clear:
-            input.clear()
-        input.send_keys(new_value)
-        input.send_keys(Keys.ENTER)
-        self.check_alert()
 
     def assertChangeEnvVarPost(self, indx, new_value, ):
         self.assertPost("id_new_value", new_value, indx)
