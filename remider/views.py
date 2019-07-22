@@ -1,4 +1,5 @@
 import sys
+import os.path
 
 import requests
 from django.conf import settings
@@ -87,7 +88,7 @@ def file_view(request):
     """
     view returns verification file for atrigger.com
     """
-    file = open("staticfiles/uplouded/ATriggerVerify.txt", "rb")
+    file = open(os.path.join(settings.STATIC_ROOT, "uplouded", "ATriggerVerify.txt"), "rb")
     return FileResponse(file)
 
 
@@ -228,14 +229,14 @@ class MenuView(TemplateView):
 
 @secret_key_required
 @set_language_to_LANGUAGE_CODE
-def upload_view(request, location='staticfiles/uplouded/'):
+def upload_view(request, location=os.path.join(settings.STATIC_ROOT, "uplouded")):
     """ allows user to upload verification file for atrigger.com """
     if request.method == 'POST':
         form = FileUploudForm(request.POST, request.FILES)
         if form.is_valid():
             file = request.FILES['file']
-            fs = FileSystemStorage(location=location)  # defaults to   MEDIA_ROOT
-            filename = fs.save("ATriggerVerify.txt", file)
+            fs = FileSystemStorage(location=location)
+            fs.save("ATriggerVerify.txt", file)
             return redirect("/menu/?key={}&info={}".format(settings.SECRET_KEY, "1"))
     else:
         form = FileUploudForm()

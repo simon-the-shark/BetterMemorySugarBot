@@ -8,7 +8,7 @@ from .views import reminder_and_notifier_view, file_view, auth_view, upload_view
 urlpatterns = [
     re_path(r"^$", set_language_to_LANGUAGE_CODE(TemplateView.as_view(template_name="remider/home.html")), name="home"),
     re_path(r"^reminder/$", reminder_and_notifier_view, name="reminder"),
-    re_path(r"^ATriggerVerify.txt$", file_view),
+    re_path(r"^ATriggerVerify.txt$", file_view, name="atriggerfile"),
     re_path(r"^auth/$", auth_view, name='get_secret'),
     re_path(r"^menu/$", secret_key_required(set_language_to_LANGUAGE_CODE(MenuView.as_view())), name='menu'),
     re_path(r"^upload/$", upload_view, name="upload"),
