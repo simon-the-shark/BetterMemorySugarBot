@@ -13,10 +13,7 @@ class UploadingTest(FunctionalTest):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "remider/upload.html")
 
-    @override_settings(SECRET_KEY="mycoolsecretkey", LANGUAGE_CODE='en', app_name="benc-test", DEBUG=True)
-    def test_uploading(self):
-        file_path = os.path.join(settings.BASE_DIR, "remider", "tests", "ATriggerVerify.txt")
-
+    def uplouding_test(self, file_path):
         self.browser.get(self.live_server_url + reverse("menu") + "?key=mycoolsecretkey")
         self.browser.find_element_by_id("upload_button").click()
         self.wait_and_assertUrlNow("upload")
@@ -29,3 +26,9 @@ class UploadingTest(FunctionalTest):
             file = file.read()
             response = self.client.get(reverse("atriggerfile"))
             self.assertContains(response, file)
+
+    @override_settings(SECRET_KEY="mycoolsecretkey", LANGUAGE_CODE='en', app_name="benc-test", DEBUG=True)
+    def test_uploading(self):
+        self.uplouding_test(file_path=os.path.join(settings.BASE_DIR, "remider", "tests", "ATriggerVerify.txt"))
+        print("bemc")
+        self.uplouding_test(file_path=os.path.join(settings.BASE_DIR, "remider", "tests", "ATriggerVerify2.txt"))

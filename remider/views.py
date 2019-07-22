@@ -3,7 +3,6 @@ import os.path
 
 import requests
 from django.conf import settings
-from django.core.files.storage import FileSystemStorage
 from django.http import FileResponse
 from django.shortcuts import render, redirect
 from django.utils.translation import ugettext as _
@@ -15,7 +14,7 @@ from .data_processing import process_nightscouts_api_response, calculate_infusio
 from .decorators import secret_key_required, set_language_to_LANGUAGE_CODE
 from .forms import ChangeEnvVariableForm, ChooseNotificationsWayForm, GetSecretForm, FileUploudForm, ChooseLanguageForm, \
     TriggerTimeForm
-
+from .storage import OverwriteStorage
 
 @secret_key_required
 @set_language_to_LANGUAGE_CODE
@@ -226,7 +225,6 @@ class MenuView(TemplateView):
 
         return form, info2
 
-
 @secret_key_required
 @set_language_to_LANGUAGE_CODE
 def upload_view(request, location=os.path.join(settings.STATIC_ROOT, "uplouded")):
@@ -235,7 +233,7 @@ def upload_view(request, location=os.path.join(settings.STATIC_ROOT, "uplouded")
         form = FileUploudForm(request.POST, request.FILES)
         if form.is_valid():
             file = request.FILES['file']
-            fs = FileSystemStorage(location=location)
+            fs = OverwriteStorage(location=location)
             fs.save("ATriggerVerify.txt", file)
             return redirect("/menu/?key={}&info={}".format(settings.SECRET_KEY, "1"))
     else:
