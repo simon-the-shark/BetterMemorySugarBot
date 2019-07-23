@@ -61,7 +61,7 @@ class FunctionalTest(StaticLiveServerTestCase):
 
     def check_alert(self):
         alert = self.wait_for_finding(lambda: self.browser.find_element_by_css_selector(".alert"))
-        if self.live_server_url.startswith("http://localhost"):
+        if not settings.TOKEN:
             self.assertIn("alert-danger", alert.get_attribute("class"))
         else:
             self.assertIn("alert-success", alert.get_attribute("class"))

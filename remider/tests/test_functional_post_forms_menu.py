@@ -1,9 +1,42 @@
-from .base import FunctionalTest
+import json
+import requests
+from django.conf import settings
 from django.shortcuts import reverse
 from django.test import override_settings
 from selenium.webdriver.support.ui import Select
 
+from .base import FunctionalTest
+
+
 class PostMenuTest(FunctionalTest):
+    def setUp(self):
+        if settings.TOKEN:
+            print(settings.TOKEN)
+            print("saving heroku`s config vars")
+            vars = requests.get('https://api.heroku.com/apps/{}/config-vars'.format(settings.APP_NAME), headers={
+                'Accept': 'application/vnd.heroku+json; version=3',
+                "Authorization": "Bearer {}".format(settings.TOKEN)
+            })
+            self.config_vars_dict = json.loads(vars.text)
+            print("heroku`s config vars saved")
+
+        super().setUp()
+
+    def tearDown(self):
+        super().tearDown()
+
+        if settings.TOKEN:
+            print("Cleaning up heroku`s config vars...")
+            for label in ["ATRIGGER_KEY", "ATRIGGER_SECRET", "INFUSION_SET_ALERT_FREQUENCY", "LANGUAGE_CODE",
+                          "NIGHTSCOUT_LINK", "SENSOR_ALERT_FREQUENCY", "TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN"]:
+                headers = {'Content-Type': 'application/json',
+                           'Accept': 'application/vnd.heroku+json; version=3',
+                           "Authorization": "Bearer {}".format(settings.TOKEN)}
+                data = {label: self.config_vars_dict.get("label", "")}
+                requests.patch('https://api.heroku.com/apps/{}/config-vars'.format(settings.APP_NAME),
+                               headers=headers,
+                               data=json.dumps(data))
+            print("heroku`s config vars restored to previous state")
 
     def assertChangeEnvVarPost(self, indx, new_value, ):
         self.assertPost("id_new_value", new_value, indx)
@@ -26,3 +59,7 @@ class PostMenuTest(FunctionalTest):
         self.assertChangeEnvVarPost(5, "tsid")
         self.assertChangeEnvVarPost(6, "tsecret")
         self.assertPost("id_time", "16:01", clear=True)
+
+    @override_settings(SECRET_KEY="mycoolsecretkey", TOKEN="")
+    def test_posting_forms_without_token(self):
+        self.test_posting_forms()
