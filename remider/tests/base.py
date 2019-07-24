@@ -7,6 +7,7 @@ from selenium.common.exceptions import WebDriverException
 import requests
 
 import time
+import json
 
 
 class FunctionalTest(StaticLiveServerTestCase):
@@ -46,7 +47,7 @@ class FunctionalTest(StaticLiveServerTestCase):
         while True:
             try:
                 return find_expression()
-            except WebDriverException as e:
+            except (WebDriverException, AssertionError) as e:
                 if time.time() - start > self.MAX_TIME:
                     raise e
                 time.sleep(0.5)
@@ -65,6 +66,37 @@ class FunctionalTest(StaticLiveServerTestCase):
             self.assertIn("alert-danger", alert.get_attribute("class"))
         else:
             self.assertIn("alert-success", alert.get_attribute("class"))
+
+
+class HerokuFunctionalTest(FunctionalTest):
+    def setUp(self):
+        if settings.TOKEN:
+            print("saving heroku`s config vars...")
+            vars = requests.get('https://api.heroku.com/apps/{}/config-vars'.format(settings.APP_NAME), headers={
+                'Accept': 'application/vnd.heroku+json; version=3',
+                "Authorization": "Bearer {}".format(settings.TOKEN)
+            })
+            self.config_vars_dict = json.loads(vars.text)
+            print("heroku`s config vars saved")
+
+        super().setUp()
+
+    def tearDown(self):
+        super().tearDown()
+
+        if settings.TOKEN:
+            print("Cleaning up heroku`s config vars...")
+            data = {}
+            for label, val in self.config_vars_dict.items():
+                data[label] = val
+
+            headers = {'Content-Type': 'application/json',
+                       'Accept': 'application/vnd.heroku+json; version=3',
+                       "Authorization": "Bearer {}".format(settings.TOKEN)}
+            requests.patch('https://api.heroku.com/apps/{}/config-vars'.format(settings.APP_NAME),
+                           headers=headers,
+                           data=json.dumps(data))
+            print("heroku`s config vars restored to previous state")
 
 
 def check_internet_connection():
