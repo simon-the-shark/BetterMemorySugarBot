@@ -70,6 +70,7 @@ class FunctionalTest(StaticLiveServerTestCase):
 
 class HerokuFunctionalTest(FunctionalTest):
     def setUp(self):
+        self.MAX_TIMES = 5
         if settings.TOKEN:
             print("saving heroku`s config vars...")
             vars = requests.get('https://api.heroku.com/apps/{}/config-vars'.format(settings.APP_NAME), headers={
@@ -85,18 +86,29 @@ class HerokuFunctionalTest(FunctionalTest):
         super().tearDown()
 
         if settings.TOKEN:
-            print("Cleaning up heroku`s config vars...")
-            data = {}
-            for label, val in self.config_vars_dict.items():
-                data[label] = val
+            i = 0
+            while True:
+                i += 1
+                try:
+                    print("Cleaning up heroku`s config vars...")
+                    data = {}
+                    for label, val in self.config_vars_dict.items():
+                        data[label] = val
 
-            headers = {'Content-Type': 'application/json',
-                       'Accept': 'application/vnd.heroku+json; version=3',
-                       "Authorization": "Bearer {}".format(settings.TOKEN)}
-            requests.patch('https://api.heroku.com/apps/{}/config-vars'.format(settings.APP_NAME),
-                           headers=headers,
-                           data=json.dumps(data))
-            print("heroku`s config vars restored to previous state")
+                    headers = {'Content-Type': 'application/json',
+                               'Accept': 'application/vnd.heroku+json; version=3',
+                               "Authorization": "Bearer {}".format(settings.TOKEN)}
+                    requests.patch('https://api.heroku.com/apps/{}/config-vars'.format(settings.APP_NAME),
+                                   headers=headers,
+                                   data=json.dumps(data))
+                    print("heroku`s config vars restored to previous state")
+                    return
+                except (requests.exceptions.ConnectionError) as e:
+                    print("!!an error occured!!!")
+                    if i < self.MAX_TIMES:
+                        print("trying again... It`s {} attempt".format(str(i)))
+                    else:
+                        raise e
 
 
 def check_internet_connection():
