@@ -4,7 +4,7 @@ import os.path
 import requests
 from django.conf import settings
 from django.http import FileResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView, FormView
 
@@ -15,6 +15,7 @@ from .decorators import secret_key_required, set_language_to_LANGUAGE_CODE
 from .forms import ChangeEnvVariableForm, ChooseNotificationsWayForm, GetSecretForm, FileUploudForm, ChooseLanguageForm, \
     TriggerTimeForm
 from .storage import OverwriteStorage
+
 
 @secret_key_required
 @set_language_to_LANGUAGE_CODE
@@ -224,6 +225,7 @@ class MenuView(TemplateView):
             info2 = (False, "unsuccess")
 
         return form, info2
+
 
 @secret_key_required
 @set_language_to_LANGUAGE_CODE
@@ -487,6 +489,7 @@ class ManageIFTTTMakersView(TemplateView):
     forms_list = []
     makers_dict = {}
     info = (False, "")
+    ignore_delinfo_in_url = False
 
     def post(self, request, *args, **kwargs):
         """
@@ -516,9 +519,10 @@ class ManageIFTTTMakersView(TemplateView):
             if form.is_valid() and button_name in post_data:
                 form, self.info = self.save_changeenvvarform(form, label)
                 break
-
         if new_maker_form.is_valid() and 'new_maker_button' in post_data:
             new_maker_form, self.info = self.save_changeenvvarform(new_maker_form, "IFTTT_MAKER_" + str(next_maker_id))
+            if self.request.GET.get("delinfo", False) and self.info[0]:
+                self.ignore_delinfo_in_url = True
         contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=(False, "normal"),
                                        SECRET_KEY=settings.SECRET_KEY, last_id=self.get_del_id())
 
@@ -546,20 +550,26 @@ class ManageIFTTTMakersView(TemplateView):
         next_maker_id = len(settings.IFTTT_MAKERS) + 1
         self.create_changeenvvarform('new_maker_button', "IFTTT MAKER " + str(next_maker_id) + ".", "")
 
-        if delinfo[0]:
+        if delinfo[0] and not self.ignore_delinfo_in_url:
             id = delinfo[1]
             label = "IFTTT_MAKER_" + str(id)
-            form = self.makers_dict.pop(label)
-            self.forms_list.remove(form)
-            self.forms_list[-2].deletable = True
-            self.forms_list[-1].fields["new_value"].label = "IFTTT MAKER " + str(
-                len(self.makers_dict) + 1) + "."
+            try:
+                form = self.makers_dict.pop(label)
+                self.forms_list.remove(form)
+                self.forms_list[-2].deletable = True
+                self.forms_list[-1].fields["new_value"].label = "IFTTT MAKER " + str(
+                    len(self.makers_dict) + 1) + "."
+            except KeyError:
+                pass
         contex = self.get_context_data(forms_list=self.forms_list, info=self.info, delinfo=delinfo,
                                        SECRET_KEY=settings.SECRET_KEY, last_id=self.get_del_id())
 
         return self.render_to_response(contex)
 
     def get_del_id(self):
+        if self.ignore_delinfo_in_url:
+            return len(settings.IFTTT_MAKERS)
+
         delinfo = (bool(int(self.request.GET.get("delinfo", "0"))), self.request.GET.get("delid", "normal"))
 
         return str(int(delinfo[1]) - 1) if delinfo[0] else len(self.makers_dict)
