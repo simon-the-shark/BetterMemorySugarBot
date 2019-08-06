@@ -62,7 +62,7 @@ msgid ""
 ".\n"
 "\n"
 " Your infusion set should be changed in {} days and {} hours."
-msgstr "Zmień zestaw infuzyjny w {} dni i {} godzin."
+msgstr " Zmień zestaw infuzyjny w {} dni i {} godzin."
 
 #: .\remider\data_processing.py:100
 msgid ""
