@@ -24,10 +24,10 @@ def process_nightscouts_api_response(response):
 
         for set in response_text:
             try:
-                if inf_date is None and set['notes'] == "Reservoir changed":
+                if inf_date is None and (set["eventType"] == "Site Change" or set['notes'] == "Reservoir changed"):
                     inf_date = set["created_at"]
                     InfusionChanged.objects.update_or_create(id=1, defaults={"date": inf_date, })
-                elif sensor_date is None and set['notes'] == "Sensor changed":
+                elif sensor_date is None and (set["eventType"] == "Sensor Change" or set['notes'] == "Sensor changed"):
                     sensor_date = set['created_at']
                     SensorChanged.objects.update_or_create(id=1, defaults={"date": sensor_date, })
             except KeyError:
