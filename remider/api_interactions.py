@@ -33,7 +33,11 @@ def send_webhook_IFTTT(val1="", val2="", val3=""):
 
 def send_message(body):
     """ sends sms via Twilio gateway """
-    client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+    try:
+        client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+    except:
+        print("unsuccessfull twilio client creation.")
+        sys.stdout.flush()
 
     for to_number in settings.TO_NUMBERS:
         try:
