@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 
-import django_heroku
 from decouple import config
 from django.utils.translation import ugettext_lazy as _
 
@@ -167,4 +166,8 @@ while True:
 
 TRIGGER_IFTTT = config("trigger_ifttt", default=False, cast=bool)
 SEND_SMS = config("send_sms", default=False, cast=bool)
-django_heroku.settings(locals())
+
+if config("TRAVIS_CI", default=False, cast=bool):
+    import django_heroku
+
+    django_heroku.settings(locals())
