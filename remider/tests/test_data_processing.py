@@ -1,7 +1,7 @@
-import requests
-import responses
 import datetime
 
+import requests
+import responses
 from django.test import TestCase, override_settings
 
 from ..data_processing import *
@@ -9,6 +9,10 @@ from ..models import InfusionChanged, SensorChanged
 
 
 class DataProcessingTests(TestCase):
+
+    def assertAlmostEqualDeltas(self, delta, delta2):
+        self.assertEqual(delta.days, delta2.days)
+        self.assertAlmostEqual(delta.seconds, delta2.seconds, delta=100)
 
     @responses.activate
     def test_process_nighscout_response_empty(self):
@@ -584,13 +588,13 @@ class DataProcessingTests(TestCase):
     def test_calculate_sensor(self):
         date = datetime.now(timezone.utc) - timedelta(hours=10)
         sensor_remains = calculate_sensor(date)
-        self.assertEqual(sensor_remains, timedelta(hours=14))
+        self.assertAlmostEqualDeltas(sensor_remains, timedelta(hours=14))
 
     @override_settings(INFUSION_SET_ALERT_FREQUENCY=48)
     def test_calculate_infusion(self):
         date = datetime.now(timezone.utc) - timedelta(hours=10)
         sensor_remains = calculate_infusion(date)
-        self.assertEqual(sensor_remains, timedelta(hours=38))
+        self.assertAlmostEqualDeltas(sensor_remains, timedelta(hours=38))
 
     def test_get_trigger_model(self):
         model = get_trigger_model()
@@ -625,5 +629,3 @@ class DataProcessingTests(TestCase):
         self.assertEqual(text, ".\n\n Your infusion set should be changed in 1 days and 2 hours.")
         text = get_sms_txt_infusion_set(timedelta(days=-1, hours=2))
         self.assertEqual(text, ".\n\n Your infusion set change has already passed")
-
-
