@@ -1,0 +1,13 @@
+dist: xenial
+language: python
+
+python:
+- '3.6'
+
+install:
+  - pip install -r requirements-test.txt
+
+script:
+  - coverage run --source=remider manage.py test
+after_success:
+  - coveralls
