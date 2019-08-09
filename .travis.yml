@@ -1,17 +1,25 @@
 dist: xenial
-services:
-  - xvfb
 language: python
-
 python:
-- '3.6'
+ - "3.6.8"
+cache: pip
+env:
+ - MOZ_HEADLESS=1
+addons:
+ firefox: latest
+before_install:
+ - wget https://github.com/mozilla/geckodriver/releases/download/v0.18.0/geckodriver-v0.18.0-linux64.tar.gz
+ - mkdir geckodriver
+ - tar -xzf geckodriver-v0.18.0-linux64.tar.gz -C geckodriver
+ - export PATH=$PATH:$PWD/geckodriver
+ - geckodriver --version
+ - export MOZ_HEADLESS=1
 install:
-  - pip install -r requirements-test.txt
-before_script:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-  - sleep 3
+ - pip install -r requirements.txt
 script:
-  - coverage run manage.py test
+ - python manage.py makemigrations
+ - python manage.py migrate
+ - coverage run manage.py test
 after_success:
   - coveralls
+sudo: false

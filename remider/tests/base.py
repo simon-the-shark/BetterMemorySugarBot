@@ -1,18 +1,25 @@
+import json
+import time
+
+import requests
+from django.conf import settings
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.shortcuts import reverse
-from django.conf import settings
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import WebDriverException
-import requests
-
-import time
-import json
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.options import Options
 
 
 class FunctionalTest(StaticLiveServerTestCase):
 
     def setUp(self):
+        options = Options()
+        options.add_argument('-headless')
+
+        self.driver = webdriver.Firefox(firefox_options=options)
+        self.driver.implicitly_wait(5)
+
         self.MAX_TIME = 10
         self.browser = webdriver.Firefox()
 
