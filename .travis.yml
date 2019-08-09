@@ -1,4 +1,6 @@
 dist: xenial
+services:
+  - xvfb
 language: python
 
 python:
@@ -8,6 +10,6 @@ install:
   - pip install -r requirements-test.txt
 
 script:
-  - coverage run manage.py test
+  - coverage run xvfb-run manage.py test
 after_success:
   - coveralls
