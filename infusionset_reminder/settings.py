@@ -167,7 +167,7 @@ while True:
 TRIGGER_IFTTT = config("trigger_ifttt", default=False, cast=bool)
 SEND_SMS = config("send_sms", default=False, cast=bool)
 
-if config("TRAVIS_CI", default=False, cast=bool):
+if not config("TRAVIS_CI", default=False, cast=bool):
     import django_heroku
 
     django_heroku.settings(locals())
