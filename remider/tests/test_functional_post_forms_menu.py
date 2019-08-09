@@ -1,8 +1,10 @@
+from unittest import skipIf
+
 from django.shortcuts import reverse
 from django.test import override_settings
 from selenium.webdriver.support.ui import Select
 
-from .base import HerokuFunctionalTest
+from .base import HerokuFunctionalTest, check_internet_connection
 
 
 class PostMenuTest(HerokuFunctionalTest):
@@ -16,6 +18,7 @@ class PostMenuTest(HerokuFunctionalTest):
         self.browser.find_element_by_name("language_button").click()
         self.check_alert()
 
+    @skipIf(not check_internet_connection(), "internet disconnect")
     @override_settings(SECRET_KEY="mycoolsecretkey")
     def test_posting_forms(self):
         self.browser.get(self.live_server_url + reverse("menu") + "?key=mycoolsecretkey")

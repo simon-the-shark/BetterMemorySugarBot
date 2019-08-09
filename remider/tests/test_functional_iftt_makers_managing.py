@@ -1,11 +1,11 @@
-from .base import HerokuFunctionalTest, check_internet_connection
+import time
+from unittest import skipIf
+
+from django.conf import settings
 from django.shortcuts import reverse
 from django.test import override_settings
-from selenium.webdriver.common.keys import Keys
-import os
-from unittest import skipIf
-import time
-from django.conf import settings
+
+from .base import HerokuFunctionalTest, check_internet_connection
 
 
 class IFTTTTests(HerokuFunctionalTest):
@@ -53,6 +53,7 @@ class IFTTTTests(HerokuFunctionalTest):
         self.assertIn("alert-danger", alert.get_attribute("class"))
         self.assertEqual(settings.IFTTT_MAKERS.pop(-1), expected)
 
+    @skipIf(not check_internet_connection(), "internet disconnect")
     @override_settings(SECRET_KEY="mycoolsecretkey", LANGUAGE_CODE='en', app_name="benc-test", DEBUG=True,
                        IFTTT_MAKERS=[], )
     def test_multiple_forms_behavior(self):

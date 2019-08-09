@@ -1,7 +1,9 @@
+from unittest import skipIf
+
 from django.shortcuts import reverse
 from django.test import override_settings
 
-from .base import FunctionalTest
+from .base import FunctionalTest, check_internet_connection
 
 
 class NotificationCentrumTest(FunctionalTest):
@@ -11,6 +13,7 @@ class NotificationCentrumTest(FunctionalTest):
         self.wait_for_finding(lambda: self.browser.find_element_by_css_selector(".btn-primary")).click()
         self.assertUrlNow("notif-center", add_secret_key=True)
 
+    @skipIf(not check_internet_connection(), "internet disconnect")
     @override_settings(SECRET_KEY="mycoolsecretkey", TRIGGER_IFTTT=False, SEND_SMS=True, TOKEN="")
     def test_posting_forms(self):
         self.browser.get(self.live_server_url + reverse("notif-center") + "?key=mycoolsecretkey")
