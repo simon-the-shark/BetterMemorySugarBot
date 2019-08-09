@@ -170,3 +170,5 @@ if not config("TRAVIS_CI", default=False, cast=bool):
     import django_heroku
 
     django_heroku.settings(locals())
+else:
+    STATIC_ROOT = os.path.join(config['BASE_DIR'], 'staticfiles')
