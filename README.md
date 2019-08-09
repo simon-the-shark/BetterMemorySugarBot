@@ -2,8 +2,9 @@
  # BetterMemorySugarBot
  [![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/) [![Open Source Love svg1](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
  [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
-[![Build Status](https://travis-ci.org/Simon-the-Shark/BetterMemorySugarBot.svg?branch=master)](https://travis-ci.org/Simon-the-Shark/BetterMemorySugarBot)
-[![Coverage Status](https://coveralls.io/repos/github/Simon-the-Shark/BetterMemorySugarBot/badge.svg?branch=master)](https://coveralls.io/github/Simon-the-Shark/BetterMemorySugarBot?branch=master)
+ [![Build Status](https://travis-ci.org/Simon-the-Shark/BetterMemorySugarBot.svg?branch=master)](https://travis-ci.org/Simon-the-Shark/BetterMemorySugarBot)
+ [![Coverage Status](https://coveralls.io/repos/github/Simon-the-Shark/BetterMemorySugarBot/badge.svg?branch=master)](https://coveralls.io/github/Simon-the-Shark/BetterMemorySugarBot?branch=master)
+
  **Now you will not forget about next infusion set or CGM sensor change! This app remembers for you!**
  ##### *__do it yourself__ project*
 
