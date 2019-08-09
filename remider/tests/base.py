@@ -23,6 +23,8 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.MAX_TIME = 10
         self.browser = webdriver.Firefox()
 
+        super().setUp()
+
     def tearDown(self):
         self.browser.quit()
 
