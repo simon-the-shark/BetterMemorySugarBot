@@ -28,7 +28,3 @@ class PostMenuTest(HerokuFunctionalTest):
         self.assertChangeEnvVarPost(5, "tsid")
         self.assertChangeEnvVarPost(6, "tsecret")
         self.assertPost("id_time", "16:01", clear=True)
-
-    @override_settings(SECRET_KEY="mycoolsecretkey", TOKEN="")
-    def test_posting_forms_without_token(self):
-        self.test_posting_forms()
